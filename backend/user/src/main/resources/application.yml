@@ -1,0 +1,34 @@
+spring:
+  # PostgreSQL
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: admin
+    password: 1234
+  tomcat:
+    max-wait: 20000
+    max-active: 50
+    max-idle: 20
+    min-idle: 15
+  # JPA & Hibernate
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    format_sql: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8080
+
+security:
+  jwt:
+    token:
+      secret-key: secret-key
+      expire-length: 300000 # 5 minutes duration by default: 5 minutes * 60 seconds * 1000 miliseconds
+
+UserController:
+  signin: Authenticates user and returns its JWT token.
+  signup: Creates user and returns its JWT token
+  delete: Deletes specific user by username
+  search: Returns specific user by username
+  me: Returns current user's data

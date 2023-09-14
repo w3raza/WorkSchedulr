@@ -1,0 +1,6 @@
+frontend/.angular/cache
+frontend/node_modules/
+.vscode
+.mvn
+.idea
+.DS_Store
