@@ -2,7 +2,7 @@ package com.authentification.service;
 
 import com.authentification.configuration.JwtService;
 import com.authentification.dto.LoginRequest;
-import com.authentification.dto.UserDataDTO;
+import com.authentification.dto.RegisterDataDTO;
 import com.authentification.dto.UserResponseDTO;
 import com.authentification.exception.InvalidPasswordException;
 import com.authentification.exception.UserNotFoundException;
@@ -40,7 +40,7 @@ public class UserService {
       }
   }
 
-  public UserResponseDTO signup(UserDataDTO userDTO) {
+  public UserResponseDTO signup(RegisterDataDTO userDTO) {
     if (userRepository.existsByUsername(userDTO.getUsername())) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Username is already in use");
     }

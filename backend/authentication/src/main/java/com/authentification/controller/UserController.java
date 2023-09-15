@@ -1,7 +1,7 @@
 package com.authentification.controller;
 
 import com.authentification.dto.LoginRequest;
-import com.authentification.dto.UserDataDTO;
+import com.authentification.dto.RegisterDataDTO;
 import com.authentification.dto.UserResponseDTO;
 import com.authentification.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,7 +38,7 @@ public class UserController {
   }
 
   @PostMapping("/signup")
-  public ResponseEntity<UserResponseDTO> signup(@RequestBody @Valid UserDataDTO user) {
+  public ResponseEntity<UserResponseDTO> signup(@RequestBody @Valid RegisterDataDTO user) {
     return ResponseEntity.ok(userService.signup(user));
   }
 

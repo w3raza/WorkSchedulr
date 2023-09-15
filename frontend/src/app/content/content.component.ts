@@ -20,7 +20,7 @@ export class ContentComponent {
 		    "POST",
 		    "users/signin",
 		    {
-		        username: input.login,
+		        username: input.username,
 		        password: input.password
 		    }).then(
 		    response => {
@@ -40,10 +40,14 @@ export class ContentComponent {
 		    "POST",
 		    "users/signup",
 		    {
+				username: input.username,
+		        password: input.password,
+				email: input.email,
 		        firstName: input.firstName,
 		        lastName: input.lastName,
-		        login: input.login,
-		        password: input.password
+				phone: input.phone,
+				country: input.country,
+				birth: input.birth
 		    }).then(
 		    response => {
 		        this.axiosService.setAuthToken(response.data.token);

@@ -3,11 +3,11 @@
 	<ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
 	  <li class="nav-item" role="presentation">
 	    <button [ngClass]="active == 'login' ? 'nav-link active' : 'nav-link'" id="tab-login"
-	      (click)="onLoginTab()" >Login</button>
+	      (click)="onLoginTab()" >Sign in</button>
 	  </li>
 	  <li class="nav-item" role="presentation">
 	    <button [ngClass]="active == 'register' ? 'nav-link active' : 'nav-link'" id="tab-register"
-	      (click)="onRegisterTab()" >Register</button>
+	      (click)="onRegisterTab()" >Sign up</button>
 	  </li>
 	</ul>
 
@@ -16,12 +16,12 @@
 	    <form (ngSubmit)="onSubmitLogin()" #loginForm="ngForm">
 
 	      <div class="form-outline mb-4">
-	        <input type="login" id="loginName" name= "login" class="form-control" [(ngModel)]="login" />
-	        <label class="form-label" for="loginName">Username</label>
+	        <input type="login" id="username" name= "username" class="form-control" [(ngModel)]="username" />
+	        <label class="form-label" for="username">Username</label>
 	      </div>
 
 	      <div class="form-outline mb-4">
-	        <input type="password" id="loginPassword" name="password" class="form-control" [(ngModel)]="password" />
+			<input type="password" id="registerPassword" name="password" class="form-control" [(ngModel)]="password" minlength="8" required>
 	        <label class="form-label" for="loginPassword">Password</label>
 	      </div>
 
@@ -29,28 +29,52 @@
 
 	    </form>
 	  </div>
+	  
 	  <div [ngClass]="active == 'register' ? 'tab-pane fade show active' : 'tab-pane fade'">
 	    <form (ngSubmit)="onSubmitRegister()" #registerForm="ngForm">
 
-	      <div class="form-outline mb-4">
-	        <input type="text" id="firstName" name="firstName" class="form-control" [(ngModel)]="firstName" />
-	        <label class="form-label" for="firstName">First name</label>
-	      </div>
+			<div class="form-outline mb-4">
+				<input type="login" id="username" name="username" class="form-control" [(ngModel)]="username" />
+				<label class="form-label" for="username">Username</label>
+			</div>
 
-	      <div class="form-outline mb-4">
-	        <input type="text" id="lastName" name="lastName" class="form-control" [(ngModel)]="lastName" />
-	        <label class="form-label" for="lastName">Last name</label>
-	      </div>
+			<div class="form-outline mb-4">
+				<input type="password" id="registerPassword" name="password" class="form-control" [(ngModel)]="password" minlength="8" required>
+				<label class="form-label" for="registerPassword">Password</label>
+			</div>
+	
 
-	      <div class="form-outline mb-4">
-	        <input type="text" id="login" name="login" class="form-control" [(ngModel)]="login" />
-	        <label class="form-label" for="login">Username</label>
-	      </div>
+			<div class="form-outline mb-4">
+				<input type="text" id="email" name="email" class="form-control" [(ngModel)]="email" email required>
+				<label class="form-label" for="email">Email</label>
+			</div>
 
-	      <div class="form-outline mb-4">
-	        <input type="password" id="registerPassword" name="password" class="form-control" [(ngModel)]="password" />
-	        <label class="form-label" for="registerPassword">Password</label>
-	      </div>
+			<div class="form-outline mb-4">
+				<input type="text" id="firstName" name="firstName" class="form-control" [(ngModel)]="firstName" />
+				<label class="form-label" for="firstName">First name</label>
+			</div>
+
+			<div class="form-outline mb-4">
+				<input type="text" id="lastName" name="lastName" class="form-control" [(ngModel)]="lastName" />
+				<label class="form-label" for="lastName">Last name</label>
+			</div>
+
+			<div class="form-outline mb-4">
+				<input type="text" id="phone" name="phone" class="form-control" [(ngModel)]="phone" />
+				<label class="form-label" for="phone">Phone</label>
+			</div>
+
+			<div class="form-outline mb-4">
+				<label class="form-label" for="countrySelect">Country</label>
+				<select id="countrySelect" name="country" class="form-control" [(ngModel)]="selectedCountry">
+					<option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+				</select>
+			</div>
+
+			<div class="form-outline mb-4">
+				<input type="date" id="birth" name="birth" class="form-control" [(ngModel)]="birth" />
+				<label class="form-label" for="birth">Birth</label>
+			</div>
 
 	      <button type="submit" class="btn btn-primary btn-block mb-3">Sign in</button>
 	    </form>
