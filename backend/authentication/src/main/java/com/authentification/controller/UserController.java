@@ -7,9 +7,11 @@ import com.authentification.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,8 +40,13 @@ public class UserController {
   }
 
   @PostMapping("/signup")
-  public ResponseEntity<UserResponseDTO> signup(@RequestBody @Valid RegisterDataDTO user) {
-    return ResponseEntity.ok(userService.signup(user));
+  public ResponseEntity<?> signup(@RequestBody @Valid RegisterDataDTO user) {
+    try {
+      UserResponseDTO response = userService.signup(user);
+      return new ResponseEntity<>(response, HttpStatus.CREATED);
+    } catch (ResponseStatusException e) {
+      return new ResponseEntity<>(e.getReason(), e.getStatusCode());
+    }
   }
 
   @DeleteMapping(value = "/{username}")
