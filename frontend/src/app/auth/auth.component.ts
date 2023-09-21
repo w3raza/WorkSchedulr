@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { AxiosService } from '../axios.service';
+import { Router } from '@angular/router';
+import { FormBuilder, Validators } from '@angular/forms';
+
+import { AuthService } from '../shared/services/auth.service';
+
+import { LoginResponse } from '../shared/models/loginResponse.model';
 
 @Component({
     selector: 'app-auth',
@@ -7,24 +12,28 @@ import { AxiosService } from '../axios.service';
     styleUrls: ['./auth.component.css']
 })
 export class AuthComponent {
-    constructor(private axiosService: AxiosService) { }
+    constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) { }
 
-    login(username: string, password: string){
-        this.axiosService.request(
-		    "POST",
-		    "users/signin",
-		    {
-		        username: username,
-		        password: password
-		    }).then(
-		    response => {
-		        this.axiosService.setAuthToken(response.data.token);
-		    }).catch(
-		    error => {
-		        this.axiosService.setAuthToken(null);
-                alert("Error");
-		    }
-		);
-    }
+	form = this.fb.group({
+		username: ['', Validators.required],
+		password: ['', Validators.required],
+	  });
 
+	  login(){
+		const username = this.form.value.username;
+		const password = this.form.value.password;
+		this.authService.loginUser(
+			username,
+			password
+		).subscribe({
+			next: (response: LoginResponse) => {
+				this.authService.setAuthToken(response.token);
+				this.router.navigateByUrl("/home");
+			},
+			error: (error) => {
+				this.authService.setAuthToken(null);
+				alert(error.message);
+			}
+		})
+	  }
 }
