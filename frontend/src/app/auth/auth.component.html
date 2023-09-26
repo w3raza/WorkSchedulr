@@ -27,7 +27,7 @@
           active == 'login' ? 'tab-pane fade show active' : 'tab-pane fade'
         "
       >
-        <form (ngSubmit)="login()">
+        <form>
           <div class="form-outline mb-4">
             <div [formGroup]="loginForm">
               <input
@@ -117,7 +117,7 @@
           active == 'register' ? 'tab-pane fade show active' : 'tab-pane fade'
         "
       >
-        <form (ngSubmit)="register()">
+        <form>
           <div [formGroup]="registerForm">
             <input
               type="login"

@@ -14,9 +14,9 @@ div {
 
 input {
   background-color: gray;
-  color: #fff;
+  color: white;
   border: 0px;
-  font-size: 30px;
+  font-size: 25px;
   padding: 10px 20px;
   margin-bottom: 10px;
   width: 100%;
@@ -42,10 +42,16 @@ button {
   }
 }
 
+button:hover {
+  color: rgb(190, 190, 190);
+}
+
 #submit-button {
   width: 100%;
 }
 
 #tab {
   width: 100px;
+  margin-left: 10px;
+  background-color: rgb(8, 66, 105);
 }

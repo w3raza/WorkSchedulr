@@ -154,7 +154,35 @@ export class AuthComponent {
     });
   }
 
-  register() {}
+  register() {
+    const username = this.registerForm.value.username;
+    const password = this.registerForm.value.password;
+    const email = this.registerForm.value.email;
+    const firstName = this.registerForm.value.firstName;
+    const lastName = this.registerForm.value.lastName;
+    const phone = this.registerForm.value.phone;
+    const birth = this.registerForm.value.birth;
+    this.authService
+      .registerUser(
+        username,
+        password,
+        email,
+        firstName,
+        lastName,
+        phone,
+        birth
+      )
+      .subscribe({
+        next: (response: LoginResponse) => {
+          this.authService.setAuthToken(response.token);
+          this.router.navigateByUrl("/home");
+        },
+        error: (error) => {
+          this.authService.setAuthToken(null);
+          alert(error.message);
+        },
+      });
+  }
 }
 
 function caseValidator(
