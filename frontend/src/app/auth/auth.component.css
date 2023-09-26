@@ -1,42 +1,47 @@
-div{
-    background-color: #121212;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    flex-direction: column;
-    font-family: 'Times New Roman', Times, serif;
-}
-h1 {
-    text-transform: uppercase;
-    color:#fff;
+.col-4 {
+  background-color: #121212;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 90vh;
+  flex-direction: column;
+  font-family: "Times New Roman", Times, serif;
 }
 
 input {
-    background-color: gray;
-    color:#fff;
-    border: 0px;
-    font-size: 30px;
-    padding: 10px 20px;
-    margin-bottom: 10px;
-    width: 200px;
-    cursor: pointer;
+  background-color: gray;
+  color: #fff;
+  border: 0px;
+  font-size: 30px;
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  width: 300px;
+  height: 50px;
+  cursor: pointer;
 }
 
 button {
-    width: 200px;
-    text-align: center;
-    padding: 10px 0px;
-    background-color: rgb(8, 66, 105);
-    color:#fff;
-    border: 0px;
-    outline: none;
-    margin-top: 20px;
-    text-transform: uppercase;
-    cursor: pointer;
+  width: 200px;
+  text-align: center;
+  padding: 10px 0px;
+  background-color: rgb(8, 66, 105);
+  color: #fff;
+  border: 0px;
+  outline: none;
+  margin-top: 20px;
+  text-transform: uppercase;
+  cursor: pointer;
 
-    &[disabled]{
-        background-color: black;
-        cursor: not-allowed;
-    }
+  &[disabled] {
+    background-color: black;
+    cursor: not-allowed;
+  }
+}
+
+#submit-button {
+  width: 100%;
+}
+
+#tab {
+  width: 80px;
 }

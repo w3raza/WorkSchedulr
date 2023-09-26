@@ -14,6 +14,5 @@ public class RegisterDataDTO {
   private String firstName;
   private String lastName;
   private String phone;
-  private String country;
   private LocalDate birth;
 }

@@ -1,9 +1,103 @@
-<div [formGroup]="form">
-    <h1>Login</h1>
+<div class="row justify-content-center">
+  <div class="col-4">
+    <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button
+          [ngClass]="active == 'login' ? 'nav-link active' : 'nav-link'"
+          id="tab"
+          (click)="onLoginTab()"
+        >
+          Sign in
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          [ngClass]="active == 'register' ? 'nav-link active' : 'nav-link'"
+          id="tab"
+          (click)="onRegisterTab()"
+        >
+          Sign up
+        </button>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div
+        [ngClass]="
+          active == 'login' ? 'tab-pane fade show active' : 'tab-pane fade'
+        "
+      >
+        <form (ngSubmit)="login()" #loginForm="ngForm">
+          <div [formGroup]="form">
+            <input
+              type="login"
+              formControlName="username"
+              placeholder="Username"
+            />
+            <input
+              type="password"
+              formControlName="password"
+              placeholder="Password"
+            />
 
-    <input type="text" formControlName="username" placeholder="Username"/>
-    <input type="password" formControlName="password" placeholder="Password"/>
+            <button
+              id="submit-button"
+              (click)="login()"
+              [disabled]="!form.valid"
+            >
+              Sign in
+            </button>
+          </div>
+        </form>
+      </div>
+      <div
+        [ngClass]="
+          active == 'register' ? 'tab-pane fade show active' : 'tab-pane fade'
+        "
+      >
+        <form (ngSubmit)="register()" #registerForm="ngForm">
+          <div [formGroup]="form">
+            <input
+              type="login"
+              formControlName="username"
+              placeholder="Username"
+            />
+            <input
+              type="password"
+              formControlName="password"
+              placeholder="Password"
+            />
+            <input type="text" formControlName="email" placeholder="Email" />
+            <input
+              type="text"
+              formControlName="firstName"
+              placeholder="First name"
+            />
+            <input
+              type="text"
+              formControlName="lastName"
+              placeholder="Last name"
+            />
+            <input type="text" formControlName="phone" placeholder="Phone" />
 
-    <button (click)="login()" [disabled]="!form.valid">Sign in</button>
-    <!-- {{form.value | json}} -->
+            <div class="form-outline mb-4">
+              <input
+                type="date"
+                formControlName="birth"
+                placeholder="Birth"
+                class="form-control"
+              />
+            </div>
+
+            <button
+              id="submit-button"
+              [disabled]="!form.valid"
+              (click)="register()"
+            >
+              Sign up
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
