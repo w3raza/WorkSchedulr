@@ -20,64 +20,141 @@
         </button>
       </li>
     </ul>
+
     <div class="tab-content">
       <div
         [ngClass]="
           active == 'login' ? 'tab-pane fade show active' : 'tab-pane fade'
         "
       >
-        <form (ngSubmit)="login()" #loginForm="ngForm">
-          <div [formGroup]="form">
-            <input
-              type="login"
-              formControlName="username"
-              placeholder="Username"
-            />
-            <input
-              type="password"
-              formControlName="password"
-              placeholder="Password"
-            />
+        <form (ngSubmit)="login()">
+          <div class="form-outline mb-4">
+            <div [formGroup]="loginForm">
+              <input
+                type="login"
+                formControlName="username"
+                placeholder="Username"
+                (blur)="onBlurUseruame()"
+              />
+              <input
+                type="password"
+                formControlName="password"
+                placeholder="Password"
+                (blur)="onBlurPassword()"
+              />
 
-            <button
-              id="submit-button"
-              (click)="login()"
-              [disabled]="!form.valid"
-            >
-              Sign in
-            </button>
+              <div
+                *ngIf="
+                  usernameControl?.hasError('required') &&
+                  usernameControl?.touched
+                "
+              >
+                Username is required.
+              </div>
+              <div
+                *ngIf="
+                  usernameControl?.hasError('minlength') &&
+                  usernameControl?.touched
+                "
+              >
+                Username must be at least 4 characters.
+              </div>
+              <div
+                *ngIf="
+                  passwordControl?.hasError('required') &&
+                  passwordControl?.touched
+                "
+              >
+                Password is required.
+              </div>
+              <div
+                *ngIf="
+                  passwordControl?.hasError('minlength') &&
+                  passwordControl?.touched
+                "
+              >
+                Password must be at least 8 characters.
+              </div>
+              <div
+                *ngIf="
+                  passwordControl?.hasError('caseRequirement') &&
+                  passwordControl?.touched
+                "
+              >
+                Password must contain both upper and lower case characters.
+              </div>
+              <div
+                *ngIf="
+                  passwordControl?.hasError('numberRequirement') &&
+                  passwordControl?.touched
+                "
+              >
+                Password must contain at least one number.
+              </div>
+              <div
+                *ngIf="
+                  passwordControl?.hasError('specialCharRequirement') &&
+                  passwordControl?.touched
+                "
+              >
+                Password must contain at least one special character.
+              </div>
+
+              <button
+                id="submit-button"
+                (click)="login()"
+                [disabled]="!loginForm.valid"
+              >
+                Sign in
+              </button>
+            </div>
           </div>
         </form>
       </div>
+
       <div
         [ngClass]="
           active == 'register' ? 'tab-pane fade show active' : 'tab-pane fade'
         "
       >
-        <form (ngSubmit)="register()" #registerForm="ngForm">
-          <div [formGroup]="form">
+        <form (ngSubmit)="register()">
+          <div [formGroup]="registerForm">
             <input
               type="login"
               formControlName="username"
               placeholder="Username"
+              (blur)="onBlurUseruame()"
             />
             <input
               type="password"
               formControlName="password"
               placeholder="Password"
+              (blur)="onBlurPassword()"
             />
-            <input type="text" formControlName="email" placeholder="Email" />
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="Email"
+              (blur)="onBlurEmail()"
+            />
             <input
               type="text"
               formControlName="firstName"
               placeholder="First name"
+              (blur)="onBlurFirstName()"
             />
             <input
               type="text"
               formControlName="lastName"
               placeholder="Last name"
+              (blur)="onBlurPassword()"
             />
-            <input type="text" formControlName="phone" placeholder="Phone" />
+            <input
+              type="text"
+              formControlName="phone"
+              placeholder="Phone"
+              (blur)="onBlurPhone()"
+            />
 
             <div class="form-outline mb-4">
               <input
@@ -87,10 +164,133 @@
                 class="form-control"
               />
             </div>
+            <div
+              *ngIf="
+                usernameControl?.hasError('required') &&
+                usernameControl?.touched
+              "
+            >
+              Username is required.
+            </div>
+            <div
+              *ngIf="
+                usernameControl?.hasError('minlength') &&
+                usernameControl?.touched
+              "
+            >
+              Username must be at least 4 characters.
+            </div>
+
+            <div
+              *ngIf="
+                passwordControl?.hasError('required') &&
+                passwordControl?.touched
+              "
+            >
+              Password is required.
+            </div>
+            <div
+              *ngIf="
+                passwordControl?.hasError('minlength') &&
+                passwordControl?.touched
+              "
+            >
+              Password must be at least 8 characters.
+            </div>
+            <div
+              *ngIf="
+                passwordControl?.hasError('caseRequirement') &&
+                passwordControl?.touched
+              "
+            >
+              Password must contain both upper and lower case characters.
+            </div>
+            <div
+              *ngIf="
+                passwordControl?.hasError('numberRequirement') &&
+                passwordControl?.touched
+              "
+            >
+              Password must contain at least one number.
+            </div>
+            <div
+              *ngIf="
+                passwordControl?.hasError('specialCharRequirement') &&
+                passwordControl?.touched
+              "
+            >
+              Password must contain at least one special character.
+            </div>
+
+            <div
+              *ngIf="
+                emailControl?.hasError('required') && emailControl?.touched
+              "
+            >
+              Email is required.
+            </div>
+            <div
+              *ngIf="
+                emailControl?.hasError('invalidEmail') && emailControl?.touched
+              "
+            >
+              Please enter a valid email address with a format like
+              'name@example.com'.
+            </div>
+
+            <div
+              *ngIf="
+                firstNameControl?.hasError('required') &&
+                firstNameControl?.touched
+              "
+            >
+              Firstname is required.
+            </div>
+            <div
+              *ngIf="
+                firstNameControl?.hasError('minlength') &&
+                firstNameControl?.touched
+              "
+            >
+              Firstname must be at least 2 characters.
+            </div>
+
+            <div
+              *ngIf="
+                lastNameControl?.hasError('required') &&
+                lastNameControl?.touched
+              "
+            >
+              lastName is required.
+            </div>
+            <div
+              *ngIf="
+                lastNameControl?.hasError('minlength') &&
+                lastNameControl?.touched
+              "
+            >
+              lastName must be at least 2 characters.
+            </div>
+
+            <div
+              *ngIf="
+                phoneControl?.hasError('required') && phoneControl?.touched
+              "
+            >
+              Phone is required.
+            </div>
+            <div
+              *ngIf="
+                phoneControl?.hasError('invalidPhoneNumber') &&
+                phoneControl?.touched
+              "
+            >
+              Phone number must have exactly 9 digits.
+            </div>
 
             <button
               id="submit-button"
-              [disabled]="!form.valid"
+              [disabled]="!registerForm.valid"
               (click)="register()"
             >
               Sign up
