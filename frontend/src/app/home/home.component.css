@@ -1,0 +1,10 @@
+.col-4 {
+  color: aliceblue;
+  background-color: #121212;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 90vh;
+  flex-direction: column;
+  font-family: "Times New Roman", Times, serif;
+}

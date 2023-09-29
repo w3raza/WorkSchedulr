@@ -1,30 +1,33 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { ButtonsComponent } from './buttons/buttons.component';
-import { HeaderComponent } from './header/header.component';
-import { LoginFormComponent } from './login-form/login-form.component';
-import { AuthContentComponent } from './auth-content/auth-content.component';
-import { ContentComponent } from './content/content.component';
+import { HttpClientModule } from '@angular/common/http';
 
-import { AxiosService } from './axios.service';
+import { AppComponent } from './app.component';
+import { AuthComponent } from './auth/auth.component';
+
+import { HeaderComponent } from './header/header.component';
+import { AxiosService } from './shared/services/axios.service';
+import { HomeComponent } from './home/home.component';
+import { BillComponent } from './bill/bill.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    ButtonsComponent,
     HeaderComponent,
-    LoginFormComponent,
-    AuthContentComponent,
-    ContentComponent
+    AuthComponent,
+    HomeComponent,
+    BillComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [AxiosService],
   bootstrap: [AppComponent]

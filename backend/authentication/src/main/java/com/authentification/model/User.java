@@ -43,9 +43,6 @@ public class User implements UserDetails {
   private String phone;
 
   @NotNull
-  private String country;
-
-  @NotNull
   private LocalDate birth;
 
   private boolean isStudent;

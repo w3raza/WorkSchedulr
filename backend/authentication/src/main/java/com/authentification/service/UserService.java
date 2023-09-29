@@ -10,6 +10,8 @@ import com.authentification.exception.UserNotFoundException;
 import com.authentification.model.User;
 import com.authentification.model.UserRole;
 import com.authentification.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -18,7 +20,10 @@ import jakarta.validation.ValidatorFactory;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -33,6 +38,18 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final ModelMapper modelMapper = new ModelMapper();
+
+  public String refresh(String username) {
+    User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+    return jwtService.createToken(username, user.getUserRoles());
+  }
+
+  public void signout(HttpServletRequest request, HttpServletResponse response) {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth != null) {
+      new SecurityContextLogoutHandler().logout(request, response, auth);
+    }
+  }
 
   public UserResponseDTO signin(LoginRequest loginRequest) {
       String username = loginRequest.getUsername();
@@ -75,10 +92,5 @@ public class UserService {
 
   public void delete(String username) {
     userRepository.deleteByUsername(username);
-  }
-
-  public String refresh(String username) {
-    User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
-    return jwtService.createToken(username, user.getUserRoles());
   }
 }
