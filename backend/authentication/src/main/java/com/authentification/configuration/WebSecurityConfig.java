@@ -31,8 +31,8 @@ public class WebSecurityConfig {
 
     // Entry points
     http.authorizeHttpRequests((requests) -> requests
-            .requestMatchers(HttpMethod.POST, "/users/signin", "/users/signup").permitAll()
-            .requestMatchers(HttpMethod.GET, "/users", "/users/refresh").permitAll()
+            .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
         // Disallow everything else..
             .anyRequest()
             .authenticated());

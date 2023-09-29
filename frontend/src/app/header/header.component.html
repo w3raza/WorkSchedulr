@@ -1,6 +1,16 @@
 <header class="app-header">
-	<h1 class="app-title">
-		<img src={{logoSrc}} class="app-logo" alt="logo" />
-		{{pageTitle}}
-	</h1>
+  <div class="app-title">
+    <img src="{{ logoSrc }}" class="app-logo" alt="logo" />
+    <button (click)="redirectToHome()" [disabled]="!userLogin?.token">
+      {{ pageTitle }}
+    </button>
+  </div>
+  <div *ngIf="userLogin?.token">
+    <button>Calendar</button>
+    <button (click)="redirectToBills()">Bills</button>
+    <button>Projects</button>
+    <button>User</button>
+    <button *ngIf="userLogin?.userRoles === 'ROLE_ADMIN'">Employees</button>
+    <button (click)="signOut()">Sign out</button>
+  </div>
 </header>

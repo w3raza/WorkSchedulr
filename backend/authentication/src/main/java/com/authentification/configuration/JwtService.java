@@ -7,6 +7,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.authentification.model.User;
 import com.authentification.model.UserRole;
 import com.authentification.service.MyUserDetails;
 import jakarta.annotation.PostConstruct;

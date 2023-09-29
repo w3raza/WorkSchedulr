@@ -5,6 +5,7 @@ import com.authentification.dto.RegisterDataDTO;
 import com.authentification.dto.UserResponseDTO;
 import com.authentification.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,8 +35,13 @@ public class UserController {
     return ResponseEntity.ok(userService.refresh(req.getRemoteUser()));
   }
 
+  @GetMapping("/signout")
+  public void signout(HttpServletRequest request, HttpServletResponse response) {
+     userService.signout(request, response);
+  }
+
   @PostMapping("/signin")
-  public ResponseEntity<UserResponseDTO> login(@RequestBody @Valid LoginRequest loginRequest) {
+  public ResponseEntity<UserResponseDTO> signin(@RequestBody @Valid LoginRequest loginRequest) {
     return ResponseEntity.ok(userService.signin(loginRequest));
   }
 

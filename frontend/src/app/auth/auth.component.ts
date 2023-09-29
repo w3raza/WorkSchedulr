@@ -1,12 +1,6 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
-import {
-  FormBuilder,
-  FormGroup,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from "@angular/forms";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { AbstractControl } from "@angular/forms";
 
 import { AuthService } from "../shared/services/auth.service";
@@ -145,6 +139,7 @@ export class AuthComponent {
     this.authService.loginUser(username, password).subscribe({
       next: (response: LoginResponse) => {
         this.authService.setAuthToken(response.token);
+        window.localStorage.setItem("user", JSON.stringify(response));
         this.router.navigateByUrl("/home");
       },
       error: (error) => {

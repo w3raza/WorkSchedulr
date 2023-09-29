@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
+import { tap } from "rxjs/operators";
 
 import { LoginResponse } from "../models/loginResponse.model";
 
@@ -10,9 +11,7 @@ import { LoginResponse } from "../models/loginResponse.model";
 export class AuthService {
   private url = "http://localhost:8081";
 
-  constructor(private http: HttpClient) {
-    // axios.defaults.headers.post['Content-Type'] = 'application/json';
-  }
+  constructor(private http: HttpClient) {}
 
   getAuthToken(): string | null {
     return window.localStorage.getItem("auth_token");
@@ -55,5 +54,14 @@ export class AuthService {
     };
 
     return this.http.post<LoginResponse>(`${this.url}/users/signup`, payload);
+  }
+
+  logoutUser() {
+    return this.http.get(`${this.url}/users/signout`, {}).pipe(
+      tap(() => {
+        localStorage.removeItem("user");
+        localStorage.removeItem("auth_token");
+      })
+    );
   }
 }

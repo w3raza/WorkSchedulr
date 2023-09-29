@@ -11,6 +11,7 @@ import { AuthComponent } from './auth/auth.component';
 import { HeaderComponent } from './header/header.component';
 import { AxiosService } from './shared/services/axios.service';
 import { HomeComponent } from './home/home.component';
+import { BillComponent } from './bill/bill.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { HomeComponent } from './home/home.component';
     AppComponent,
     HeaderComponent,
     AuthComponent,
-    HomeComponent
+    HomeComponent,
+    BillComponent
   ],
   imports: [
     BrowserModule,
