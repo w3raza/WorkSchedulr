@@ -1,18 +1,21 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
-import { AppRoutingModule } from './app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from "@angular/common/http";
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
-import { AppComponent } from './app.component';
-import { AuthComponent } from './auth/auth.component';
+import { AppRoutingModule } from "./app-routing.module";
 
-import { HeaderComponent } from './header/header.component';
-import { AxiosService } from './shared/services/axios.service';
-import { HomeComponent } from './home/home.component';
-import { BillComponent } from './bill/bill.component';
+import { AppComponent } from "./app.component";
+import { AuthComponent } from "./auth/auth.component";
+import { HeaderComponent } from "./header/header.component";
+import { HomeComponent } from "./home/home.component";
+import { BillComponent } from "./bill/bill.component";
 
+import { AuthInterceptor } from "./shared/services/auth-interceptor.service";
 
 @NgModule({
   declarations: [
@@ -20,16 +23,20 @@ import { BillComponent } from './bill/bill.component';
     HeaderComponent,
     AuthComponent,
     HomeComponent,
-    BillComponent
+    BillComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatSnackBarModule,
+    BrowserAnimationsModule,
   ],
-  providers: [AxiosService],
-  bootstrap: [AppComponent]
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

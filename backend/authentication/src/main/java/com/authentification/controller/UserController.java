@@ -36,6 +36,7 @@ public class UserController {
   }
 
   @GetMapping("/signout")
+  @ResponseStatus(HttpStatus.OK)
   public void signout(HttpServletRequest request, HttpServletResponse response) {
      userService.signout(request, response);
   }

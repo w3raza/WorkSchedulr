@@ -6,6 +6,7 @@ import { AbstractControl } from "@angular/forms";
 import { AuthService } from "../shared/services/auth.service";
 
 import { LoginResponse } from "../shared/models/loginResponse.model";
+import { NotificationService } from "../shared/services/notification.service";
 
 @Component({
   selector: "app-auth",
@@ -20,7 +21,8 @@ export class AuthComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private notificationService: NotificationService
   ) {
     this.loginForm = this.fb.group({
       username: ["", [Validators.required, Validators.minLength(4)]],
@@ -134,17 +136,14 @@ export class AuthComponent {
   }
 
   login() {
-    const username = this.loginForm.value.username;
-    const password = this.loginForm.value.password;
+    const { username, password } = this.loginForm.value;
     this.authService.loginUser(username, password).subscribe({
-      next: (response: LoginResponse) => {
-        this.authService.setAuthToken(response.token);
-        window.localStorage.setItem("user", JSON.stringify(response));
+      next: () => {
         this.router.navigateByUrl("/home");
       },
       error: (error) => {
         this.authService.setAuthToken(null);
-        alert(error.message);
+        this.notificationService.showError(error.message);
       },
     });
   }
@@ -169,12 +168,11 @@ export class AuthComponent {
       )
       .subscribe({
         next: (response: LoginResponse) => {
-          this.authService.setAuthToken(response.token);
           this.router.navigateByUrl("/home");
         },
         error: (error) => {
           this.authService.setAuthToken(null);
-          alert(error.message);
+          this.notificationService.showError(error.message);
         },
       });
   }
