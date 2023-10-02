@@ -5,6 +5,8 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -16,6 +18,8 @@ import { HomeComponent } from "./home/home.component";
 import { BillComponent } from "./bill/bill.component";
 
 import { AuthInterceptor } from "./shared/services/auth-interceptor.service";
+import { SuccessSnackBarComponent } from "./shared/components/success-snack-bar.component";
+import { ErrorSnackBarComponent } from "./shared/components/error-snack-bar.component";
 
 @NgModule({
   declarations: [
@@ -24,6 +28,8 @@ import { AuthInterceptor } from "./shared/services/auth-interceptor.service";
     AuthComponent,
     HomeComponent,
     BillComponent,
+    SuccessSnackBarComponent,
+    ErrorSnackBarComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,6 +38,8 @@ import { AuthInterceptor } from "./shared/services/auth-interceptor.service";
     ReactiveFormsModule,
     HttpClientModule,
     MatSnackBarModule,
+    MatIconModule,
+    MatButtonModule,
     BrowserAnimationsModule,
   ],
   providers: [
