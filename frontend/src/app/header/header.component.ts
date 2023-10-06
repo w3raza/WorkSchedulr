@@ -16,15 +16,33 @@ export class HeaderComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    this.userLogin = JSON.parse(window.localStorage.getItem("user") || "{}");
+    this.authService.userLogin$.subscribe((userLogin) => {
+      this.userLogin = userLogin;
+    });
   }
 
   redirectToHome() {
     this.router.navigateByUrl("/home");
   }
 
+  redirectToCalendar() {
+    this.router.navigateByUrl("/calendar");
+  }
+
   redirectToBills() {
     this.router.navigateByUrl("/bills");
+  }
+
+  redirectToProjects() {
+    this.router.navigateByUrl("/projects");
+  }
+
+  redirectToEmployees() {
+    this.router.navigateByUrl("/employees");
+  }
+
+  redirectToUser() {
+    this.router.navigateByUrl("/user");
   }
 
   signOut() {

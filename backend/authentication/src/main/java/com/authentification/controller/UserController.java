@@ -36,13 +36,14 @@ public class UserController {
   }
 
   @GetMapping("/signout")
+  @ResponseStatus(HttpStatus.OK)
   public void signout(HttpServletRequest request, HttpServletResponse response) {
-     userService.signout(request, response);
+     userService.signOut(request, response);
   }
 
   @PostMapping("/signin")
   public ResponseEntity<UserResponseDTO> signin(@RequestBody @Valid LoginRequest loginRequest) {
-    return ResponseEntity.ok(userService.signin(loginRequest));
+    return ResponseEntity.ok(userService.signIn(loginRequest));
   }
 
   @PostMapping("/signup")
@@ -55,10 +56,10 @@ public class UserController {
     }
   }
 
-  @DeleteMapping(value = "/{username}")
+  @DeleteMapping(value = "/{email}")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ResponseEntity<String> delete(@PathVariable String username) {
-    userService.delete(username);
-    return ResponseEntity.ok(username);
+  public ResponseEntity<String> delete(@PathVariable String email) {
+    userService.delete(email);
+    return ResponseEntity.ok("Delete user with email: " + email);
   }
 }

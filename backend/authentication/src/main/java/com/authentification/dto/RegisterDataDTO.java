@@ -8,7 +8,6 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 public class RegisterDataDTO {
-  private String username;
   private String password;
   private String email;
   private String firstName;

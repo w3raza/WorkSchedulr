@@ -6,6 +6,7 @@ import { AbstractControl } from "@angular/forms";
 import { AuthService } from "../shared/services/auth.service";
 
 import { LoginResponse } from "../shared/models/loginResponse.model";
+import { NotificationService } from "../shared/services/notification.service";
 
 @Component({
   selector: "app-auth",
@@ -20,10 +21,14 @@ export class AuthComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private notificationService: NotificationService
   ) {
     this.loginForm = this.fb.group({
-      username: ["", [Validators.required, Validators.minLength(4)]],
+      email: [
+        "",
+        [Validators.required, Validators.minLength(4), customEmailValidator],
+      ],
       password: [
         "",
         [
@@ -37,7 +42,10 @@ export class AuthComponent {
     });
 
     this.registerForm = this.fb.group({
-      username: ["", [Validators.required, Validators.minLength(4)]],
+      email: [
+        "",
+        [Validators.required, Validators.minLength(4), customEmailValidator],
+      ],
       password: [
         "",
         [
@@ -48,7 +56,6 @@ export class AuthComponent {
           specialCharacterValidator,
         ],
       ],
-      email: ["", [Validators.required, customEmailValidator]],
       firstName: ["", [Validators.required, Validators.minLength(2)]],
       lastName: ["", [Validators.required, Validators.minLength(2)]],
       phone: ["", [Validators.required, phoneNumberValidator]],
@@ -60,16 +67,16 @@ export class AuthComponent {
   }
 
   syncForms() {
-    this.loginForm.get("username")?.valueChanges.subscribe((value) => {
-      this.registerForm.get("username")?.setValue(value, { emitEvent: false });
+    this.loginForm.get("email")?.valueChanges.subscribe((value) => {
+      this.registerForm.get("email")?.setValue(value, { emitEvent: false });
     });
 
     this.loginForm.get("password")?.valueChanges.subscribe((value) => {
       this.registerForm.get("password")?.setValue(value, { emitEvent: false });
     });
 
-    this.registerForm.get("username")?.valueChanges.subscribe((value) => {
-      this.loginForm.get("username")?.setValue(value, { emitEvent: false });
+    this.registerForm.get("email")?.valueChanges.subscribe((value) => {
+      this.loginForm.get("email")?.setValue(value, { emitEvent: false });
     });
 
     this.registerForm.get("password")?.valueChanges.subscribe((value) => {
@@ -77,16 +84,12 @@ export class AuthComponent {
     });
   }
 
-  get usernameControl() {
-    return this.loginForm.get("username");
+  get emailControl() {
+    return this.registerForm.get("email");
   }
 
   get passwordControl() {
     return this.loginForm.get("password");
-  }
-
-  get emailControl() {
-    return this.registerForm.get("email");
   }
 
   get firstNameControl() {
@@ -101,16 +104,12 @@ export class AuthComponent {
     return this.registerForm.get("phone");
   }
 
-  onBlurUseruame() {
-    this.usernameControl?.markAsTouched();
+  onBlurEmail() {
+    this.emailControl?.markAsTouched();
   }
 
   onBlurPassword() {
     this.passwordControl?.markAsTouched();
-  }
-
-  onBlurEmail() {
-    this.emailControl?.markAsTouched();
   }
 
   onBlurFirstName() {
@@ -134,47 +133,34 @@ export class AuthComponent {
   }
 
   login() {
-    const username = this.loginForm.value.username;
-    const password = this.loginForm.value.password;
-    this.authService.loginUser(username, password).subscribe({
-      next: (response: LoginResponse) => {
-        this.authService.setAuthToken(response.token);
-        window.localStorage.setItem("user", JSON.stringify(response));
+    const { email, password } = this.loginForm.value;
+    this.authService.loginUser(email, password).subscribe({
+      next: () => {
         this.router.navigateByUrl("/home");
       },
       error: (error) => {
         this.authService.setAuthToken(null);
-        alert(error.message);
+        this.notificationService.showError(error.message);
       },
     });
   }
 
   register() {
-    const username = this.registerForm.value.username;
-    const password = this.registerForm.value.password;
     const email = this.registerForm.value.email;
+    const password = this.registerForm.value.password;
     const firstName = this.registerForm.value.firstName;
     const lastName = this.registerForm.value.lastName;
     const phone = this.registerForm.value.phone;
     const birth = this.registerForm.value.birth;
     this.authService
-      .registerUser(
-        username,
-        password,
-        email,
-        firstName,
-        lastName,
-        phone,
-        birth
-      )
+      .registerUser(email, password, firstName, lastName, phone, birth)
       .subscribe({
-        next: (response: LoginResponse) => {
-          this.authService.setAuthToken(response.token);
+        next: () => {
           this.router.navigateByUrl("/home");
         },
         error: (error) => {
           this.authService.setAuthToken(null);
-          alert(error.message);
+          this.notificationService.showError(error.message);
         },
       });
   }

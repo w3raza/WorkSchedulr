@@ -19,14 +19,11 @@ public class User implements UserDetails {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @Size(min = 4, max = 255, message = "Minimum username length: 4 characters")
-  @Column(unique = true, nullable = false)
-  private String username;
-
   @NotNull
   @Size(min = 8, message = "Minimum password length: 8 characters")
   private String password;
 
+  @Size(min = 4, max = 255, message = "Minimum username length: 4 characters")
   @Column(unique = true, nullable = false)
   private String email;
 
@@ -59,6 +56,11 @@ public class User implements UserDetails {
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return userRoles;
+  }
+
+  @Override
+  public String getUsername() {
+    return email;
   }
 
   @Override

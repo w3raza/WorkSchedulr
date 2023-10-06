@@ -7,7 +7,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.authentification.model.User;
 import com.authentification.model.UserRole;
 import com.authentification.service.MyUserDetails;
 import jakarta.annotation.PostConstruct;
@@ -34,7 +33,7 @@ public class JwtService {
   private String secretKey;
 
   @Value("${security.jwt.token.expire-length}")
-  private long validityInMilliseconds; // 1h
+  private long validityInMilliseconds;
 
   private final MyUserDetails myUserDetails;
 
@@ -45,7 +44,7 @@ public class JwtService {
 
   public String createToken(String login, Set<UserRole> userRoles) {
     Date now = new Date();
-    Date validity = new Date(now.getTime() + validityInMilliseconds); // 1 hour
+    Date validity = new Date(now.getTime() + validityInMilliseconds);
 
     String[] roleStrings = userRoles.stream()
             .map(UserRole::getAuthority)

@@ -5,6 +5,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 public class UserAlreadyExistsException extends ResponseStatusException {
     public UserAlreadyExistsException(){
-        super(HttpStatus.FORBIDDEN, "Username is already in use");
+        super(HttpStatus.FORBIDDEN, "Email is already in use");
     }
 }

@@ -31,10 +31,10 @@
           <div class="form-outline mb-4">
             <div [formGroup]="loginForm">
               <input
-                type="login"
-                formControlName="username"
-                placeholder="Username"
-                (blur)="onBlurUseruame()"
+                type="email"
+                formControlName="email"
+                placeholder="Email"
+                (blur)="onBlurEmail()"
               />
               <input
                 type="password"
@@ -45,20 +45,28 @@
 
               <div
                 *ngIf="
-                  usernameControl?.hasError('required') &&
-                  usernameControl?.touched
+                  emailControl?.hasError('required') && emailControl?.touched
                 "
               >
-                Username is required.
+                Email is required.
               </div>
               <div
                 *ngIf="
-                  usernameControl?.hasError('minlength') &&
-                  usernameControl?.touched
+                  emailControl?.hasError('minlength') && emailControl?.touched
                 "
               >
-                Username must be at least 4 characters.
+                Email must be at least 4 characters.
               </div>
+              <div
+                *ngIf="
+                  emailControl?.hasError('invalidEmail') &&
+                  emailControl?.touched
+                "
+              >
+                Please enter a valid email address with a format like
+                'name@example.com'.
+              </div>
+
               <div
                 *ngIf="
                   passwordControl?.hasError('required') &&
@@ -120,22 +128,16 @@
         <form>
           <div [formGroup]="registerForm">
             <input
-              type="login"
-              formControlName="username"
-              placeholder="Username"
-              (blur)="onBlurUseruame()"
+              type="email"
+              formControlName="email"
+              placeholder="Email"
+              (blur)="onBlurEmail()"
             />
             <input
               type="password"
               formControlName="password"
               placeholder="Password"
               (blur)="onBlurPassword()"
-            />
-            <input
-              type="email"
-              formControlName="email"
-              placeholder="Email"
-              (blur)="onBlurEmail()"
             />
             <input
               type="text"
@@ -166,19 +168,25 @@
             </div>
             <div
               *ngIf="
-                usernameControl?.hasError('required') &&
-                usernameControl?.touched
+                emailControl?.hasError('required') && emailControl?.touched
               "
             >
-              Username is required.
+              Email is required.
             </div>
             <div
               *ngIf="
-                usernameControl?.hasError('minlength') &&
-                usernameControl?.touched
+                emailControl?.hasError('minlength') && emailControl?.touched
               "
             >
-              Username must be at least 4 characters.
+              Email must be at least 4 characters.
+            </div>
+            <div
+              *ngIf="
+                emailControl?.hasError('invalidEmail') && emailControl?.touched
+              "
+            >
+              Please enter a valid email address with a format like
+              'name@example.com'.
             </div>
 
             <div
@@ -220,22 +228,6 @@
               "
             >
               Password must contain at least one special character.
-            </div>
-
-            <div
-              *ngIf="
-                emailControl?.hasError('required') && emailControl?.touched
-              "
-            >
-              Email is required.
-            </div>
-            <div
-              *ngIf="
-                emailControl?.hasError('invalidEmail') && emailControl?.touched
-              "
-            >
-              Please enter a valid email address with a format like
-              'name@example.com'.
             </div>
 
             <div

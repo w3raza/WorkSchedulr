@@ -16,21 +16,22 @@ public class MyUserDetails implements UserDetailsService {
   private final UserRepository userRepository;
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    final Optional<User> userOptional = userRepository.findByUsername(username);
+  public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    final Optional<User> userOptional = userRepository.findByEmail(email);
 
     if (userOptional.isEmpty()) {
-      throw new UsernameNotFoundException("User '" + username + "' not found");
+      throw new UsernameNotFoundException("User '" + email + "' not found");
     }
     final User user = userOptional.get();
-    return org.springframework.security.core.userdetails.User//
-        .withUsername(username)
-        .password(user.getPassword())
-        .authorities(user.getUserRoles())
-        .accountExpired(false)
-        .accountLocked(false)
-        .credentialsExpired(false)
-        .disabled(false)
-        .build();
+
+    return org.springframework.security.core.userdetails.User
+            .withUsername(email)
+            .password(user.getPassword())
+            .authorities(user.getUserRoles())
+            .accountExpired(false)
+            .accountLocked(false)
+            .credentialsExpired(false)
+            .disabled(false)
+            .build();
   }
 }
