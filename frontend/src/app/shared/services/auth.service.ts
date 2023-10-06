@@ -18,11 +18,19 @@ export class AuthService {
 
   private user = new BehaviorSubject<User | null>(null);
 
+  isAuthenticated: boolean = false;
+
   userLogin$ = this.user.asObservable();
 
   subscription: Subscription = new Subscription();
 
   constructor(private http: HttpClient) {}
+
+  ngOnInit(): void {
+    this.user.subscribe((user) => {
+      this.isAuthenticated = !!user;
+    });
+  }
 
   getAuthToken(): string | null {
     return window.localStorage.getItem("auth_token");
@@ -72,6 +80,7 @@ export class AuthService {
             response.token,
             response.userRoles[0]
           );
+          this.isAuthenticated = true;
         })
       );
   }
@@ -113,6 +122,7 @@ export class AuthService {
             response.token,
             response.userRoles[0]
           );
+          this.isAuthenticated = true;
         })
       );
   }
@@ -123,6 +133,7 @@ export class AuthService {
         localStorage.removeItem("user");
         localStorage.removeItem("auth_token");
         this.user.next(null);
+        this.isAuthenticated = false;
       })
     );
   }
