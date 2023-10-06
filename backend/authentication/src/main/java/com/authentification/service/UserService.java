@@ -39,25 +39,25 @@ public class UserService {
   private final JwtService jwtService;
   private final ModelMapper modelMapper = new ModelMapper();
 
-  public String refresh(String username) {
-    User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
-    return jwtService.createToken(username, user.getUserRoles());
+  public String refresh(String login) {
+    User user = userRepository.findByEmail(login).orElseThrow(UserNotFoundException::new);
+    return jwtService.createToken(login, user.getUserRoles());
   }
 
-  public void signout(HttpServletRequest request, HttpServletResponse response) {
+  public void signOut(HttpServletRequest request, HttpServletResponse response) {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth != null) {
       new SecurityContextLogoutHandler().logout(request, response, auth);
     }
   }
 
-  public UserResponseDTO signin(LoginRequest loginRequest) {
-      String username = loginRequest.getUsername();
+  public UserResponseDTO signIn(LoginRequest loginRequest) {
+      String email = loginRequest.getEmail();
       String password = loginRequest.getPassword();
-      User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+      User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
       if (passwordEncoder.matches(CharBuffer.wrap(password), user.getPassword())) {
         UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
-        userResponseDTO.setToken(jwtService.createToken(userResponseDTO.getUsername(), user.getUserRoles()));
+        userResponseDTO.setToken(jwtService.createToken(userResponseDTO.getEmail(), user.getUserRoles()));
         return userResponseDTO;
       }else{
         throw new InvalidPasswordException();
@@ -66,7 +66,7 @@ public class UserService {
 
   @Transactional
   public UserResponseDTO signup(RegisterDataDTO userDTO) {
-    if (userRepository.existsByUsername(userDTO.getUsername())) {
+    if (userRepository.existsByEmail(userDTO.getEmail())) {
       throw new UserAlreadyExistsException();
     }
     User user = modelMapper.map(userDTO, User.class);
@@ -86,11 +86,11 @@ public class UserService {
 
     UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
 
-    userResponseDTO.setToken(jwtService.createToken(userResponseDTO.getUsername(), userResponseDTO.getUserRoles()));
+    userResponseDTO.setToken(jwtService.createToken(userResponseDTO.getEmail(), userResponseDTO.getUserRoles()));
     return userResponseDTO;
   }
 
-  public void delete(String username) {
-    userRepository.deleteByUsername(username);
+  public void delete(String email) {
+    userRepository.deleteByEmail(email);
   }
 }
