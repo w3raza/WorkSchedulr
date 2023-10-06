@@ -6,11 +6,16 @@
     </button>
   </div>
   <div *ngIf="userLogin?.token">
-    <button>Calendar</button>
+    <button (click)="redirectToCalendar()">Calendar</button>
     <button (click)="redirectToBills()">Bills</button>
-    <button>Projects</button>
-    <button>User</button>
-    <button *ngIf="userLogin?.userRoles === 'ROLE_ADMIN'">Employees</button>
+    <button (click)="redirectToProjects()">Projects</button>
+    <button (click)="redirectToUser()">User</button>
+    <button
+      *ngIf="userLogin?.userRoles === 'ROLE_ADMIN'"
+      (click)="redirectToEmployees()"
+    >
+      Employees
+    </button>
     <button (click)="signOut()">Sign out</button>
   </div>
 </header>

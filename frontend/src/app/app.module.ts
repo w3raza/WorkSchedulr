@@ -20,6 +20,10 @@ import { BillComponent } from "./bill/bill.component";
 import { AuthInterceptor } from "./shared/services/auth-interceptor.service";
 import { SuccessSnackBarComponent } from "./shared/components/success-snack-bar.component";
 import { ErrorSnackBarComponent } from "./shared/components/error-snack-bar.component";
+import { UserComponent } from "./user/user.component";
+import { CalendarComponent } from "./calendar/calendar.component";
+import { ProjectComponent } from "./project/project.component";
+import { EmployeeComponent } from "./employee/employee.component";
 
 @NgModule({
   declarations: [
@@ -30,6 +34,10 @@ import { ErrorSnackBarComponent } from "./shared/components/error-snack-bar.comp
     BillComponent,
     SuccessSnackBarComponent,
     ErrorSnackBarComponent,
+    UserComponent,
+    CalendarComponent,
+    ProjectComponent,
+    EmployeeComponent,
   ],
   imports: [
     BrowserModule,

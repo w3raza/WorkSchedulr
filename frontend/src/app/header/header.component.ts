@@ -25,8 +25,24 @@ export class HeaderComponent implements OnInit {
     this.router.navigateByUrl("/home");
   }
 
+  redirectToCalendar() {
+    this.router.navigateByUrl("/calendar");
+  }
+
   redirectToBills() {
     this.router.navigateByUrl("/bills");
+  }
+
+  redirectToProjects() {
+    this.router.navigateByUrl("/projects");
+  }
+
+  redirectToEmployees() {
+    this.router.navigateByUrl("/employees");
+  }
+
+  redirectToUser() {
+    this.router.navigateByUrl("/user");
   }
 
   signOut() {

@@ -37,18 +37,18 @@ export class AuthService {
   }
 
   private handleAuthentication(
-    username: string,
+    email: string,
     token: string,
     role: string
   ): void {
-    const user = new User(username, token, role);
+    const user = new User(email, token, role);
     this.user.next(user);
     localStorage.setItem("user", JSON.stringify(user));
   }
 
-  loginUser<T>(username: T, password: T): Observable<LoginResponse> {
+  loginUser<T>(email: T, password: T): Observable<LoginResponse> {
     const payload: any = {
-      username: username,
+      email: email,
       password: password,
     };
 
@@ -68,7 +68,7 @@ export class AuthService {
         tap((response) => {
           this.setAuthToken(response.token);
           this.handleAuthentication(
-            response.username,
+            response.email,
             response.token,
             response.userRoles[0]
           );
@@ -77,18 +77,16 @@ export class AuthService {
   }
 
   registerUser<T>(
-    username: T,
-    password: T,
     email: T,
+    password: T,
     firstName: T,
     lastName: T,
     phone: T,
     birth: T
   ): Observable<LoginResponse> {
     const payload: any = {
-      username: username,
-      password: password,
       email: email,
+      password: password,
       firstName: firstName,
       lastName: lastName,
       phone: phone,
@@ -111,7 +109,7 @@ export class AuthService {
         tap((response) => {
           this.setAuthToken(response.token);
           this.handleAuthentication(
-            response.username,
+            response.email,
             response.token,
             response.userRoles[0]
           );
