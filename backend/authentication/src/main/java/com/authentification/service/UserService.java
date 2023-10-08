@@ -29,6 +29,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.CharBuffer;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +39,10 @@ public class UserService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final ModelMapper modelMapper = new ModelMapper();
+
+  public User getUserById(UUID userId){
+    return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
+  }
 
   public String refresh(String login) {
     User user = userRepository.findByEmail(login).orElseThrow(UserNotFoundException::new);

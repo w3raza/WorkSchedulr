@@ -3,6 +3,7 @@ package com.authentification.controller;
 import com.authentification.dto.LoginRequest;
 import com.authentification.dto.RegisterDataDTO;
 import com.authentification.dto.UserResponseDTO;
+import com.authentification.model.User;
 import com.authentification.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
@@ -24,9 +26,9 @@ public class UserController {
 
   private final UserService userService;
 
-  @GetMapping
-  public ResponseEntity<List<String>> test(){
-    return ResponseEntity.ok(Arrays.asList("fisrt", "secound"));
+  @GetMapping("{userId}")
+  public ResponseEntity<User> getUserById(@PathVariable("userId") UUID userId){
+    return ResponseEntity.ok(userService.getUserById(userId));
   }
 
   @GetMapping("/refresh")

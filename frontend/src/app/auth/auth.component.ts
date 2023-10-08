@@ -1,12 +1,10 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { AbstractControl } from "@angular/forms";
 
 import { AuthService } from "../shared/services/auth.service";
-
-import { LoginResponse } from "../shared/models/loginResponse.model";
 import { NotificationService } from "../shared/services/notification.service";
+import { ValidatorsService } from "../shared/services/validators.service";
 
 @Component({
   selector: "app-auth",
@@ -22,21 +20,26 @@ export class AuthComponent {
     private authService: AuthService,
     private router: Router,
     private fb: FormBuilder,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private validatorsService: ValidatorsService
   ) {
     this.loginForm = this.fb.group({
       email: [
         "",
-        [Validators.required, Validators.minLength(4), customEmailValidator],
+        [
+          Validators.required,
+          Validators.minLength(4),
+          this.validatorsService.customEmailValidator,
+        ],
       ],
       password: [
         "",
         [
           Validators.required,
           Validators.minLength(8),
-          caseValidator,
-          numberValidator,
-          specialCharacterValidator,
+          this.validatorsService.caseValidator,
+          this.validatorsService.numberValidator,
+          this.validatorsService.specialCharacterValidator,
         ],
       ],
     });
@@ -44,21 +47,28 @@ export class AuthComponent {
     this.registerForm = this.fb.group({
       email: [
         "",
-        [Validators.required, Validators.minLength(4), customEmailValidator],
+        [
+          Validators.required,
+          Validators.minLength(4),
+          this.validatorsService.customEmailValidator,
+        ],
       ],
       password: [
         "",
         [
           Validators.required,
           Validators.minLength(8),
-          caseValidator,
-          numberValidator,
-          specialCharacterValidator,
+          this.validatorsService.caseValidator,
+          this.validatorsService.numberValidator,
+          this.validatorsService.specialCharacterValidator,
         ],
       ],
       firstName: ["", [Validators.required, Validators.minLength(2)]],
       lastName: ["", [Validators.required, Validators.minLength(2)]],
-      phone: ["", [Validators.required, phoneNumberValidator]],
+      phone: [
+        "",
+        [Validators.required, this.validatorsService.phoneNumberValidator],
+      ],
       birth: ["", Validators.required],
     });
 
@@ -164,59 +174,4 @@ export class AuthComponent {
         },
       });
   }
-}
-
-function caseValidator(
-  control: AbstractControl
-): { [key: string]: any } | null {
-  const value: string = control.value;
-  if (value && (!/[a-z]/.test(value) || !/[A-Z]/.test(value))) {
-    return { caseRequirement: { value } };
-  }
-  return null;
-}
-
-function numberValidator(
-  control: AbstractControl
-): { [key: string]: any } | null {
-  const value: string = control.value;
-  if (value && !/\d/.test(value)) {
-    return { numberRequirement: { value } };
-  }
-  return null;
-}
-
-function specialCharacterValidator(
-  control: AbstractControl
-): { [key: string]: any } | null {
-  const value: string = control.value;
-  const specialChars = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
-  if (value && !specialChars.test(value)) {
-    return { specialCharRequirement: { value } };
-  }
-  return null;
-}
-
-function customEmailValidator(
-  control: AbstractControl
-): { [key: string]: any } | null {
-  const value: string = control.value;
-  const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-
-  if (value && !emailPattern.test(control.value)) {
-    return { invalidEmail: { value } };
-  }
-  return null;
-}
-
-function phoneNumberValidator(
-  control: AbstractControl
-): { [key: string]: any } | null {
-  const value: string = control.value;
-  const phonePattern = /^\d{9}$/;
-
-  if (value && !phonePattern.test(control.value)) {
-    return { invalidPhoneNumber: { value } };
-  }
-  return null;
 }

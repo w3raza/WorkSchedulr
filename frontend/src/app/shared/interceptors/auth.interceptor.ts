@@ -8,12 +8,15 @@ import {
 } from "@angular/common/http";
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
-import { AuthService } from "./auth.service";
-import { Router } from "@angular/router";
+import { AuthService } from "../services/auth.service";
+import { NotificationService } from "../services/notification.service";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private notification: NotificationService
+  ) {}
 
   intercept(
     request: HttpRequest<any>,
@@ -22,8 +25,8 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
+          this.notification.showError(error.message);
           this.authService.logoutUser();
-          this.router.navigate(["/login"]);
         }
         return throwError(() => error);
       })
