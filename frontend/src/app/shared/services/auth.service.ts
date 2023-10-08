@@ -116,7 +116,6 @@ export class AuthService {
       tap(() => {
         this.notification.showSuccess("Sign out successful");
         this.handleLogout();
-        this.router.navigate(["/login"]);
       })
     );
   }
@@ -132,10 +131,11 @@ export class AuthService {
     this.user.next(user);
   }
 
-  private handleLogout(): void {
+  handleLogout(): void {
     this.removeUser();
     this.user.next(null);
     this.isAuthenticated = false;
+    this.router.navigate(["/login"]);
   }
 
   private setUser(user: LoginResponse): void {

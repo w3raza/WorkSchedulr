@@ -23,7 +23,6 @@ import { CalendarComponent } from "./calendar/calendar.component";
 import { ProjectComponent } from "./project/project.component";
 import { EmployeeComponent } from "./employee/employee.component";
 
-import { AuthInterceptor } from "./shared/interceptors/auth.interceptor";
 import { ErrorInterceptor } from "./shared/interceptors/error.interceptor";
 
 @NgModule({
@@ -53,7 +52,6 @@ import { ErrorInterceptor } from "./shared/interceptors/error.interceptor";
     FullCalendarModule,
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
