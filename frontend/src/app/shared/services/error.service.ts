@@ -1,29 +1,30 @@
-// import { HttpErrorResponse } from "@angular/common/http";
-// import { Injectable, EventEmitter } from "@angular/core";
-// import { Subject } from "rxjs";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { NotificationService } from "./notification.service";
 
-// @Injectable({
-//   providedIn: "root",
-// })
-// export class ErrorService {
-//   private _notifyOnErrors = new Subject<string>();
-//   notifyOnErrors$ = this._notifyOnErrors.asObservable();
+@Injectable({
+  providedIn: "root",
+})
+export class ErrorService {
+  constructor(private notificationService: NotificationService) {}
 
-//   handleError(error: HttpErrorResponse) {
-//     let errorMessage = "Wystąpił nieznany błąd!";
+  handleError(error: HttpErrorResponse) {
+    const errorMessage = this.getErrorMessage(error);
+    this.notificationService.showError(errorMessage);
+  }
 
-//     if (error.error instanceof ErrorEvent) {
-//       errorMessage = `Błąd: ${error.error.message}`;
-//     } else {
-//       switch (error.status) {
-//         case 401:
-//           errorMessage = "Nieautoryzowany dostęp. Proszę się zalogować.";
-//           break;
-//         default:
-//           errorMessage = `Kod błędu: ${error.status}\nWiadomość: ${error.message}`;
-//       }
-//     }
+  private getErrorMessage(error: HttpErrorResponse): string {
+    if (error.error instanceof ErrorEvent) {
+      return `Error: ${error.error.message}`;
+    }
 
-//     this._notifyOnErrors.next(errorMessage);
-//   }
-// }
+    switch (error.status) {
+      case 401:
+        return "You are signed out";
+      case 503:
+        return "Service Unavailable";
+      default:
+        return `${error.message}`;
+    }
+  }
+}

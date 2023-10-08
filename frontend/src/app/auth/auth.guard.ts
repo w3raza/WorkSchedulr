@@ -1,23 +1,14 @@
 import { inject } from "@angular/core";
-import {
-  ActivatedRouteSnapshot,
-  CanActivateFn,
-  Router,
-  RouterStateSnapshot,
-} from "@angular/router";
+import { CanActivateFn, Router } from "@angular/router";
 import { AuthService } from "../shared/services/auth.service";
 
-export const AuthGuard: CanActivateFn = (
-  route: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot
-) => {
+export const AuthGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
-
-  if (authService.isAuthenticated === true) {
+  if (authService.getAuthenticated() == true) {
     return true;
   } else {
-    router.navigate(["route-to-fallback-page"]);
+    router.navigate(["/login"]);
     return false;
   }
 };

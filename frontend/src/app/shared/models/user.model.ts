@@ -1,11 +1,14 @@
+import { UserRole } from "../enums/user-role.enum";
+
 export class User {
   constructor(
+    public id: string,
+    public firstName: string,
+    public lastName: string,
     public email: string,
-    private _token: string,
-    private userRoles: string
+    public phone: string,
+    public birth: string,
+    public address: string,
+    public roles: UserRole[]
   ) {}
-
-  get token() {
-    return this._token;
-  }
 }

@@ -1,10 +1,13 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, Observable, Subscription } from "rxjs";
-import { catchError, tap } from "rxjs/operators";
+import { tap } from "rxjs/operators";
 
 import { LoginResponse } from "../models/loginResponse.model";
-import { User } from "../models/user.model";
+import { UserRole } from "../enums/user-role.enum";
+
+import { NotificationService } from "./notification.service";
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: "root",
@@ -16,20 +19,28 @@ export class AuthService {
     SIGNIN: `${this.url}/users/signin`,
   };
 
-  private user = new BehaviorSubject<User | null>(null);
+  user = new BehaviorSubject<LoginResponse | null>(null);
 
-  isAuthenticated: boolean = false;
+  private isAuthenticated: boolean = false;
 
   userLogin$ = this.user.asObservable();
 
   subscription: Subscription = new Subscription();
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private notification: NotificationService
+  ) {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      this.user.next(JSON.parse(storedUser));
+      this.isAuthenticated = true;
+    }
+  }
 
-  ngOnInit(): void {
-    this.user.subscribe((user) => {
-      this.isAuthenticated = !!user;
-    });
+  getAuthenticated(): boolean {
+    return this.isAuthenticated;
   }
 
   getAuthToken(): string | null {
@@ -44,16 +55,6 @@ export class AuthService {
     }
   }
 
-  private handleAuthentication(
-    email: string,
-    token: string,
-    role: string
-  ): void {
-    const user = new User(email, token, role);
-    this.user.next(user);
-    localStorage.setItem("user", JSON.stringify(user));
-  }
-
   loginUser<T>(email: T, password: T): Observable<LoginResponse> {
     const payload: any = {
       email: email,
@@ -63,24 +64,16 @@ export class AuthService {
     return this.http
       .post<LoginResponse>(this.API_ENDPOINTS.SIGNIN, payload)
       .pipe(
-        catchError((error) => {
-          switch (error.status) {
-            case 401:
-              throw new Error(error.error.message);
-            case 503:
-              throw new Error("Service Unavailable");
-            default:
-              throw new Error("An unknown error occurred");
-          }
-        }),
         tap((response) => {
           this.setAuthToken(response.token);
           this.handleAuthentication(
+            response.id,
             response.email,
             response.token,
-            response.userRoles[0]
+            response.roles
           );
           this.isAuthenticated = true;
+          this.notification.showSuccess("Welcom " + response.email);
         })
       );
   }
@@ -105,22 +98,13 @@ export class AuthService {
     return this.http
       .post<LoginResponse>(`${this.url}/users/signup`, payload)
       .pipe(
-        catchError((error) => {
-          switch (error.status) {
-            case 401:
-              throw new Error(error.error.message);
-            case 503:
-              throw new Error("Service Unavailable");
-            default:
-              throw new Error("An unknown error occurred");
-          }
-        }),
         tap((response) => {
           this.setAuthToken(response.token);
           this.handleAuthentication(
+            response.id,
             response.email,
             response.token,
-            response.userRoles[0]
+            response.roles
           );
           this.isAuthenticated = true;
         })
@@ -130,11 +114,36 @@ export class AuthService {
   logoutUser(): Observable<any> {
     return this.http.get(`${this.url}/users/signout`, {}).pipe(
       tap(() => {
-        localStorage.removeItem("user");
-        localStorage.removeItem("auth_token");
-        this.user.next(null);
-        this.isAuthenticated = false;
+        this.notification.showSuccess("Sign out successful");
+        this.handleLogout();
+        this.router.navigate(["/login"]);
       })
     );
+  }
+
+  private handleAuthentication(
+    id: string,
+    email: string,
+    token: string,
+    role: UserRole[]
+  ): void {
+    const user = new LoginResponse(id, email, token, role);
+    this.setUser(user);
+    this.user.next(user);
+  }
+
+  private handleLogout(): void {
+    this.removeUser();
+    this.user.next(null);
+    this.isAuthenticated = false;
+  }
+
+  private setUser(user: LoginResponse): void {
+    localStorage.setItem("user", JSON.stringify(user));
+  }
+
+  private removeUser(): void {
+    localStorage.removeItem("user");
+    localStorage.removeItem("auth_token");
   }
 }

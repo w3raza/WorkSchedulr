@@ -1,1 +1,15 @@
-<p>user works!</p>
+<div *ngIf="!isEditing">
+  <p>First Name: {{ user.firstName }}</p>
+  <p>Last Name: {{ user.lastName }}</p>
+  <p>Email: {{ user.email }}</p>
+  <p>Phone: {{ user.phone }}</p>
+  <p>Birth Date: {{ user.birth }}</p>
+  <p>Address: {{ user.address }}</p>
+  <p>Roles: {{ user.roles.join(", ") }}</p>
+  <button (click)="toggleEditing()">Edit</button>
+</div>
+
+<form *ngIf="isEditing" [formGroup]="userForm" (ngSubmit)="onSubmit()">
+  <!-- ... wszystkie pola formularza (takie same jak wcześniej) ... -->
+  <button type="submit">Save</button>
+</form>
