@@ -31,6 +31,7 @@ public class WebSecurityConfig {
 
     // Entry points
     http.authorizeHttpRequests((requests) -> requests
+            .requestMatchers(HttpMethod.PATCH, "/users/**").permitAll()
             .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
             .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
         // Disallow everything else..

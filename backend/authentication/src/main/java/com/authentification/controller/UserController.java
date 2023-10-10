@@ -3,6 +3,7 @@ package com.authentification.controller;
 import com.authentification.dto.LoginRequest;
 import com.authentification.dto.RegisterDataDTO;
 import com.authentification.dto.UserResponseDTO;
+import com.authentification.dto.UserUpdateDTO;
 import com.authentification.model.User;
 import com.authentification.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,8 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -56,6 +55,12 @@ public class UserController {
     } catch (ResponseStatusException e) {
       return new ResponseEntity<>(e.getReason(), e.getStatusCode());
     }
+  }
+
+  @PatchMapping("/{id}")
+  public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody UserUpdateDTO dto) {
+    User updatedUser = userService.updateUser(id, dto);
+    return ResponseEntity.ok(updatedUser);
   }
 
   @DeleteMapping(value = "/{email}")
