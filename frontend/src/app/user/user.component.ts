@@ -2,9 +2,9 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
 import { User } from "../shared/models/user.model";
-import { UserService } from "../shared/services/user.service";
+import { UserService } from "./user.service";
 import { ValidatorsService } from "../shared/services/validators.service";
-import { AuthService } from "../shared/services/auth.service";
+import { AuthService } from "../auth/auth.service";
 
 @Component({
   selector: "app-user",
@@ -53,6 +53,7 @@ export class UserComponent implements OnInit {
 
   fetchUserData(userId: string): void {
     this.userService.getUser(userId).subscribe((user) => {
+      console.log(user);
       this.user = user;
       this.initForm();
     });
@@ -65,8 +66,8 @@ export class UserComponent implements OnInit {
       email: [this.user.email, [Validators.required, Validators.email]],
       phone: [this.user.phone],
       birth: [this.user.birth],
-      address: [this.user.address],
-      roles: [this.user.roles],
+      student: [this.user.student],
+      roles: [this.user.userRoles],
     });
   }
 

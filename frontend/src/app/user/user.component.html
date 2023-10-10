@@ -1,15 +1,53 @@
-<div *ngIf="!isEditing">
-  <p>First Name: {{ user.firstName }}</p>
-  <p>Last Name: {{ user.lastName }}</p>
-  <p>Email: {{ user.email }}</p>
-  <p>Phone: {{ user.phone }}</p>
-  <p>Birth Date: {{ user.birth }}</p>
-  <p>Address: {{ user.address }}</p>
-  <p>Roles: {{ user.roles.join(", ") }}</p>
-  <button (click)="toggleEditing()">Edit</button>
+<div class="user-profile">
+  <ng-container *ngIf="!isEditing">
+    <button (click)="toggleEditing()" class="edit-btn" matTooltip="Edit">
+      <mat-icon>create</mat-icon>
+    </button>
+  </ng-container>
+  <ng-container *ngIf="isEditing">
+    <button (click)="toggleEditing()" class="cancel-btn" matTooltip="Cancel">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </ng-container>
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <div class="user-field">
+      <label for>First Name:</label>
+      <div *ngIf="!isEditing">{{ user.firstName }}</div>
+      <input *ngIf="isEditing" formControlName="firstname" id="firstname" />
+    </div>
+    <div class="user-field">
+      <label for="lastname">Last Name:</label>
+      <div *ngIf="!isEditing">{{ user.lastName }}</div>
+      <input *ngIf="isEditing" formControlName="lastname" id="lastname" />
+    </div>
+    <div class="user-field">
+      <label for>Email:</label>
+      <div *ngIf="!isEditing">{{ user.email }}</div>
+      <input *ngIf="isEditing" formControlName="email" id="email" />
+    </div>
+    <div class="user-field">
+      <label>Phone:</label>
+      <div *ngIf="!isEditing">{{ user.phone }}</div>
+      <input *ngIf="isEditing" formControlName="phone" id="phone" />
+    </div>
+    <div class="user-field">
+      <label>Birth:</label>
+      <div *ngIf="!isEditing">{{ user.birth }}</div>
+      <input *ngIf="isEditing" formControlName="birth" id="birth" />
+    </div>
+    <div class="user-field">
+      <label>Student:</label>
+      <div *ngIf="!isEditing">{{ user.student ? "Tak" : "Nie" }}</div>
+      <input *ngIf="isEditing" formControlName="student" id="student" />
+    </div>
+    <div class="user-field">
+      <label>Roles:</label>
+      <div>{{ user.userRoles }}</div>
+    </div>
+  </form>
+  <ng-container *ngIf="isEditing">
+    <button (click)="onSubmit()" class="save-btn" matTooltip="Save">
+      <mat-icon>done</mat-icon>
+    </button>
+  </ng-container>
 </div>
-
-<form *ngIf="isEditing" [formGroup]="userForm" (ngSubmit)="onSubmit()">
-  <!-- ... wszystkie pola formularza (takie same jak wcześniej) ... -->
-  <button type="submit">Save</button>
-</form>

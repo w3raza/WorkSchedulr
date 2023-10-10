@@ -3,10 +3,10 @@ import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, Observable, Subscription } from "rxjs";
 import { tap } from "rxjs/operators";
 
-import { LoginResponse } from "../models/loginResponse.model";
-import { UserRole } from "../enums/user-role.enum";
+import { LoginResponse } from "../shared/models/loginResponse.model";
+import { UserRole } from "../shared/enums/user-role.enum";
 
-import { NotificationService } from "./notification.service";
+import { NotificationService } from "../shared/services/notification.service";
 import { Router } from "@angular/router";
 
 @Injectable({
@@ -70,7 +70,7 @@ export class AuthService {
             response.id,
             response.email,
             response.token,
-            response.roles
+            response.userRoles
           );
           this.isAuthenticated = true;
           this.notification.showSuccess("Welcom " + response.email);
@@ -104,7 +104,7 @@ export class AuthService {
             response.id,
             response.email,
             response.token,
-            response.roles
+            response.userRoles
           );
           this.isAuthenticated = true;
         })
