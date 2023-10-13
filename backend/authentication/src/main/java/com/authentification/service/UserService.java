@@ -4,6 +4,7 @@ import com.authentification.configuration.JwtService;
 import com.authentification.dto.LoginRequest;
 import com.authentification.dto.RegisterDataDTO;
 import com.authentification.dto.UserResponseDTO;
+import com.authentification.dto.UserUpdateDTO;
 import com.authentification.exception.InvalidPasswordException;
 import com.authentification.exception.UserAlreadyExistsException;
 import com.authentification.exception.UserNotFoundException;
@@ -41,7 +42,7 @@ public class UserService {
   private final ModelMapper modelMapper = new ModelMapper();
 
   public User getUserById(UUID userId){
-    return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
+    return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
   }
 
   public String refresh(String login) {
@@ -93,6 +94,20 @@ public class UserService {
 
     userResponseDTO.setToken(jwtService.createToken(userResponseDTO.getEmail(), userResponseDTO.getUserRoles()));
     return userResponseDTO;
+  }
+
+  public User updateUser(UUID id, UserUpdateDTO dto){
+    User user = getUserById(id);
+
+    if(dto.getPassword() != null) user.setPassword(dto.getPassword());
+    if(dto.getEmail() != null) user.setEmail(dto.getEmail());
+    if(dto.getFirstName() != null) user.setFirstName(dto.getFirstName());
+    if(dto.getLastName() != null) user.setLastName(dto.getLastName());
+    if(dto.getPhone() != null) user.setPhone(dto.getPhone());
+    if(dto.getBirth() != null) user.setBirth(dto.getBirth());
+    user.setStudent(dto.isStudent());
+
+    return userRepository.save(user);
   }
 
   public void delete(String email) {

@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { NotificationService } from "./notification.service";
-import { AuthService } from "./auth.service";
+import { AuthService } from "../../auth/auth.service";
 
 @Injectable({
   providedIn: "root",

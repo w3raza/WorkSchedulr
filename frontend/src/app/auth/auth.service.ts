@@ -3,10 +3,10 @@ import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, Observable, Subscription } from "rxjs";
 import { tap } from "rxjs/operators";
 
-import { LoginResponse } from "../models/loginResponse.model";
-import { UserRole } from "../enums/user-role.enum";
+import { LoginResponse } from "../shared/models/loginResponse.model";
+import { UserRole } from "../shared/enums/user-role.enum";
 
-import { NotificationService } from "./notification.service";
+import { NotificationService } from "../shared/services/notification.service";
 import { Router } from "@angular/router";
 
 @Injectable({
@@ -16,7 +16,7 @@ export class AuthService {
   private url = "http://localhost:8081";
 
   API_ENDPOINTS = {
-    SIGNIN: `${this.url}/users/signin`,
+    SIGNIN: `${this.url}/auth/signin`,
   };
 
   user = new BehaviorSubject<LoginResponse | null>(null);
@@ -70,7 +70,7 @@ export class AuthService {
             response.id,
             response.email,
             response.token,
-            response.roles
+            response.userRoles
           );
           this.isAuthenticated = true;
           this.notification.showSuccess("Welcom " + response.email);
@@ -96,7 +96,7 @@ export class AuthService {
     };
 
     return this.http
-      .post<LoginResponse>(`${this.url}/users/signup`, payload)
+      .post<LoginResponse>(`${this.url}/auth/signup`, payload)
       .pipe(
         tap((response) => {
           this.setAuthToken(response.token);
@@ -104,7 +104,7 @@ export class AuthService {
             response.id,
             response.email,
             response.token,
-            response.roles
+            response.userRoles
           );
           this.isAuthenticated = true;
         })
@@ -112,7 +112,7 @@ export class AuthService {
   }
 
   logoutUser(): Observable<any> {
-    return this.http.get(`${this.url}/users/signout`, {}).pipe(
+    return this.http.get(`${this.url}/auth/signout`, {}).pipe(
       tap(() => {
         this.notification.showSuccess("Sign out successful");
         this.handleLogout();

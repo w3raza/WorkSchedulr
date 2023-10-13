@@ -2,9 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
 import { User } from "../shared/models/user.model";
-import { UserService } from "../shared/services/user.service";
-import { ValidatorsService } from "../shared/services/validators.service";
-import { AuthService } from "../shared/services/auth.service";
+import { UserService } from "./user.service";
+import { AuthService } from "../auth/auth.service";
 
 @Component({
   selector: "app-user",
@@ -12,39 +11,18 @@ import { AuthService } from "../shared/services/auth.service";
   styleUrls: ["./user.component.css"],
 })
 export class UserComponent implements OnInit {
-  userForm: FormGroup;
-  user: User = null!;
+  userForm!: FormGroup;
+  user!: User;
   isEditing = false;
 
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private validatorsService: ValidatorsService,
     private authService: AuthService
-  ) {
-    this.userForm = this.fb.group({
-      email: [
-        "",
-        [
-          Validators.required,
-          Validators.minLength(4),
-          this.validatorsService.customEmailValidator,
-        ],
-      ],
-      password: [
-        "",
-        [
-          Validators.required,
-          Validators.minLength(8),
-          this.validatorsService.caseValidator,
-          this.validatorsService.numberValidator,
-          this.validatorsService.specialCharacterValidator,
-        ],
-      ],
-    });
-  }
+  ) {}
 
   ngOnInit(): void {
+    this.initForm();
     const id = this.authService.user.value?.id;
     if (id != undefined) {
       this.fetchUserData(id);
@@ -54,19 +32,37 @@ export class UserComponent implements OnInit {
   fetchUserData(userId: string): void {
     this.userService.getUser(userId).subscribe((user) => {
       this.user = user;
-      this.initForm();
+      this.fillForm();
     });
   }
 
   initForm(): void {
     this.userForm = this.fb.group({
-      firstname: [this.user.firstName, Validators.required],
-      lastname: [this.user.lastName, Validators.required],
+      firstName: [null, []],
+      lastName: [null, []],
+      email: [null, []],
+      phone:[null, []],
+      birth: [null, []],
+      student: [null, []],
+      userRoles: [{ value: null, disabled: true }, []],
+    });
+  }
+
+  fillForm(): void {
+    this.userForm = this.fb.group({
+      firstName: [this.user.firstName, Validators.required],
+      lastName: [this.user.lastName, Validators.required],
       email: [this.user.email, [Validators.required, Validators.email]],
       phone: [this.user.phone],
       birth: [this.user.birth],
-      address: [this.user.address],
-      roles: [this.user.roles],
+      student: [this.user.student, []],
+      userRoles: [
+        {
+          value: this.user?.userRoles[0],
+          disabled: true,
+        },
+        [],
+      ],
     });
   }
 
@@ -75,6 +71,7 @@ export class UserComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.userForm.value.student= this.userForm.value.student === 'true' || this.userForm.value.student === true
     this.userService
       .updateUser(this.user.id, this.userForm.value)
       .subscribe((updatedUser) => {

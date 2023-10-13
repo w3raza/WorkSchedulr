@@ -5,7 +5,7 @@ export class LoginResponse {
     public id: string,
     public email: string,
     public token: string,
-    public roles: UserRole[]
+    public userRoles: UserRole[]
   ) {}
 
   getId() {
