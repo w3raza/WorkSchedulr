@@ -9,16 +9,17 @@
       <mat-icon>clear</mat-icon>
     </button>
   </ng-container>
+  
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
     <div class="user-field">
       <label for>First Name:</label>
       <div *ngIf="!isEditing">{{ user.firstName }}</div>
-      <input *ngIf="isEditing" formControlName="firstname" id="firstname" />
+      <input *ngIf="isEditing" formControlName="firstName" id="firstName" />
     </div>
     <div class="user-field">
-      <label for="lastname">Last Name:</label>
+      <label for>Last Name:</label>
       <div *ngIf="!isEditing">{{ user.lastName }}</div>
-      <input *ngIf="isEditing" formControlName="lastname" id="lastname" />
+      <input *ngIf="isEditing" formControlName="lastName" id="lastName" />
     </div>
     <div class="user-field">
       <label for>Email:</label>
@@ -33,21 +34,28 @@
     <div class="user-field">
       <label>Birth:</label>
       <div *ngIf="!isEditing">{{ user.birth }}</div>
-      <input *ngIf="isEditing" formControlName="birth" id="birth" />
+      <input
+                type="date"
+                *ngIf="isEditing" formControlName="birth" id="birth"
+                placeholder="Birth"
+              />
     </div>
     <div class="user-field">
       <label>Student:</label>
-      <div *ngIf="!isEditing">{{ user.student ? "Tak" : "Nie" }}</div>
-      <input *ngIf="isEditing" formControlName="student" id="student" />
+      <div *ngIf="!isEditing">{{ user.student ? "Yes" : "No" }}</div>
+      <select *ngIf="isEditing" formControlName="student" id="student">
+        <option [value]="'true'">Yes</option>
+        <option [value]="'false'">No</option>
+     </select>       
     </div>
     <div class="user-field">
       <label>Roles:</label>
-      <div>{{ user.userRoles }}</div>
+      <div>{{ user.userRoles.join(', ') }}</div>
     </div>
   </form>
   <ng-container *ngIf="isEditing">
-    <button (click)="onSubmit()" class="save-btn" matTooltip="Save">
+    <button type="submit" (click)="onSubmit()" class="save-btn" matTooltip="Save">
       <mat-icon>done</mat-icon>
-    </button>
+   </button>
   </ng-container>
 </div>

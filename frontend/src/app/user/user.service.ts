@@ -12,7 +12,7 @@ export class UserService {
   private url = "http://localhost:8081";
 
   API_ENDPOINTS = {
-    USER: `${this.url}/users`,
+    USER: `${this.url}/user`,
   };
 
   constructor(private http: HttpClient, private authService: AuthService) {}

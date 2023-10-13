@@ -16,7 +16,7 @@ export class AuthService {
   private url = "http://localhost:8081";
 
   API_ENDPOINTS = {
-    SIGNIN: `${this.url}/users/signin`,
+    SIGNIN: `${this.url}/auth/signin`,
   };
 
   user = new BehaviorSubject<LoginResponse | null>(null);
@@ -96,7 +96,7 @@ export class AuthService {
     };
 
     return this.http
-      .post<LoginResponse>(`${this.url}/users/signup`, payload)
+      .post<LoginResponse>(`${this.url}/auth/signup`, payload)
       .pipe(
         tap((response) => {
           this.setAuthToken(response.token);
@@ -112,7 +112,7 @@ export class AuthService {
   }
 
   logoutUser(): Observable<any> {
-    return this.http.get(`${this.url}/users/signout`, {}).pipe(
+    return this.http.get(`${this.url}/auth/signout`, {}).pipe(
       tap(() => {
         this.notification.showSuccess("Sign out successful");
         this.handleLogout();

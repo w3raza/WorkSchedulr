@@ -2,10 +2,12 @@ package com.authentification.dto;
 
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Getter
+@Setter
 public class UserUpdateDTO {
     @Size(min = 8, message = "Minimum password length: 8 characters")
     private String password;

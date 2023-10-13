@@ -31,9 +31,13 @@ public class WebSecurityConfig {
 
     // Entry points
     http.authorizeHttpRequests((requests) -> requests
-            .requestMatchers(HttpMethod.PATCH, "/users/**").permitAll()
-            .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
-            .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/user/**").permitAll()
+            .requestMatchers(HttpMethod.PATCH, "/user/**").permitAll()
+            .requestMatchers(HttpMethod.DELETE, "/user/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/auth/refresh").permitAll()
+            .requestMatchers(HttpMethod.GET, "/auth/signout").permitAll()
+            .requestMatchers(HttpMethod.POST, "/auth/signin").permitAll()
+            .requestMatchers(HttpMethod.POST, "/auth//signup").permitAll()
         // Disallow everything else..
             .anyRequest()
             .authenticated());
