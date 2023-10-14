@@ -7,10 +7,10 @@ import { BillComponent } from "./bill/bill.component";
 import { ProjectComponent } from "./project/project.component";
 import { UserComponent } from "./user/user.component";
 import { CalendarComponent } from "./calendar/calendar.component";
-import { EmployeeComponent } from "./employee/employee.component";
 
 import { AuthGuard } from "./auth/auth.guard";
 import { UserRole } from "./shared/enums/user-role.enum";
+import { UsersComponent } from "./users/users.component";
 
 const routes: Routes = [
   {
@@ -43,8 +43,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: "employees",
-    component: EmployeeComponent,
+    path: "users",
+    component: UsersComponent,
     canActivate: [AuthGuard],
     data: {
       roles: [UserRole.ADMIN],
