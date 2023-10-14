@@ -27,12 +27,14 @@ import { ProjectComponent } from "./project/project.component";
 import { EmployeeComponent } from "./employee/employee.component";
 
 import { ErrorInterceptor } from "./shared/interceptors/error.interceptor";
+import { ForRolesDirective } from "./shared/directives/ForRolesDirective";
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     AuthComponent,
+    ForRolesDirective,
     HomeComponent,
     BillComponent,
     SuccessSnackBarComponent,

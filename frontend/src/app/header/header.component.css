@@ -17,10 +17,18 @@
   font-size: 1.5em;
 }
 
-button {
+button,
+a {
   background-color: #222;
   color: rgb(163, 163, 163);
   font-size: 20px;
   margin-left: 15px;
   border: none;
+  text-decoration: none;
+}
+
+.disabled-link {
+  pointer-events: none;
+  color: gray;
+  cursor: not-allowed;
 }

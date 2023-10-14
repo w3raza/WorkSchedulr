@@ -1,21 +1,20 @@
 <header class="app-header">
   <div class="app-title">
     <img src="{{ logoSrc }}" class="app-logo" alt="logo" />
-    <button (click)="redirectToHome()" [disabled]="!userLogin?.token">
+    <a
+      [routerLink]="userLogin?.token ? '/home' : null"
+      [ngClass]="{ 'disabled-link': !userLogin?.token }"
+    >
       {{ pageTitle }}
-    </button>
+    </a>
   </div>
   <div *ngIf="userLogin?.token">
-    <button (click)="redirectToCalendar()">Calendar</button>
-    <button (click)="redirectToBills()">Bills</button>
-    <button (click)="redirectToProjects()">Projects</button>
-    <button (click)="redirectToUser()">User</button>
-    <button
-      *ngIf="userLogin?.userRoles === 'ROLE_ADMIN'"
-      (click)="redirectToEmployees()"
-    >
-      Employees
-    </button>
+    <a routerLink="/calendar">Calendar</a>
+    <a routerLink="/bills">Bills</a>
+    <a routerLink="/projects">Projects</a>
+    <a *forRoles="[role.ADMIN]" routerLink="/employees">Employees</a>
+    <a *forRoles="[role.ADMIN]" routerLink="/employees">Users</a>
+    <a routerLink="/user">User</a>
     <button (click)="signOut()">Sign out</button>
   </div>
 </header>
