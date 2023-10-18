@@ -1,0 +1,75 @@
+<div class="users-container">
+  <div class="header">
+    <div>
+      <select
+        id="userRoleSelect"
+        [(ngModel)]="selectedRole"
+        (change)="fetchUsers()"
+      >
+        <option value="all">All roles</option>
+        <!-- Tu możesz dodać więcej ról -->
+        <option value="ROLE_ADMIN">Admin</option>
+        <option value="ROLE_USER">User</option>
+      </select>
+    </div>
+    <button (click)="openAddUserModal()" class="add-btn" matTooltip="Add">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.firstName + " " + user.lastName }}</td>
+        <td>{{ user.userRoles.join(", ") }}</td>
+        <td>
+          <div class="status-container">
+            <input
+              type="checkbox"
+              [(ngModel)]="user.status"
+              (change)="toggleUserStatus(user)"
+            />
+            <span
+              [class.active]="user.status"
+              [class.inactive]="!user.status"
+              >{{ user.status ? "ENABLE" : "DISABLED" }}</span
+            >
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Paginacja -->
+  <div class="pagination">
+    <button
+      (click)="prevPage()"
+      [disabled]="currentPage <= 1"
+      class="prev-btn"
+      matTooltip="Prev"
+    >
+      <mat-icon>arrow_back_ios</mat-icon>
+    </button>
+    <span>{{ currentPage }}</span>
+    <button
+      (click)="nextPage()"
+      [disabled]="users.length < pageSize"
+      class="next-btn"
+      matTooltip="Next"
+    >
+      <mat-icon>arrow_forward_ios</mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="showAddUserModal" class="modal">
+    <h2>Dodaj usera</h2>
+    <button (click)="closeAddUserModal()">Zamknij</button>
+  </div>
+</div>

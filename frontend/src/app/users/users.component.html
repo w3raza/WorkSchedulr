@@ -1,1 +1,59 @@
-<p>users works!</p>
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Users</h3>
+        <div>
+          <button
+            (click)="createUser()"
+            class="add-btn"
+            mat-icon-button
+            matTooltip="Add"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+        <form class="d-flex flex-column userForm w-100" [formGroup]="usersForm">
+          <div class="d-flex flex-column flex-sm-row w-100 w-sm-25">
+            <mat-form-field
+              class="flex-fill"
+              appearance="fill"
+              [hideRequiredMarker]="true"
+            >
+              <mat-label>User's role:</mat-label>
+              <mat-select
+                id="role"
+                formControlName="role"
+                (selectionChange)="onSubmit()"
+              >
+                <mat-option *ngFor="let role of roles" [value]="role">
+                  {{ role }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field
+              class="flex-fill ms-sm-4"
+              appearance="fill"
+              [hideRequiredMarker]="true"
+            >
+              <mat-label>User's status:</mat-label>
+              <mat-select
+                id="status"
+                formControlName="status"
+                (selectionChange)="onSubmit()"
+              >
+                <mat-option
+                  *ngFor="let status of filterUserStatus"
+                  [value]="status.value"
+                >
+                  {{ status.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

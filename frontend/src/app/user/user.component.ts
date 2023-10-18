@@ -21,6 +21,7 @@ export class UserComponent implements OnInit {
     "", // phone
     "", // birth
     false, // student
+    false, // status
     [] // userRoles
   );
   isEditing = false;

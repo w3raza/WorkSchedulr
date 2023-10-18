@@ -28,6 +28,7 @@ import { ProjectComponent } from "./project/project.component";
 import { ErrorInterceptor } from "./shared/interceptors/error.interceptor";
 import { ForRolesDirective } from "./shared/directives/ForRolesDirective";
 import { UsersComponent } from "./users/users.component";
+import { UsersListComponent } from './user/users-list/users-list.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { UsersComponent } from "./users/users.component";
     CalendarComponent,
     ProjectComponent,
     UsersComponent,
+    UsersListComponent,
   ],
   imports: [
     BrowserModule,
