@@ -44,6 +44,8 @@ public class User implements UserDetails {
 
   private boolean isStudent;
 
+  private boolean status;
+
   @Enumerated(EnumType.STRING)
   @CollectionTable(name="user_role")
   @ElementCollection(fetch = FetchType.EAGER)
