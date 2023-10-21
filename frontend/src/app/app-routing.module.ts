@@ -10,8 +10,8 @@ import { CalendarComponent } from "./calendar/calendar.component";
 
 import { AuthGuard } from "./auth/auth.guard";
 import { UserRole } from "./shared/enums/user-role.enum";
-import { UsersComponent } from "./users/users.component";
 import { UsersListComponent } from "./user/users-list/users-list.component";
+import { UserProfileComponent } from "./user/user-profile/user-profile.component";
 
 const routes: Routes = [
   {
@@ -55,6 +55,14 @@ const routes: Routes = [
     path: "user",
     component: UserComponent,
     canActivate: [AuthGuard],
+  },
+  {
+    path: "user/:id",
+    component: UserProfileComponent,
+    canActivate: [AuthGuard],
+    data: {
+      roles: [UserRole.ADMIN],
+    },
   },
 ];
 

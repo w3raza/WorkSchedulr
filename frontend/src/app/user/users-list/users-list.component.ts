@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { UserService } from "../user.service";
 import { User } from "src/app/shared/models/user.model";
+import { PageEvent } from "@angular/material/paginator";
+import { UserRole } from "src/app/shared/enums/user-role.enum";
 
 @Component({
   selector: "app-users-list",
@@ -8,23 +10,45 @@ import { User } from "src/app/shared/models/user.model";
   styleUrls: ["./users-list.component.css"],
 })
 export class UsersListComponent implements OnInit {
+  roles: Array<string> = [...Object.keys(UserRole), "Default"];
   users: User[] = [];
+  filterUserStatus: { value: boolean; viewValue: string }[] = [];
   currentPage: number = 1;
   pageSize: number = 10;
-  selectedRole: string = "all";
+  selectedRole: string = "Default";
+  selectedStatus: any = null;
   showAddUserModal: boolean = false;
 
   constructor(private userService: UserService) {}
 
   ngOnInit(): void {
     this.fetchUsers();
+    this.filterUserStatus = this.initActiveStatus();
+  }
+
+  initActiveStatus(): { value: any; viewValue: string }[] {
+    return [
+      { value: true, viewValue: "ENABLE" },
+      { value: false, viewValue: "DISABLED" },
+      { value: null, viewValue: "Default" },
+    ];
+  }
+
+  pageChanged(event: PageEvent) {
+    this.currentPage = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
+    this.fetchUsers();
   }
 
   fetchUsers() {
     this.userService
-      .fetchUsers(true, this.currentPage - 1, this.selectedRole)
-      .subscribe((data: any) => {
-        this.users = data.content;
+      .fetchUsers(
+        this.selectedStatus,
+        this.currentPage - 1,
+        UserRole[this.selectedRole as keyof typeof UserRole]
+      )
+      .subscribe((data) => {
+        this.users = [...data.content];
       });
   }
 
@@ -48,12 +72,8 @@ export class UsersListComponent implements OnInit {
     }
   }
 
-  // ... pozostały kod ...
-
   toggleUserStatus(user: User) {
-    const newStatus = !user.status;
-    console.log(newStatus);
-    this.userService.toggleUserStatus(user.id).subscribe((response: User) => {
+    this.userService.toggleUserStatus(user.id).subscribe((response) => {
       user.status = response.status;
     });
   }

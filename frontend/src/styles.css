@@ -17,3 +17,12 @@ input {
 .error-snackbar {
   background-color: #d32f2f !important; /* red */
 }
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

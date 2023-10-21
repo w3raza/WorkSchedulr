@@ -1,75 +1,88 @@
 <div class="users-container">
-  <div class="header">
-    <div>
-      <select
-        id="userRoleSelect"
-        [(ngModel)]="selectedRole"
-        (change)="fetchUsers()"
-      >
-        <option value="all">All roles</option>
-        <!-- Tu możesz dodać więcej ról -->
-        <option value="ROLE_ADMIN">Admin</option>
-        <option value="ROLE_USER">User</option>
-      </select>
-    </div>
-    <button (click)="openAddUserModal()" class="add-btn" matTooltip="Add">
+  <mat-toolbar>
+    <mat-form-field
+      class="flex-fill"
+      appearance="fill"
+      [hideRequiredMarker]="true"
+    >
+      <mat-label>Role</mat-label>
+      <mat-select [(value)]="selectedRole" (selectionChange)="fetchUsers()">
+        <mat-option *ngFor="let role of roles" [value]="role">
+          {{ role }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field
+      class="flex-fill"
+      appearance="fill"
+      [hideRequiredMarker]="true"
+    >
+      <mat-label>Status</mat-label>
+      <mat-select [(value)]="selectedStatus" (selectionChange)="fetchUsers()">
+        <mat-option
+          *ngFor="let status of filterUserStatus"
+          [value]="status.value"
+        >
+          {{ status.viewValue }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <span class="spacer"></span>
+    <button mat-icon-button (click)="openAddUserModal()" matTooltip="Add">
       <mat-icon>add</mat-icon>
     </button>
-  </div>
+  </mat-toolbar>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Role</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let user of users">
-        <td>{{ user.firstName + " " + user.lastName }}</td>
-        <td>{{ user.userRoles.join(", ") }}</td>
-        <td>
-          <div class="status-container">
-            <input
-              type="checkbox"
-              [(ngModel)]="user.status"
-              (change)="toggleUserStatus(user)"
-            />
-            <span
-              [class.active]="user.status"
-              [class.inactive]="!user.status"
-              >{{ user.status ? "ENABLE" : "DISABLED" }}</span
-            >
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <mat-table [dataSource]="users">
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+      <mat-cell *matCellDef="let user">
+        <a [routerLink]="['/user', user.id]">{{
+          user.firstName + " " + user.lastName
+        }}</a>
+      </mat-cell>
+    </ng-container>
 
-  <!-- Paginacja -->
-  <div class="pagination">
-    <button
-      (click)="prevPage()"
-      [disabled]="currentPage <= 1"
-      class="prev-btn"
-      matTooltip="Prev"
-    >
-      <mat-icon>arrow_back_ios</mat-icon>
-    </button>
-    <span>{{ currentPage }}</span>
-    <button
-      (click)="nextPage()"
-      [disabled]="users.length < pageSize"
-      class="next-btn"
-      matTooltip="Next"
-    >
-      <mat-icon>arrow_forward_ios</mat-icon>
-    </button>
-  </div>
+    <ng-container matColumnDef="role">
+      <mat-header-cell *matHeaderCellDef> Role </mat-header-cell>
+      <mat-cell *matCellDef="let user">
+        {{ user.userRoles.join(", ") }}
+      </mat-cell>
+    </ng-container>
 
-  <div *ngIf="showAddUserModal" class="modal">
+    <ng-container matColumnDef="status">
+      <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+      <mat-cell *matCellDef="let user">
+        <mat-slide-toggle
+          [(ngModel)]="user.status"
+          (change)="toggleUserStatus(user)"
+        >
+          {{ user.status ? "ENABLE" : "DISABLED" }}
+        </mat-slide-toggle>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row
+      *matHeaderRowDef="['name', 'role', 'status']"
+    ></mat-header-row>
+    <mat-row
+      *matRowDef="let row; columns: ['name', 'role', 'status']"
+    ></mat-row>
+  </mat-table>
+
+  <mat-paginator
+    [length]="users.length"
+    [pageSize]="pageSize"
+    [pageIndex]="currentPage - 1"
+    (page)="pageChanged($event)"
+  ></mat-paginator>
+
+  <mat-dialog-content *ngIf="showAddUserModal">
     <h2>Dodaj usera</h2>
-    <button (click)="closeAddUserModal()">Zamknij</button>
-  </div>
+    <mat-dialog-actions>
+      <button mat-button (click)="closeAddUserModal()">Zamknij</button>
+    </mat-dialog-actions>
+  </mat-dialog-content>
 </div>
