@@ -18,6 +18,10 @@ public interface UserRepository extends JpaRepository<User, UUID>{
 
   Page<User> findAllByUserRoles(UserRole userRoles, Pageable pageable);
 
+  Page<User> findAllByStatus(boolean status,  Pageable pageable);
+
+  Page<User> findAllByUserRolesAndStatus(UserRole userRoles, boolean status, Pageable pageable);
+
   @Transactional
   void deleteByEmail(String email);
 

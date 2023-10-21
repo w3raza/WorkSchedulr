@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -20,35 +21,35 @@ public class UserService {
 
   private final UserRepository userRepository;
 
-  public User getUserById(UUID userId){
+  public User getUserById(UUID userId) {
     return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
   }
 
-  public Page<User> getUsersByParams(Pageable pageable, String userRole){
-    if(userRole != null){
-      return getByUserRole(pageable, userRole);
-    }
-    return userRepository.findAll(pageable);
+  public Page<User> getUsersByParams(Pageable pageable, String userRole, Boolean status) {
+    return Optional.ofNullable(userRole)
+            .map(role -> status != null ? getByUserRoleAndStatus(role, status, pageable) : getByUserRole(role, pageable))
+            .orElseGet(() -> Optional.ofNullable(status)
+                    .map(st -> userRepository.findAllByStatus(st, pageable))
+                    .orElse(userRepository.findAll(pageable)));
   }
 
-  public User updateUser(UUID id, UserUpdateDTO dto){
+  public User updateUser(UUID id, UserUpdateDTO dto) {
     User user = getUserById(id);
 
-    if(dto.getPassword() != null) user.setPassword(dto.getPassword());
-    if(dto.getEmail() != null) user.setEmail(dto.getEmail());
-    if(dto.getFirstName() != null) user.setFirstName(dto.getFirstName());
-    if(dto.getLastName() != null) user.setLastName(dto.getLastName());
-    if(dto.getPhone() != null) user.setPhone(dto.getPhone());
-    if(dto.getBirth() != null) user.setBirth(dto.getBirth());
+    Optional.ofNullable(dto.getPassword()).ifPresent(user::setPassword);
+    Optional.ofNullable(dto.getEmail()).ifPresent(user::setEmail);
+    Optional.ofNullable(dto.getFirstName()).ifPresent(user::setFirstName);
+    Optional.ofNullable(dto.getLastName()).ifPresent(user::setLastName);
+    Optional.ofNullable(dto.getPhone()).ifPresent(user::setPhone);
+    Optional.ofNullable(dto.getBirth()).ifPresent(user::setBirth);
     user.setStudent(dto.isStudent());
 
     return userRepository.save(user);
   }
 
-  public User changeStatus(UUID id){
+  public User changeStatus(UUID id) {
     User user = getUserById(id);
     user.setStatus(!user.isStatus());
-
     return userRepository.save(user);
   }
 
@@ -56,13 +57,17 @@ public class UserService {
     userRepository.deleteByEmail(email);
   }
 
-  private Page<User> getByUserRole(Pageable pageable, String userRole){
-      UserRole userRoleEnum = convertStringToUserRoleEnum(userRole);
-      return userRepository.findAllByUserRoles(userRoleEnum, pageable);
-
+  private Page<User> getByUserRoleAndStatus(String userRole, Boolean status, Pageable pageable) {
+    UserRole userRoleEnum = convertStringToUserRoleEnum(userRole);
+    return userRepository.findAllByUserRolesAndStatus(userRoleEnum, status, pageable);
   }
 
-  private UserRole convertStringToUserRoleEnum(String userRole){
+  private Page<User> getByUserRole(String userRole, Pageable pageable) {
+    UserRole userRoleEnum = convertStringToUserRoleEnum(userRole);
+    return userRepository.findAllByUserRoles(userRoleEnum, pageable);
+  }
+
+  private UserRole convertStringToUserRoleEnum(String userRole) {
     try {
       return UserRole.valueOf(userRole);
     } catch (IllegalArgumentException e) {
