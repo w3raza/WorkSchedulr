@@ -9,7 +9,7 @@
       <mat-icon>clear</mat-icon>
     </button>
   </ng-container>
-  
+
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
     <div class="user-field">
       <label for>First Name:</label>
@@ -35,10 +35,12 @@
       <label>Birth:</label>
       <div *ngIf="!isEditing">{{ user.birth }}</div>
       <input
-                type="date"
-                *ngIf="isEditing" formControlName="birth" id="birth"
-                placeholder="Birth"
-              />
+        type="date"
+        *ngIf="isEditing"
+        formControlName="birth"
+        id="birth"
+        placeholder="Birth"
+      />
     </div>
     <div class="user-field">
       <label>Student:</label>
@@ -46,16 +48,21 @@
       <select *ngIf="isEditing" formControlName="student" id="student">
         <option [value]="'true'">Yes</option>
         <option [value]="'false'">No</option>
-     </select>       
+      </select>
     </div>
     <div class="user-field">
       <label>Roles:</label>
-      <div>{{ user.userRoles.join(', ') }}</div>
+      <div>{{ user.userRoles.join(", ") }}</div>
     </div>
   </form>
   <ng-container *ngIf="isEditing">
-    <button type="submit" (click)="onSubmit()" class="save-btn" matTooltip="Save">
+    <button
+      type="submit"
+      (click)="onSubmit()"
+      class="save-btn"
+      matTooltip="Save"
+    >
       <mat-icon>done</mat-icon>
-   </button>
+    </button>
   </ng-container>
 </div>

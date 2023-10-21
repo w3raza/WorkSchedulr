@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { User } from "../shared/models/user.model";
 import { UserService } from "./user.service";
 import { AuthService } from "../auth/auth.service";
+import { ValidatorsService } from "../shared/services/validators.service";
 
 @Component({
   selector: "app-user",
@@ -12,71 +13,118 @@ import { AuthService } from "../auth/auth.service";
 })
 export class UserComponent implements OnInit {
   userForm!: FormGroup;
-  user!: User;
+  user: User = new User(
+    "", // id
+    "", // firstName
+    "", // lastName
+    "", // email
+    "", // phone
+    "", // birth
+    false, // student
+    false, // status
+    [] // userRoles
+  );
   isEditing = false;
+  control: keyof User | null = null;
 
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private validatorsService: ValidatorsService
   ) {}
 
   ngOnInit(): void {
-    this.initForm();
-    const id = this.authService.user.value?.id;
-    if (id != undefined) {
-      this.fetchUserData(id);
+    this.createForm();
+    const userId = this.authService.user.value?.id;
+    if (userId) {
+      this.fetchUserData(userId);
     }
   }
 
+  /**
+   * Fetches user data based on ID.
+   * @param userId - ID of the user.
+   */
   fetchUserData(userId: string): void {
     this.userService.getUser(userId).subscribe((user) => {
       this.user = user;
-      this.fillForm();
+      this.updateFormValues();
     });
   }
 
-  initForm(): void {
-    this.userForm = this.fb.group({
-      firstName: [null, []],
-      lastName: [null, []],
-      email: [null, []],
-      phone:[null, []],
-      birth: [null, []],
-      student: [null, []],
-      userRoles: [{ value: null, disabled: true }, []],
-    });
-  }
-
-  fillForm(): void {
-    this.userForm = this.fb.group({
-      firstName: [this.user.firstName, Validators.required],
-      lastName: [this.user.lastName, Validators.required],
-      email: [this.user.email, [Validators.required, Validators.email]],
-      phone: [this.user.phone],
-      birth: [this.user.birth],
-      student: [this.user.student, []],
+  /**
+   * Initializes or updates the form.
+   * @param isUpdate - If true, updates the form with user data.
+   */
+  createForm(isUpdate: boolean = false): void {
+    const controls = {
+      firstName: [
+        isUpdate ? this.user.firstName : null,
+        [Validators.required, Validators.minLength(2)],
+      ],
+      lastName: [
+        isUpdate ? this.user.lastName : null,
+        [Validators.required, Validators.minLength(2)],
+      ],
+      email: [
+        isUpdate ? this.user.email : null,
+        [
+          Validators.required,
+          Validators.minLength(4),
+          this.validatorsService.customEmailValidator,
+        ],
+      ],
+      phone: [
+        isUpdate ? this.user.phone : null,
+        [Validators.required, this.validatorsService.phoneNumberValidator],
+      ],
+      birth: [isUpdate ? this.user.birth : null, Validators.required],
+      student: [isUpdate ? this.user.student : null, Validators.required],
       userRoles: [
         {
-          value: this.user?.userRoles[0],
+          value: isUpdate ? this.user?.userRoles[0] : null,
           disabled: true,
         },
-        [],
       ],
-    });
+    };
+    this.userForm = this.fb.group(controls);
   }
 
+  /**
+   * Updates form values based on fetched user data.
+   */
+  updateFormValues(): void {
+    this.createForm(true);
+  }
+
+  /**
+   * Toggles the editing state.
+   */
   toggleEditing(): void {
     this.isEditing = !this.isEditing;
   }
 
+  /**
+   * Handles form submission.
+   */
   onSubmit(): void {
-    this.userForm.value.student= this.userForm.value.student === 'true' || this.userForm.value.student === true
+    this.normalizeStudentValue();
     this.userService
       .updateUser(this.user.id, this.userForm.value)
       .subscribe((updatedUser) => {
         this.user = updatedUser;
         this.toggleEditing();
       });
+  }
+
+  /**
+   * Normalizes the student value.
+   */
+  private normalizeStudentValue(): void {
+    const TRUE_STRING = "true";
+    this.userForm.value.student =
+      this.userForm.value.student === TRUE_STRING ||
+      this.userForm.value.student === true;
   }
 }

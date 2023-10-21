@@ -9,6 +9,7 @@ export class User {
     public phone: string,
     public birth: string,
     public student: boolean,
+    public status: boolean,
     public userRoles: UserRole[]
   ) {}
 }

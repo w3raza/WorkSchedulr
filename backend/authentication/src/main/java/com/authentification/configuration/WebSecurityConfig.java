@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-  private final UserAuthenticationEntryPoint authenticationEntryPoint;
+//  private final AuthenticationEntryPoint authenticationEntryPoint;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -27,7 +27,7 @@ public class WebSecurityConfig {
     http.sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
     // If a user try to access a resource without having enough permissions
-    http.exceptionHandling(customizer -> customizer.authenticationEntryPoint(authenticationEntryPoint));
+//    http.exceptionHandling(customizer -> customizer.authenticationEntryPoint(authenticationEntryPoint));
 
     // Entry points
     http.authorizeHttpRequests((requests) -> requests
@@ -37,7 +37,7 @@ public class WebSecurityConfig {
             .requestMatchers(HttpMethod.GET, "/auth/refresh").permitAll()
             .requestMatchers(HttpMethod.GET, "/auth/signout").permitAll()
             .requestMatchers(HttpMethod.POST, "/auth/signin").permitAll()
-            .requestMatchers(HttpMethod.POST, "/auth//signup").permitAll()
+            .requestMatchers(HttpMethod.POST, "/auth/signup").permitAll()
         // Disallow everything else..
             .anyRequest()
             .authenticated());

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { AuthService } from "../auth/auth.service";
-import { Router } from "@angular/router";
+import { UserRole } from "../shared/enums/user-role.enum";
 
 @Component({
   selector: "app-header",
@@ -10,39 +10,16 @@ import { Router } from "@angular/router";
 export class HeaderComponent implements OnInit {
   @Input() pageTitle!: string;
   @Input() logoSrc!: string;
+  role: typeof UserRole = UserRole;
 
   userLogin: any;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
     this.authService.userLogin$.subscribe((userLogin) => {
       this.userLogin = userLogin;
     });
-  }
-
-  redirectToHome() {
-    this.router.navigateByUrl("/home");
-  }
-
-  redirectToCalendar() {
-    this.router.navigateByUrl("/calendar");
-  }
-
-  redirectToBills() {
-    this.router.navigateByUrl("/bills");
-  }
-
-  redirectToProjects() {
-    this.router.navigateByUrl("/projects");
-  }
-
-  redirectToEmployees() {
-    this.router.navigateByUrl("/employees");
-  }
-
-  redirectToUser() {
-    this.router.navigateByUrl("/user");
   }
 
   signOut() {

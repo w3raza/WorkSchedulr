@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject, Observable, Subscription } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 
 import { LoginResponse } from "../shared/models/loginResponse.model";
@@ -24,8 +24,6 @@ export class AuthService {
   private isAuthenticated: boolean = false;
 
   userLogin$ = this.user.asObservable();
-
-  subscription: Subscription = new Subscription();
 
   constructor(
     private http: HttpClient,

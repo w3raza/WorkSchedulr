@@ -7,9 +7,14 @@ import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelectModule } from "@angular/material/select";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatTableModule } from "@angular/material/table";
+import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { FullCalendarModule } from "@fullcalendar/angular";
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -24,15 +29,18 @@ import { ErrorSnackBarComponent } from "./shared/components/error-snack-bar.comp
 import { UserComponent } from "./user/user.component";
 import { CalendarComponent } from "./calendar/calendar.component";
 import { ProjectComponent } from "./project/project.component";
-import { EmployeeComponent } from "./employee/employee.component";
 
 import { ErrorInterceptor } from "./shared/interceptors/error.interceptor";
+import { ForRolesDirective } from "./shared/directives/ForRolesDirective";
+import { UsersListComponent } from "./user/users-list/users-list.component";
+import { UserProfileComponent } from "./user/user-profile/user-profile.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     AuthComponent,
+    ForRolesDirective,
     HomeComponent,
     BillComponent,
     SuccessSnackBarComponent,
@@ -40,7 +48,8 @@ import { ErrorInterceptor } from "./shared/interceptors/error.interceptor";
     UserComponent,
     CalendarComponent,
     ProjectComponent,
-    EmployeeComponent,
+    UsersListComponent,
+    UserProfileComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,6 +63,11 @@ import { ErrorInterceptor } from "./shared/interceptors/error.interceptor";
     MatButtonModule,
     MatTooltipModule,
     MatSelectModule,
+    MatToolbarModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatDialogModule,
+    MatSlideToggleModule,
     BrowserAnimationsModule,
     FullCalendarModule,
   ],
