@@ -44,6 +44,16 @@ public class AuthService {
         return jwtService.createToken(login, user.getUserRoles());
     }
 
+    public UserResponseDTO validateToken( String token) {
+        Authentication auth = jwtService.validateToken(token);
+        org.springframework.security.core.userdetails.User object =  (org.springframework.security.core.userdetails.User)auth.getPrincipal();
+        User userOptional = userRepository.findByEmail(object.getUsername())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        UserResponseDTO userResponseDTO = modelMapper.map(userOptional, UserResponseDTO.class);
+        userResponseDTO.setToken(token);
+        return userResponseDTO;
+    }
+
     public void signOut(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
@@ -65,7 +75,7 @@ public class AuthService {
     }
 
     @Transactional
-    public UserResponseDTO signup(RegisterDataDTO userDTO) {
+    public UserResponseDTO signup(RegisterDataDTO userDTO) throws ResponseStatusException{
         if (userRepository.existsByEmail(userDTO.getEmail())) {
             throw new UserAlreadyExistsException();
         }

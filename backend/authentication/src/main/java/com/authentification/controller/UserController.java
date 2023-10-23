@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -32,6 +33,12 @@ public class UserController {
                                                      @Nullable @RequestParam String role,
                                                      @Nullable @RequestParam Boolean status){
     return ResponseEntity.ok(userService.getUsersByParams(pageable, role, status));
+  }
+
+  @GetMapping("{ids}")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity<List<User>> getUsers(List<UUID> ids){
+    return ResponseEntity.ok(userService.getUsers(ids));
   }
 
   @PatchMapping("/{id}")

@@ -33,6 +33,11 @@ public class AuthController {
         authService.signOut(request, response);
     }
 
+    @PostMapping("/validateToken")
+    public ResponseEntity<UserResponseDTO> validateToken(@RequestParam String token) {
+        return ResponseEntity.ok(authService.validateToken(token));
+    }
+
     @PostMapping("/signin")
     public ResponseEntity<UserResponseDTO> signin(@RequestBody @Valid LoginRequest loginRequest) {
         return ResponseEntity.ok(authService.signIn(loginRequest));
