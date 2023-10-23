@@ -3,6 +3,7 @@ import { UserService } from "../user.service";
 import { User } from "src/app/shared/models/user.model";
 import { PageEvent } from "@angular/material/paginator";
 import { UserRole } from "src/app/shared/enums/user-role.enum";
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: "app-users-list",
