@@ -4,6 +4,7 @@ import { User } from "src/app/shared/models/user.model";
 import { PageEvent } from "@angular/material/paginator";
 import { UserRole } from "src/app/shared/enums/user-role.enum";
 import { MatDialog } from '@angular/material/dialog';
+import { UserCreateComponent } from "../user-create/user-create.component";
 
 @Component({
   selector: "app-users-list",
@@ -18,9 +19,8 @@ export class UsersListComponent implements OnInit {
   pageSize: number = 10;
   selectedRole: string = "Default";
   selectedStatus: any = null;
-  showAddUserModal: boolean = false;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.fetchUsers();
@@ -54,11 +54,12 @@ export class UsersListComponent implements OnInit {
   }
 
   openAddUserModal() {
-    this.showAddUserModal = true;
-  }
-
-  closeAddUserModal() {
-    this.showAddUserModal = false;
+    const dialogRef = this.dialog.open(UserCreateComponent, {
+      width: '250px'
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+    });
   }
 
   nextPage() {

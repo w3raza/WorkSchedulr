@@ -1,0 +1,10 @@
+mat-dialog-actions{
+    align-items: center;
+}
+
+form {
+    display: flex;
+    justify-content: center; /* Wyśrodkowanie poziome */
+    align-items: center;     /* Wyśrodkowanie pionowe */
+    flex-direction: column;  /* Ustawia elementy jeden pod drugim */
+}

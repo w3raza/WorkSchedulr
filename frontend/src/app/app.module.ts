@@ -5,6 +5,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { MatSelectModule } from "@angular/material/select";
@@ -13,7 +14,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatTableModule } from "@angular/material/table";
 import { MatPaginatorModule } from "@angular/material/paginator";
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from "@angular/material/dialog";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { FullCalendarModule } from "@fullcalendar/angular";
 
@@ -34,6 +35,7 @@ import { ErrorInterceptor } from "./shared/interceptors/error.interceptor";
 import { ForRolesDirective } from "./shared/directives/ForRolesDirective";
 import { UsersListComponent } from "./user/users-list/users-list.component";
 import { UserProfileComponent } from "./user/user-profile/user-profile.component";
+import { UserCreateComponent } from "./user/user-create/user-create.component";
 
 @NgModule({
   declarations: [
@@ -50,6 +52,7 @@ import { UserProfileComponent } from "./user/user-profile/user-profile.component
     ProjectComponent,
     UsersListComponent,
     UserProfileComponent,
+    UserCreateComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,6 +62,7 @@ import { UserProfileComponent } from "./user/user-profile/user-profile.component
     HttpClientModule,
     MatSnackBarModule,
     MatFormFieldModule,
+    MatInputModule,
     MatIconModule,
     MatButtonModule,
     MatTooltipModule,

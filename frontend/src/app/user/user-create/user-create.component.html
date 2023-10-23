@@ -1,0 +1,56 @@
+<mat-dialog-actions>
+    <h2 mat-dialog-title>Add user</h2>
+    <button mat-icon-button mat-dialog-close matTooltip="Cancel">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-dialog-actions>
+
+<form [formGroup]="createForm">
+
+    <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" placeholder="Email" (blur)="onBlur('email')">
+        <mat-error *ngIf="getControl('email')?.hasError('required') && getControl('email')?.touched">Email is required.</mat-error>
+        <mat-error *ngIf="getControl('email')?.hasError('minlength') && getControl('email')?.touched">Email must be at least 4 characters.</mat-error>
+        <mat-error *ngIf="getControl('email')?.hasError('invalidEmail') && getControl('email')?.touched">Please enter a valid email address with a format like 'name@example.com'.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" placeholder="Password" (blur)="onBlur('password')">
+        <mat-error *ngIf="getControl('password')?.hasError('required') && getControl('password')?.touched">Password is required.</mat-error>
+        <mat-error *ngIf="getControl('password')?.hasError('minlength') && getControl('password')?.touched">Password must be at least 8 characters.</mat-error>
+        <mat-error *ngIf="getControl('password')?.hasError('caseRequirement') && getControl('password')?.touched">Password must contain both upper and lower case characters.</mat-error>
+        <mat-error *ngIf="getControl('password')?.hasError('numberRequirement') && getControl('password')?.touched">Password must contain at least one number.</mat-error>
+        <mat-error *ngIf="getControl('password')?.hasError('specialCharRequirement') && getControl('password')?.touched">Password must contain at least one special character.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>First Name</mat-label>
+        <input matInput type="text" formControlName="firstName" placeholder="First Name" (blur)="onBlur('firstName')">
+        <mat-error *ngIf="getControl('firstName')?.hasError('required') && getControl('firstName')?.touched">First name is required.</mat-error>
+        <mat-error *ngIf="getControl('firstName')?.hasError('minlength') && getControl('firstName')?.touched">First name must be at least 2 characters.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Last Name</mat-label>
+        <input matInput type="text" formControlName="lastName" placeholder="Last Name" (blur)="onBlur('lastName')">
+        <mat-error *ngIf="getControl('lastName')?.hasError('required') && getControl('lastName')?.touched">Last name is required.</mat-error>
+        <mat-error *ngIf="getControl('lastName')?.hasError('minlength') && getControl('lastName')?.touched">Last name must be at least 2 characters.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Phone</mat-label>
+        <input matInput type="text" formControlName="phone" placeholder="Phone" (blur)="onBlur('phone')">
+        <mat-error *ngIf="getControl('phone')?.hasError('required') && getControl('phone')?.touched">Phone is required.</mat-error>
+        <mat-error *ngIf="getControl('phone')?.hasError('invalidPhoneNumber') && getControl('email')?.touched">Phone number must have exactly 9 digits.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Birth</mat-label>
+        <input matInput type="date" formControlName="birth" placeholder="Birth">
+    </mat-form-field>
+
+    <button mat-raised-button id="submit-button" [disabled]="!createForm.valid" (click)="create()">Save</button>
+
+</form>

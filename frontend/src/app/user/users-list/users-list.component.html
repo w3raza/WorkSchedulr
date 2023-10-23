@@ -78,11 +78,4 @@
     [pageIndex]="currentPage - 1"
     (page)="pageChanged($event)"
   ></mat-paginator>
-
-  <mat-dialog-content *ngIf="showAddUserModal">
-    <h2>Dodaj usera</h2>
-    <mat-dialog-actions>
-      <button mat-button (click)="closeAddUserModal()">Zamknij</button>
-    </mat-dialog-actions>
-  </mat-dialog-content>
 </div>

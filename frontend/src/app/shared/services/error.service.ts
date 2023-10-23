@@ -21,9 +21,11 @@ export class ErrorService {
     if (error.error instanceof ErrorEvent) {
       return `Error: ${error.error.message}`;
     }
-
     switch (error.status) {
       case 401:
+        this.authService.handleLogout();
+        return "You are signed out";
+      case 403:
         this.authService.handleLogout();
         return "You are signed out";
       case 503:
