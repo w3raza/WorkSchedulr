@@ -1,17 +1,17 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-import { AuthComponent } from "./auth/auth.component";
-import { HomeComponent } from "./home/home.component";
-import { BillComponent } from "./bill/bill.component";
-import { ProjectComponent } from "./project/project.component";
-import { UserComponent } from "./user/user.component";
-import { CalendarComponent } from "./calendar/calendar.component";
+import { AuthComponent } from "./shared/components/auth/auth.component";
+import { HomeComponent } from "./shared/components/home/home.component";
+import { BillComponent } from "./shared/components/bill/bill.component";
+import { ProjectComponent } from "./shared/components/project/project.component";
+import { UserComponent } from "./shared/components/user/user.component";
+import { CalendarComponent } from "./shared/components/calendar/calendar.component";
 
-import { AuthGuard } from "./auth/auth.guard";
+import { AuthGuard } from "./shared/services/auth.guard";
 import { UserRole } from "./shared/enums/user-role.enum";
-import { UsersListComponent } from "./user/users-list/users-list.component";
-import { UserProfileComponent } from "./user/user-profile/user-profile.component";
+import { UsersListComponent } from "./shared/components/user/users-list/users-list.component";
+import { UserProfileComponent } from "./shared/components/user/user-profile/user-profile.component";
 
 const routes: Routes = [
   {

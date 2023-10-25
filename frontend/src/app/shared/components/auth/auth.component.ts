@@ -2,9 +2,9 @@ import { Component } from "@angular/core";
 import { Router } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
-import { AuthService } from "./auth.service";
-import { NotificationService } from "../shared/services/notification.service";
-import { ValidatorsService } from "../shared/services/validators.service";
+import { AuthService } from "../../services/auth.service";
+import { NotificationService } from "../../services/notification.service";
+import { ValidatorsService } from "../../services/validators.service";
 
 @Component({
   selector: "app-auth",

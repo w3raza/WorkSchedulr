@@ -4,6 +4,7 @@ import com.workSchedulr.dto.UserUpdateDTO;
 import com.workSchedulr.model.User;
 import com.workSchedulr.service.UserService;
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,13 @@ public class UserController {
                                                      @Nullable @RequestParam String role,
                                                      @Nullable @RequestParam Boolean status){
     return ResponseEntity.ok(userService.getUsersByParams(pageable, role, status));
+  }
+
+  @PostMapping()
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity<User> createUser(@RequestBody User user) {
+    user = userService.createUser(user);
+    return ResponseEntity.ok(user);
   }
 
   @PatchMapping("/{id}")

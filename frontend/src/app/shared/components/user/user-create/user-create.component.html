@@ -51,6 +51,24 @@
         <input matInput type="date" formControlName="birth" placeholder="Birth">
     </mat-form-field>
 
-    <button mat-raised-button id="submit-button" [disabled]="!createForm.valid" (click)="create()">Save</button>
+    <mat-form-field appearance="fill">
+        <mat-label>Student</mat-label>
+        <mat-select formControlName="student">
+            <mat-option value="false">No</mat-option>
+            <mat-option value="true">Yes</mat-option>
+        </mat-select>
+    </mat-form-field>
+    
+    <mat-form-field appearance="fill">
+        <mat-label>Role</mat-label>
+        <mat-select formControlName="role">
+            <mat-option *ngFor="let role of roles" [value]="role">
+                {{ role }}
+              </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+
+    <button mat-raised-button mat-dialog-close id="submit-button" [disabled]="!createForm.valid" (click)="create()">Save</button>
 
 </form>

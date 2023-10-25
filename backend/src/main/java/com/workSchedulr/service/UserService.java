@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -31,6 +33,27 @@ public class UserService {
             .orElseGet(() -> Optional.ofNullable(status)
                     .map(st -> userRepository.findAllByStatus(st, pageable))
                     .orElse(userRepository.findAll(pageable)));
+  }
+
+  public User getCurrentUser() {
+    if(SecurityContextHolder.getContext().getAuthentication() != null) {
+      UserDetails userDetails =  (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+      if (userDetails != null) {
+        String username = userDetails.getUsername();
+        Optional<User> user = userRepository.findByEmail(username);
+
+        if (user.isPresent()) {
+          return user.get();
+        }
+      }
+    }
+
+    return null;
+  }
+
+  public User createUser(User user) {
+    return userRepository.save(user);
   }
 
   public User updateUser(UUID id, UserUpdateDTO dto) {

@@ -8,8 +8,8 @@ import { Component, HostListener } from "@angular/core";
 export class AppComponent {
   title: string = "Work Scheduler";
 
-  @HostListener('window:beforeunload', ['$event'])
-  unloadNotification($event: any): void {
-    localStorage.clear();
-  }
+  // @HostListener('window:beforeunload', ['$event'])
+  // unloadNotification($event: any): void {
+  //   localStorage.clear();
+  // }
 }

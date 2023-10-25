@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { UserService } from "../user.service";
+import { UserService } from "../../../services/user.service";
 import { User } from "src/app/shared/models/user.model";
 import { PageEvent } from "@angular/material/paginator";
 import { UserRole } from "src/app/shared/enums/user-role.enum";
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog } from "@angular/material/dialog";
 import { UserCreateComponent } from "../user-create/user-create.component";
 
 @Component({
@@ -55,11 +55,10 @@ export class UsersListComponent implements OnInit {
 
   openAddUserModal() {
     const dialogRef = this.dialog.open(UserCreateComponent, {
-      width: '250px'
+      width: "250px",
     });
-  
-    dialogRef.afterClosed().subscribe(result => {
-    });
+
+    dialogRef.afterClosed().subscribe((result) => {});
   }
 
   nextPage() {

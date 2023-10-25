@@ -5,9 +5,9 @@ import {
   ViewContainerRef,
   OnDestroy,
 } from "@angular/core";
-import { AuthService } from "src/app/auth/auth.service";
 import { LoginResponse } from "../models/loginResponse.model";
 import { Subscription } from "rxjs";
+import { UserService } from "../services/user.service";
 
 @Directive({ selector: "[forRoles]" })
 export class ForRolesDirective implements OnDestroy {
@@ -24,14 +24,16 @@ export class ForRolesDirective implements OnDestroy {
   constructor(
     private viewContainer: ViewContainerRef,
     private templateRef: TemplateRef<string>,
-    private authService: AuthService
+    private userService: UserService
   ) {
-    this.subscription = this.authService.userLogin$.subscribe((userLogin) => {
-      if (userLogin) {
-        this.userLogin = userLogin;
-        this.updateView();
+    this.subscription = this.userService.currentUser$.subscribe(
+      (currentUser) => {
+        if (currentUser) {
+          this.userLogin = currentUser;
+          this.updateView();
+        }
       }
-    });
+    );
   }
 
   ngOnDestroy(): void {
