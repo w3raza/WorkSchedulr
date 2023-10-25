@@ -5,26 +5,28 @@ import { PageEvent } from "@angular/material/paginator";
 import { UserRole } from "src/app/shared/enums/user-role.enum";
 import { MatDialog } from "@angular/material/dialog";
 import { UserCreateComponent } from "../user-create/user-create.component";
+import { PaginatorHelper } from "src/app/shared/services/paginator.service.ts";
 
 @Component({
   selector: "app-users-list",
   templateUrl: "./users-list.component.html",
   styleUrls: ["./users-list.component.css"],
 })
-export class UsersListComponent implements OnInit {
+export class UsersListComponent extends PaginatorHelper {
   roles: Array<string> = [...Object.keys(UserRole), "Default"];
   users: User[] = [];
   filterUserStatus: { value: boolean; viewValue: string }[] = [];
-  currentPage: number = 1;
-  pageSize: number = 10;
   selectedRole: string = "Default";
   selectedStatus: any = null;
 
-  constructor(private userService: UserService, public dialog: MatDialog) {}
-
-  ngOnInit(): void {
+  constructor(private userService: UserService, public dialog: MatDialog) {
+    super();
     this.fetchUsers();
     this.filterUserStatus = this.initActiveStatus();
+  }
+
+  override fetchData() {
+    this.fetchUsers();
   }
 
   initActiveStatus(): { value: any; viewValue: string }[] {
@@ -33,12 +35,6 @@ export class UsersListComponent implements OnInit {
       { value: false, viewValue: "DISABLED" },
       { value: null, viewValue: "Default" },
     ];
-  }
-
-  pageChanged(event: PageEvent) {
-    this.currentPage = event.pageIndex + 1;
-    this.pageSize = event.pageSize;
-    this.fetchUsers();
   }
 
   fetchUsers() {
@@ -59,18 +55,6 @@ export class UsersListComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {});
-  }
-
-  nextPage() {
-    this.currentPage++;
-    this.fetchUsers();
-  }
-
-  prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.fetchUsers();
-    }
   }
 
   toggleUserStatus(user: User) {
