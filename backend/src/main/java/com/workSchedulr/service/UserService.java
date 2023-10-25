@@ -27,7 +27,7 @@ public class UserService {
     return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
   }
 
-  public Page<User> getUsersByParams(Pageable pageable, String userRole, Boolean status) {
+  public Page<User> getUsersByParams(String userRole, Boolean status, Pageable pageable) {
     return Optional.ofNullable(userRole)
             .map(role -> status != null ? getByUserRoleAndStatus(role, status, pageable) : getByUserRole(role, pageable))
             .orElseGet(() -> Optional.ofNullable(status)

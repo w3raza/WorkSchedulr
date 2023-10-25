@@ -3,6 +3,7 @@ import { Project } from "../models/project.modal";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
+import { PageProperties } from "../models/page.modal";
 
 @Injectable({
   providedIn: "root",
@@ -14,7 +15,12 @@ export class ProjectService {
   };
   constructor(private http: HttpClient) {}
 
-  fetchProjects(): Observable<Project[]> {
-    return this.http.get<Project[]>(`${this.API_ENDPOINTS.PROJECT}`);
+  fetchProjects(): Observable<{
+    content: Project[];
+    properties: PageProperties;
+  }> {
+    return this.http.get<{ content: Project[]; properties: PageProperties }>(
+      `${this.API_ENDPOINTS.PROJECT}`
+    );
   }
 }

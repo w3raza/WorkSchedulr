@@ -1,17 +1,15 @@
 package com.workSchedulr.controller;
 
 import com.workSchedulr.model.Project;
-import com.workSchedulr.model.User;
 import com.workSchedulr.service.ProjectService;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -20,9 +18,9 @@ import java.util.UUID;
 public class ProjectController {
     private final ProjectService projectService;
 
-    @GetMapping("{userId}")
+    @GetMapping()
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<Set<Project>> getProjectByUserId(@PathVariable("userId") UUID userId){
-        return ResponseEntity.ok(projectService.getProjectByUserId(userId));
+    public ResponseEntity<Page<Project>> getProjectByUserId(@Nullable @RequestParam("userId") UUID userId, Pageable pageable){
+        return ResponseEntity.ok(projectService.getProjectByUserId(userId, pageable));
     }
 }

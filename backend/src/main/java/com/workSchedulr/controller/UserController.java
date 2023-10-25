@@ -32,7 +32,7 @@ public class UserController {
   public ResponseEntity<Page<User>> getUsersByParams(Pageable pageable,
                                                      @Nullable @RequestParam String role,
                                                      @Nullable @RequestParam Boolean status){
-    return ResponseEntity.ok(userService.getUsersByParams(pageable, role, status));
+    return ResponseEntity.ok(userService.getUsersByParams(role, status, pageable));
   }
 
   @PostMapping()

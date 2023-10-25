@@ -38,6 +38,7 @@ public class WebSecurityConfig {
             .requestMatchers(HttpMethod.GET, "/auth/signout").permitAll()
             .requestMatchers(HttpMethod.POST, "/auth/signin").permitAll()
             .requestMatchers(HttpMethod.POST, "/auth/signup").permitAll()
+            .requestMatchers(HttpMethod.GET, "/project/**").permitAll()
         // Disallow everything else..
             .anyRequest()
             .authenticated());

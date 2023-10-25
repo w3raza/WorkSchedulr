@@ -18,7 +18,7 @@ export class ProjectComponent implements OnInit {
 
   fetchProjects() {
     this.projectService.fetchProjects().subscribe((data) => {
-      this.projects = data;
+      this.projects = [...data.content];
     });
   }
 }
