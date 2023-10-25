@@ -8,12 +8,13 @@ import { LoginResponse } from "../models/loginResponse.model";
 import { NotificationService } from "./notification.service";
 import { Router } from "@angular/router";
 import { UserService } from "./user.service";
+import { environment } from "src/environments/environment";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
-  private readonly url = "http://localhost:8081";
+  private readonly url = environment.apiUrl;
   private readonly API_ENDPOINTS = {
     SIGNIN: `${this.url}/auth/signin`,
     SIGNUP: `${this.url}/auth/signup`,

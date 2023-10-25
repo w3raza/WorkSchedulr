@@ -7,12 +7,13 @@ import { AuthService } from "./auth.service";
 import { UserUpdateDTO } from "../models/userUpdateDTO.model";
 import { PageProperties } from "../models/page.modal";
 import { LoginResponse } from "../models/loginResponse.model";
+import { environment } from "src/environments/environment";
 
 @Injectable({
   providedIn: "root",
 })
 export class UserService {
-  private readonly BASE_URL = "http://localhost:8081";
+  private readonly BASE_URL = environment.apiUrl;
   private readonly API_ENDPOINTS = {
     USER: `${this.BASE_URL}/user`,
   };
