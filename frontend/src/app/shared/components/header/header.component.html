@@ -12,7 +12,6 @@
     <a routerLink="/calendar">Calendar</a>
     <a routerLink="/bills">Bills</a>
     <a routerLink="/projects">Projects</a>
-    <a *forRoles="[role.MANAGER]" routerLink="/users">Subordinates</a>
     <a *forRoles="[role.ADMIN]" routerLink="/users">Users</a>
     <a routerLink="/user">User</a>
     <button (click)="signOut()">Sign out</button>

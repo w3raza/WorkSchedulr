@@ -64,6 +64,7 @@ export class UserService implements OnInit {
   }
 
   createUser(user: User): Observable<User> {
+    console.log(user);
     return this.http.post<User>(`${this.API_ENDPOINTS.USER}`, user);
   }
 

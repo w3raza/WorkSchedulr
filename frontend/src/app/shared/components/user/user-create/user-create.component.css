@@ -1,10 +1,22 @@
-mat-dialog-actions{
-    align-items: center;
+form {
+  width: 100%;
+  display: flex;
+  justify-content: center; /* Wyśrodkowanie poziome */
+  align-items: center; /* Wyśrodkowanie pionowe */
+  flex-direction: column; /* Ustawia elementy jeden pod drugim */
 }
 
-form {
-    display: flex;
-    justify-content: center; /* Wyśrodkowanie poziome */
-    align-items: center;     /* Wyśrodkowanie pionowe */
-    flex-direction: column;  /* Ustawia elementy jeden pod drugim */
+container {
+  width: 100%; /* Ensuring the container takes up the full width of its parent */
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: space-between; /* Pushes elements to the edges of the container */
+  align-items: center; /* Vertically aligns items */
+}
+
+/* Make the inputs span the width of the modal */
+mat-form-field {
+  width: 100%;
 }

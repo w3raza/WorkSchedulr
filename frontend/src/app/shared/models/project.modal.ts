@@ -5,7 +5,7 @@ export class Project {
     public id: string,
     public title: string,
     public hours: number,
-    public createdDate: Date,
+    public createdDate: number[],
     public status: boolean,
     public owner: User,
     public managers: User[],

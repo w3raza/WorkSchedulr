@@ -58,7 +58,7 @@ export class UserCreateComponent {
     this.getControl(controlName)?.markAsTouched();
   }
 
-  create() {
+  createUser() {
     const {
       email,
       password,
@@ -79,8 +79,11 @@ export class UserCreateComponent {
       birth,
       student,
       false,
-      role
+      [UserRole[role as keyof typeof UserRole]]
     );
-    this.userService.createUser(user);
+    console.log(user);
+    this.userService.createUser(user).subscribe((createdUser) => {
+      console.log(createdUser);
+    });
   }
 }

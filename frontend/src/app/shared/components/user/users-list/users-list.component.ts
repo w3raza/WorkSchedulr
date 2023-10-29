@@ -1,7 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { UserService } from "../../../services/user.service";
 import { User } from "src/app/shared/models/user.model";
-import { PageEvent } from "@angular/material/paginator";
 import { UserRole } from "src/app/shared/enums/user-role.enum";
 import { MatDialog } from "@angular/material/dialog";
 import { UserCreateComponent } from "../user-create/user-create.component";
@@ -51,10 +50,12 @@ export class UsersListComponent extends PaginatorHelper {
 
   openAddUserModal() {
     const dialogRef = this.dialog.open(UserCreateComponent, {
-      width: "250px",
+      width: "500px",
     });
 
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((response) => {
+      console.log("reposne:" + response);
+    });
   }
 
   toggleUserStatus(user: User) {

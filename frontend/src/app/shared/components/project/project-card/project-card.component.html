@@ -30,16 +30,22 @@
 
     <mat-card-content>
       <section class="ms-2">
-        <h2 class="hours my-1">{{ project?.hours }}h</h2>
+        <h2 class="hours my-1">
+          {{ project?.hours ? project?.hours + "h" : "-" }}
+        </h2>
       </section>
       <section class="ms-2">
         <h6 class="hours-subtitle">
           <span> Current Month: </span>
-          <span style="font-weight: 600">{{ project?.hours }}h</span>
+          <span style="font-weight: 600">{{
+            project?.hours ? project?.hours + "h" : "-"
+          }}</span>
         </h6>
         <h6 class="hours-subtitle">
           <span> Last Month: </span>
-          <span style="font-weight: 600">{{ project?.createdDate }}h</span>
+          <span style="font-weight: 600">{{
+            formatDate(project?.createdDate)
+          }}</span>
         </h6>
       </section>
     </mat-card-content>
