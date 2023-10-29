@@ -7,10 +7,7 @@
 }
 
 html,
-body,
-input,
-.container,
-.content {
+body {
   height: 100%;
   width: 100%;
   margin: 0;
@@ -18,4 +15,19 @@ input,
   background-color: #2c2c2c;
   color: rgb(163, 163, 163);
   font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+button,
+input,
+a {
+  background-color: #2c2c2c;
+  color: rgb(163, 163, 163);
+  border: none;
+  text-decoration: none;
+}
+
+.disabled-link {
+  pointer-events: none;
+  color: gray;
+  cursor: not-allowed;
 }

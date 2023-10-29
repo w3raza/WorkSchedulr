@@ -14,7 +14,7 @@ import { ValidatorsService } from "../../services/validators.service";
 export class AuthComponent {
   loginForm: FormGroup;
   registerForm: FormGroup;
-  active: string = "login";
+  active: "login" | "register" = "login";
 
   constructor(
     private authService: AuthService,
@@ -94,6 +94,20 @@ export class AuthComponent {
     });
   }
 
+  onBlur(fieldName: string) {
+    if (fieldName === "email") {
+      this.emailControl?.markAsTouched();
+    } else if (fieldName === "password") {
+      this.passwordControl?.markAsTouched();
+    } else if (fieldName === "firstName") {
+      this.firstNameControl?.markAsTouched();
+    } else if (fieldName === "lastName") {
+      this.lastNameControl?.markAsTouched();
+    } else if (fieldName === "phone") {
+      this.phoneControl?.markAsTouched();
+    }
+  }
+
   get emailControl() {
     return this.registerForm.get("email");
   }
@@ -114,26 +128,6 @@ export class AuthComponent {
     return this.registerForm.get("phone");
   }
 
-  onBlurEmail() {
-    this.emailControl?.markAsTouched();
-  }
-
-  onBlurPassword() {
-    this.passwordControl?.markAsTouched();
-  }
-
-  onBlurFirstName() {
-    this.firstNameControl?.markAsTouched();
-  }
-
-  onBlurLastName() {
-    this.lastNameControl?.markAsTouched();
-  }
-
-  onBlurPhone() {
-    this.phoneControl?.markAsTouched();
-  }
-
   onLoginTab() {
     this.active = "login";
   }
@@ -143,28 +137,9 @@ export class AuthComponent {
   }
 
   login() {
-    const { email, password } = this.loginForm.value;
-    this.authService.loginUser(email, password).subscribe({
-      next: () => {
-        this.router.navigateByUrl("/home");
-      },
-      error: (error) => {
-        this.authService.setAuthToken(null);
-        this.notificationService.showError(error.message);
-      },
-    });
-  }
-
-  register() {
-    const email = this.registerForm.value.email;
-    const password = this.registerForm.value.password;
-    const firstName = this.registerForm.value.firstName;
-    const lastName = this.registerForm.value.lastName;
-    const phone = this.registerForm.value.phone;
-    const birth = this.registerForm.value.birth;
-    this.authService
-      .registerUser(email, password, firstName, lastName, phone, birth)
-      .subscribe({
+    if (this.loginForm.valid) {
+      const { email, password } = this.loginForm.value;
+      this.authService.loginUser(email, password).subscribe({
         next: () => {
           this.router.navigateByUrl("/home");
         },
@@ -173,5 +148,71 @@ export class AuthComponent {
           this.notificationService.showError(error.message);
         },
       });
+    }
+  }
+
+  register() {
+    if (this.registerForm.valid) {
+      const email = this.registerForm.value.email;
+      const password = this.registerForm.value.password;
+      const firstName = this.registerForm.value.firstName;
+      const lastName = this.registerForm.value.lastName;
+      const phone = this.registerForm.value.phone;
+      const birth = this.registerForm.value.birth;
+      this.authService
+        .registerUser(email, password, firstName, lastName, phone, birth)
+        .subscribe({
+          next: () => {
+            this.router.navigateByUrl("/home");
+          },
+          error: (error) => {
+            this.authService.setAuthToken(null);
+            this.notificationService.showError(error.message);
+          },
+        });
+    }
+  }
+
+  getControlErrors(fieldName: string): string[] {
+    let control;
+    if (this.active === "login") {
+      control = this.loginForm.get(fieldName);
+    } else {
+      control = this.registerForm.get(fieldName);
+    }
+
+    const errors = [];
+    if (control && control.touched && control.errors) {
+      if (control.errors["required"]) {
+        errors.push(
+          `${
+            fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+          } is required.`
+        );
+      }
+      if (control.errors["minlength"]) {
+        errors.push(
+          `${
+            fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+          } must be at least ${
+            control.errors["minlength"].requiredLength
+          } characters.`
+        );
+      }
+      // You can extend this with more specific error checks as needed
+    }
+
+    return errors;
+  }
+
+  getFieldType(field: string): string {
+    switch (field) {
+      case "email":
+        return "email";
+      case "password":
+        return "password";
+      default:
+        return "text";
+    }
   }
 }

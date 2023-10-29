@@ -8,7 +8,9 @@ mat-form-field {
 
 a {
   color: black;
+  font-weight: 450;
   margin-left: 15px;
   border: none;
   text-decoration: none;
+  background-color: white;
 }

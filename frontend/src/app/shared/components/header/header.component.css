@@ -3,10 +3,10 @@
 }
 
 .app-header {
-  background-color: #222;
-  height: 80px;
-  padding: 20px;
-  color: rgb(163, 163, 163);
+  background-color: #121212;
+  height: 100%;
+  width: 100%;
+  padding: 15px;
   text-align: left;
   display: flex;
   justify-content: space-between;
@@ -19,16 +19,7 @@
 
 button,
 a {
-  background-color: #222;
-  color: rgb(163, 163, 163);
   font-size: 20px;
   margin-left: 15px;
-  border: none;
-  text-decoration: none;
-}
-
-.disabled-link {
-  pointer-events: none;
-  color: gray;
-  cursor: not-allowed;
+  background-color: #121212;
 }
