@@ -4,9 +4,20 @@ import {
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
-  HttpHeaders,
+  HttpContextToken,
+  HttpContext,
 } from "@angular/common/http";
 import { Observable } from "rxjs";
+
+const SKIP_AUTH = new HttpContextToken<boolean>(() => false);
+
+export function skipAuth() {
+  return new HttpContext().set(SKIP_AUTH, true);
+}
+
+export function getAuthToken(): string | null {
+  return window.localStorage.getItem("auth_token");
+}
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -16,20 +27,17 @@ export class AuthInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const token = this.getAuthToken();
+    if (request.context.get(SKIP_AUTH)) {
+      return next.handle(request);
+    }
 
+    const token = getAuthToken();
     if (token) {
       request = request.clone({
-        headers: new HttpHeaders({
-          Authorization: `Bearer ${token}`,
-        }),
+        headers: request.headers.set("Authorization", `Bearer ${token}`),
       });
     }
 
     return next.handle(request);
-  }
-
-  getAuthToken(): string | null {
-    return window.localStorage.getItem("auth_token");
   }
 }

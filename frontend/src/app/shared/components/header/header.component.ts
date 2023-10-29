@@ -14,7 +14,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   @Input() logoSrc!: string;
   role: typeof UserRole = UserRole;
 
-  userLogin: any;
+  isAuthenticated: boolean = false;
   private userSubscription!: Subscription;
 
   constructor(
@@ -24,7 +24,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userSubscription = this.userService.currentUser$.subscribe((user) => {
-      this.userLogin = user;
+      console.log(user);
+      if (user) {
+        this.isAuthenticated = true;
+      }
     });
   }
 

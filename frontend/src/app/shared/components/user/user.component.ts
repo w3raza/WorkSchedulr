@@ -41,7 +41,7 @@ export class UserComponent implements OnInit {
         phone: user.phone,
         birth: user.birth,
         student: user.student,
-        userRoles: user.userRoles[0], // Assuming there's only one role in the array, otherwise you might need to adjust.
+        userRoles: user.userRoles[0],
       });
     });
   }

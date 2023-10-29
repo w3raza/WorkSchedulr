@@ -4,7 +4,6 @@ import com.workSchedulr.dto.UserUpdateDTO;
 import com.workSchedulr.model.User;
 import com.workSchedulr.service.UserService;
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +19,12 @@ import java.util.UUID;
 public class UserController {
 
   private final UserService userService;
+
+  @GetMapping("/me")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public ResponseEntity<User> getCurrentUser(){
+    return ResponseEntity.ok(userService.getCurrentUser());
+  }
 
   @GetMapping("{userId}")
   @PreAuthorize("hasRole('ROLE_USER')")

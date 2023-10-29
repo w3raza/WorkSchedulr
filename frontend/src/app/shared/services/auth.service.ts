@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 
@@ -9,6 +9,7 @@ import { NotificationService } from "./notification.service";
 import { Router } from "@angular/router";
 import { UserService } from "./user.service";
 import { environment } from "src/environments/environment";
+import { getAuthToken, skipAuth } from "../interceptors/auth.interceptor";
 
 @Injectable({
   providedIn: "root",
@@ -29,9 +30,8 @@ export class AuthService {
     private notification: NotificationService,
     private userService: UserService
   ) {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      this.userService.setCurrentUser(JSON.parse(storedUser));
+    const authToken = getAuthToken();
+    if (authToken) {
       this.isAuthenticated = true;
     }
   }
@@ -75,18 +75,19 @@ export class AuthService {
     endpoint: string,
     payload: any
   ): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(endpoint, payload).pipe(
-      tap((response) => {
-        this.handleAuthentication(response);
-        this.isAuthenticated = true;
-        if (endpoint === this.API_ENDPOINTS.SIGNIN) {
+    return this.http
+      .post<LoginResponse>(endpoint, payload, { context: skipAuth() })
+      .pipe(
+        tap((response) => {
+          this.handleAuthentication(response.token);
+          this.isAuthenticated = true;
           this.notification.showSuccess(`Welcome ${response.email}`);
-        }
-      })
-    );
+        })
+      );
   }
 
   logoutUser(): Observable<any> {
+    console.log("logout user");
     return this.http.get(this.API_ENDPOINTS.SIGNOUT).pipe(
       tap(() => {
         this.notification.showSuccess("Sign out successful");
@@ -95,22 +96,15 @@ export class AuthService {
     );
   }
 
-  private handleAuthentication(response: LoginResponse): void {
-    const { id, email, token, userRoles } = response;
-    const user = new LoginResponse(id, email, token, userRoles);
-    this.userService.setCurrentUser(user);
+  private handleAuthentication(token: string): void {
     this.setAuthToken(token);
+    this.userService.setCurrentUser();
   }
 
   handleLogout(): void {
-    this.removeUser();
+    localStorage.removeItem("auth_token");
     this.userService.logout();
     this.isAuthenticated = false;
     this.router.navigate(["/login"]);
-  }
-
-  private removeUser(): void {
-    localStorage.removeItem("user");
-    localStorage.removeItem("auth_token");
   }
 }
