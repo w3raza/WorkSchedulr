@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -25,7 +25,7 @@ public class Project {
     private Integer hours;
 
     @CreatedDate
-    private Instant createdDate;
+    private LocalDateTime createdDate;
 
     private boolean status;
 

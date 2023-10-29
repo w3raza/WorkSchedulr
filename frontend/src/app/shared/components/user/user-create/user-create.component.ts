@@ -59,7 +59,6 @@ export class UserCreateComponent {
   }
 
   create() {
-    console.log("Halo");
     const {
       email,
       password,
@@ -82,7 +81,6 @@ export class UserCreateComponent {
       false,
       role
     );
-    console.log(user);
     this.userService.createUser(user);
   }
 }

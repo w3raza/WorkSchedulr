@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -29,7 +29,7 @@ public class ProjectService {
     }
 
     public Project createProject(Project project){
-        project.setCreatedDate(Instant.now());
+        project.setCreatedDate(LocalDateTime.now());
         if(project.getOwner() == null){
             project.setOwner(userService.getCurrentUser());
         }

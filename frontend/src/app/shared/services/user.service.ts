@@ -31,10 +31,6 @@ export class UserService implements OnInit {
     });
   }
 
-  setCurrentUser(): void {
-    this.ngOnInit();
-  }
-
   logout(): void {
     this._currentUser.next(null);
   }
@@ -70,7 +66,6 @@ export class UserService implements OnInit {
   }
 
   createUser(user: User): Observable<User> {
-    console.log("Hi: " + user);
     return this.http.post<User>(`${this.API_ENDPOINTS.USER}`, user);
   }
 

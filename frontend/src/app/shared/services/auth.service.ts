@@ -9,7 +9,7 @@ import { NotificationService } from "./notification.service";
 import { Router } from "@angular/router";
 import { UserService } from "./user.service";
 import { environment } from "src/environments/environment";
-import { getAuthToken, skipAuth } from "../interceptors/auth.interceptor";
+import { skipAuth } from "../interceptors/auth.interceptor";
 
 @Injectable({
   providedIn: "root",
@@ -30,8 +30,8 @@ export class AuthService {
     private notification: NotificationService,
     private userService: UserService
   ) {
-    const authToken = getAuthToken();
-    if (authToken) {
+    const authenticated = userService.currentUser$;
+    if (authenticated) {
       this.isAuthenticated = true;
     }
   }
@@ -87,7 +87,6 @@ export class AuthService {
   }
 
   logoutUser(): Observable<any> {
-    console.log("logout user");
     return this.http.get(this.API_ENDPOINTS.SIGNOUT).pipe(
       tap(() => {
         this.notification.showSuccess("Sign out successful");
@@ -98,7 +97,7 @@ export class AuthService {
 
   private handleAuthentication(token: string): void {
     this.setAuthToken(token);
-    this.userService.setCurrentUser();
+    this.userService.ngOnInit();
   }
 
   handleLogout(): void {
