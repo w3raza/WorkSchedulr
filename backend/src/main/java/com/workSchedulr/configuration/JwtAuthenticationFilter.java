@@ -38,10 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.clearContext();
             response.sendError(ex.getHttpStatus().value(), ex.getMessage());
             return;
-        }catch (InvalidClaimException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized path");
         }
-
         filterChain.doFilter(request, response);
     }
 }

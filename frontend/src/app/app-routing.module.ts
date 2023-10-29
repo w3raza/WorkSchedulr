@@ -12,6 +12,7 @@ import { AuthGuard } from "./shared/services/auth.guard";
 import { UserRole } from "./shared/enums/user-role.enum";
 import { UsersListComponent } from "./shared/components/user/users-list/users-list.component";
 import { UserProfileComponent } from "./shared/components/user/user-profile/user-profile.component";
+import { ProjectInfoComponent } from "./shared/components/project/project-info/project-info.component";
 
 const routes: Routes = [
   {
@@ -41,6 +42,11 @@ const routes: Routes = [
   {
     path: "projects",
     component: ProjectComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "projects/:id",
+    component: ProjectInfoComponent,
     canActivate: [AuthGuard],
   },
   {

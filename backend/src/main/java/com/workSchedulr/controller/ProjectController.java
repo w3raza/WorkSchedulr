@@ -23,4 +23,10 @@ public class ProjectController {
     public ResponseEntity<Page<Project>> getProjectByUserId(@Nullable @RequestParam("userId") UUID userId, Pageable pageable){
         return ResponseEntity.ok(projectService.getProjectByUserId(userId, pageable));
     }
+
+    @PostMapping()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> createProject(@RequestBody Project project){
+        return ResponseEntity.ok(projectService.createProject(project));
+    }
 }

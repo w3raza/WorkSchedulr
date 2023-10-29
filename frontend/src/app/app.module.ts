@@ -40,6 +40,7 @@ import { UsersListComponent } from "./shared/components/user/users-list/users-li
 import { UserProfileComponent } from "./shared/components/user/user-profile/user-profile.component";
 import { UserCreateComponent } from "./shared/components/user/user-create/user-create.component";
 import { ProjectCardComponent } from "./shared/components/project/project-card/project-card.component";
+import { ProjectInfoComponent } from "./shared/components/project/project-info/project-info.component";
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { ProjectCardComponent } from "./shared/components/project/project-card/p
     UserProfileComponent,
     UserCreateComponent,
     ProjectCardComponent,
+    ProjectInfoComponent,
   ],
   imports: [
     BrowserModule,

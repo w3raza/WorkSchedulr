@@ -2,6 +2,36 @@ mat-toolbar {
   justify-content: space-between;
 }
 
+.project-info {
+  width: 320px;
+  height: 215px;
+  color: white;
+  @media (max-width: 992px) {
+    width: 290px;
+    height: 200px;
+  }
+}
+
+.logo-container {
+  height: 50px;
+  min-width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: #fff;
+}
+
+.logo {
+  font-size: 34px;
+  font-weight: 600;
+  text-align: center;
+
+  @media (max-width: 992px) {
+    font-size: 48px;
+  }
+}
+
 .content {
   padding: 16px;
 }
@@ -13,4 +43,8 @@ mat-toolbar {
 .column-label {
   margin-right: 8px;
   font-size: 1rem;
+}
+
+.arrow-icon {
+  color: white;
 }
