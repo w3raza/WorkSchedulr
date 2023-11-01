@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 
 import { LoginResponse } from "../models/loginResponse.model";
@@ -22,7 +22,10 @@ export class AuthService {
     SIGNOUT: `${this.url}/auth/signout`,
   };
 
-  private isAuthenticated: boolean = false;
+  private isAuthenticatedSubject: BehaviorSubject<boolean> =
+    new BehaviorSubject<boolean>(false);
+  public isAuthenticated: Observable<boolean> =
+    this.isAuthenticatedSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -32,12 +35,8 @@ export class AuthService {
   ) {
     const authenticated = userService.currentUser$;
     if (authenticated) {
-      this.isAuthenticated = true;
+      this.isAuthenticatedSubject.next(true);
     }
-  }
-
-  getAuthenticated(): boolean {
-    return this.isAuthenticated;
   }
 
   setAuthToken(token: string | null): void {
@@ -80,7 +79,7 @@ export class AuthService {
       .pipe(
         tap((response) => {
           this.handleAuthentication(response.token);
-          this.isAuthenticated = true;
+          this.isAuthenticatedSubject.next(true);
           this.notification.showSuccess(`Welcome ${response.email}`);
         })
       );
@@ -103,7 +102,7 @@ export class AuthService {
   handleLogout(): void {
     localStorage.removeItem("auth_token");
     this.userService.logout();
-    this.isAuthenticated = false;
+    this.isAuthenticatedSubject.next(false);
     this.router.navigate(["/login"]);
   }
 }
