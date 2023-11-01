@@ -3,7 +3,6 @@ import { Router } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
 import { AuthService } from "../../services/auth.service";
-import { NotificationService } from "../../services/notification.service";
 import { ValidatorsService } from "../../services/validators.service";
 
 @Component({
@@ -20,7 +19,6 @@ export class AuthComponent {
     private authService: AuthService,
     private router: Router,
     private fb: FormBuilder,
-    private notificationService: NotificationService,
     private validatorsService: ValidatorsService
   ) {
     this.loginForm = this.fb.group({
@@ -72,7 +70,6 @@ export class AuthComponent {
       birth: ["", Validators.required],
     });
 
-    // Synchronize values
     this.syncForms();
   }
 
@@ -143,9 +140,8 @@ export class AuthComponent {
         next: () => {
           this.router.navigateByUrl("/home");
         },
-        error: (error) => {
+        error: () => {
           this.authService.setAuthToken(null);
-          this.notificationService.showError(error.message);
         },
       });
     }
@@ -165,9 +161,8 @@ export class AuthComponent {
           next: () => {
             this.router.navigateByUrl("/home");
           },
-          error: (error) => {
+          error: () => {
             this.authService.setAuthToken(null);
-            this.notificationService.showError(error.message);
           },
         });
     }
@@ -199,7 +194,6 @@ export class AuthComponent {
           } characters.`
         );
       }
-      // You can extend this with more specific error checks as needed
     }
 
     return errors;

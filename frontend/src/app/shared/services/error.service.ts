@@ -21,17 +21,17 @@ export class ErrorService {
     if (error.error instanceof ErrorEvent) {
       return `Error: ${error.error.message}`;
     }
+
     switch (error.status) {
       case 401:
-        this.authService.handleLogout();
-        return "You are signed out";
       case 403:
         this.authService.handleLogout();
         return "You are signed out";
+      case 0:
       case 503:
         return "Service Unavailable";
       default:
-        return `${error.message}`;
+        return `${error.message || "An unknown error occurred"}`;
     }
   }
 }

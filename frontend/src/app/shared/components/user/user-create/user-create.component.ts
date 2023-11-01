@@ -5,6 +5,7 @@ import { UserRole } from "src/app/shared/enums/user-role.enum";
 import { ValidatorsService } from "src/app/shared/services/validators.service";
 import { UserService } from "../../../services/user.service";
 import { User } from "src/app/shared/models/user.model";
+import { NotificationService } from "src/app/shared/services/notification.service";
 
 @Component({
   selector: "app-user-create",
@@ -47,7 +48,8 @@ export class UserCreateComponent {
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private validatorsService: ValidatorsService
+    private validatorsService: ValidatorsService,
+    private notification: NotificationService
   ) {}
 
   getControl(name: string) {
@@ -81,9 +83,10 @@ export class UserCreateComponent {
       false,
       [UserRole[role as keyof typeof UserRole]]
     );
-    console.log(user);
     this.userService.createUser(user).subscribe((createdUser) => {
-      console.log(createdUser);
+      if (createdUser) {
+        this.notification.showSuccess("User created");
+      }
     });
   }
 }
