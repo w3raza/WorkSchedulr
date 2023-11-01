@@ -41,6 +41,7 @@ import { UserProfileComponent } from "./shared/components/user/user-profile/user
 import { UserCreateComponent } from "./shared/components/user/user-create/user-create.component";
 import { ProjectCardComponent } from "./shared/components/project/project-card/project-card.component";
 import { ProjectInfoComponent } from "./shared/components/project/project-info/project-info.component";
+import { ConfirmDialogComponent } from "./shared/components/confirm-dialog/confirm-dialog.component";
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { ProjectInfoComponent } from "./shared/components/project/project-info/p
     UserCreateComponent,
     ProjectCardComponent,
     ProjectInfoComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     BrowserModule,

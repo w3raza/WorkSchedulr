@@ -5,6 +5,8 @@ import { UserRole } from "src/app/shared/enums/user-role.enum";
 import { MatDialog } from "@angular/material/dialog";
 import { UserCreateComponent } from "../user-create/user-create.component";
 import { PaginatorHelper } from "src/app/shared/services/paginator.service.ts";
+import { ConfirmDialogComponent } from "../../confirm-dialog/confirm-dialog.component";
+import { NotificationService } from "src/app/shared/services/notification.service";
 
 @Component({
   selector: "app-users-list",
@@ -18,7 +20,11 @@ export class UsersListComponent extends PaginatorHelper {
   selectedRole: string = "Default";
   selectedStatus: any = null;
 
-  constructor(private userService: UserService, public dialog: MatDialog) {
+  constructor(
+    private userService: UserService,
+    public dialog: MatDialog,
+    private notification: NotificationService
+  ) {
     super();
     this.fetchUsers();
     this.filterUserStatus = this.initActiveStatus();
@@ -61,6 +67,20 @@ export class UsersListComponent extends PaginatorHelper {
   toggleUserStatus(user: User) {
     this.userService.toggleUserStatus(user.id).subscribe((response) => {
       user.status = response.status;
+    });
+  }
+
+  deleteUser(email: string): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.userService.deleteUser(email).subscribe((note) => {
+          if (note) {
+            this.notification.showSuccess(note);
+          }
+        });
+      }
     });
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable, OnInit } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 
 import { User } from "../models/user.model";
@@ -64,7 +64,6 @@ export class UserService implements OnInit {
   }
 
   createUser(user: User): Observable<User> {
-    console.log(user);
     return this.http.post<User>(`${this.API_ENDPOINTS.USER}`, user);
   }
 
@@ -72,6 +71,15 @@ export class UserService implements OnInit {
     return this.http.patch<User>(
       `${this.API_ENDPOINTS.USER}/status/${userId}`,
       {}
+    );
+  }
+
+  deleteUser(email: string): Observable<string> {
+    return this.http.delete<string>(
+      `${this.API_ENDPOINTS.USER}?email=${email}`,
+      {
+        responseType: "text" as "json",
+      }
     );
   }
 }

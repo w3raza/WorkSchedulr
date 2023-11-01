@@ -77,6 +77,7 @@ public class UserService {
   }
 
   public void delete(String email) {
+    userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
     userRepository.deleteByEmail(email);
   }
 

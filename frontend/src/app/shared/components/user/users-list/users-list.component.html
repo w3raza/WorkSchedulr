@@ -64,11 +64,25 @@
       </mat-cell>
     </ng-container>
 
+    <ng-container matColumnDef="delete">
+      <mat-header-cell *matHeaderCellDef class="delete-column">
+      </mat-header-cell>
+      <mat-cell *matCellDef="let user" class="delete-column">
+        <button
+          mat-icon-button
+          (click)="deleteUser(user.email)"
+          matTooltip="Delete"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
     <mat-header-row
-      *matHeaderRowDef="['name', 'role', 'status']"
+      *matHeaderRowDef="['name', 'role', 'status', 'delete']"
     ></mat-header-row>
     <mat-row
-      *matRowDef="let row; columns: ['name', 'role', 'status']"
+      *matRowDef="let row; columns: ['name', 'role', 'status', 'delete']"
     ></mat-row>
   </mat-table>
 
