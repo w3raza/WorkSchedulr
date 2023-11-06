@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -39,6 +41,12 @@ public class UserController {
                                                      @Nullable @RequestParam String role,
                                                      @Nullable @RequestParam Boolean status){
     return ResponseEntity.ok(userService.getUsersByParams(role, status, pageable));
+  }
+
+  @GetMapping("/all")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity<Set<User>> getUsers(){
+    return ResponseEntity.ok(userService.getAllUser());
   }
 
   @PostMapping()

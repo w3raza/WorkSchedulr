@@ -14,7 +14,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -25,6 +27,10 @@ public class UserService {
 
   public User getUserById(UUID userId) {
     return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+  }
+
+  public Set<User> getAllUser(){
+    return new HashSet<>(userRepository.findAll());
   }
 
   public Page<User> getUsersByParams(String userRole, Boolean status, Pageable pageable) {
