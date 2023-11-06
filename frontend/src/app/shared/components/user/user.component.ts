@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
 import { User } from "../../models/user.model";
@@ -10,7 +10,7 @@ import { ValidatorsService } from "../../services/validators.service";
   templateUrl: "./user.component.html",
   styleUrls: ["./user.component.css"],
 })
-export class UserComponent implements OnInit {
+export class UserComponent {
   userForm!: FormGroup;
   user: User = new User("", "", "", "", "", "", "", false, false, []);
   isEditing = false;
@@ -20,29 +20,25 @@ export class UserComponent implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
     private validatorsService: ValidatorsService
-  ) {}
-
-  ngOnInit(): void {
+  ) {
     this.createForm();
     this.userService.currentUser$.subscribe((currentUser) => {
-      if (currentUser && currentUser.id) {
-        this.fetchUserData(currentUser.id);
+      if (currentUser) {
+        this.fetchUserData(currentUser);
       }
     });
   }
 
-  fetchUserData(userId: string): void {
-    this.userService.getUser(userId).subscribe((user) => {
-      this.user = user;
-      this.userForm.patchValue({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
-        birth: user.birth,
-        student: user.student,
-        userRoles: user.userRoles[0],
-      });
+  fetchUserData(user: User): void {
+    this.user = user;
+    this.userForm.patchValue({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone,
+      birth: user.birth,
+      student: user.student,
+      userRoles: user.userRoles[0],
     });
   }
 

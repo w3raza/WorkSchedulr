@@ -33,8 +33,8 @@ export class AuthService {
     private notification: NotificationService,
     private userService: UserService
   ) {
-    const authenticated = userService.currentUser$;
-    if (authenticated) {
+    const token = localStorage.getItem("auth_token");
+    if (token) {
       this.isAuthenticatedSubject.next(true);
     }
   }

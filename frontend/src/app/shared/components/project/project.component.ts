@@ -1,6 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { Project } from "../../models/project.modal";
 import { ProjectService } from "../../services/project.service";
+import { MatDialog } from "@angular/material/dialog";
+import { UserCreateComponent } from "../user/user-create/user-create.component";
+import { UserRole } from "../../enums/user-role.enum";
+import { ProjectCreateComponent } from "./project-create/project-create.component";
 
 @Component({
   selector: "app-project",
@@ -9,6 +13,7 @@ import { ProjectService } from "../../services/project.service";
 })
 export class ProjectComponent implements OnInit {
   projects: Project[] = [];
+  role: typeof UserRole = UserRole;
 
   colors: string[] = [
     "rgba(92,41,0,0.2)",
@@ -30,7 +35,10 @@ export class ProjectComponent implements OnInit {
     "rgba(92, 0, 0,0.5)",
   ];
 
-  constructor(private projectService: ProjectService) {}
+  constructor(
+    private projectService: ProjectService,
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.fetchProjects();
@@ -54,5 +62,15 @@ export class ProjectComponent implements OnInit {
         this.buttonsColor[index % (this.buttonsColor.length - 1)]
       }`,
     };
+  }
+
+  openAddUserModal() {
+    const dialogRef = this.dialog.open(ProjectCreateComponent, {
+      width: "500px",
+    });
+
+    dialogRef.afterClosed().subscribe((response) => {
+      console.log("reposne:" + response);
+    });
   }
 }

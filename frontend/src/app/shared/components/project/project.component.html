@@ -1,5 +1,15 @@
 <div>
-  <mat-toolbar> Project </mat-toolbar>
+  <mat-toolbar>
+    Project <span class="spacer"></span>
+    <button
+      *forRoles="[role.ADMIN]"
+      mat-icon-button
+      (click)="openAddUserModal()"
+      matTooltip="Add"
+    >
+      <mat-icon>add</mat-icon>
+    </button></mat-toolbar
+  >
   <div class="content">
     <div class="overflow-auto gap">
       <div

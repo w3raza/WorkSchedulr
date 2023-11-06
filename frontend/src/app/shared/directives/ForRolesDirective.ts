@@ -26,6 +26,7 @@ export class ForRolesDirective implements OnDestroy {
     private templateRef: TemplateRef<string>,
     private userService: UserService
   ) {
+    this.userService.ngOnInit();
     this.subscription = this.userService.currentUser$.subscribe(
       (currentUser) => {
         if (currentUser) {

@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 
@@ -10,14 +10,14 @@ import { environment } from "src/environments/environment";
 @Injectable({
   providedIn: "root",
 })
-export class UserService implements OnInit {
+export class UserService {
   private readonly BASE_URL = environment.apiUrl;
   private readonly API_ENDPOINTS = {
     USER: `${this.BASE_URL}/user`,
   };
 
-  private _currentUser = new BehaviorSubject<User | null>(null);
-  currentUser$ = this._currentUser.asObservable();
+  private _currentUserSubject = new BehaviorSubject<User | null>(null);
+  currentUser$ = this._currentUserSubject.asObservable();
   users: User[] = [];
   properties: Subject<PageProperties> = new Subject<PageProperties>();
 
@@ -25,12 +25,12 @@ export class UserService implements OnInit {
 
   ngOnInit(): void {
     this.fetchCurrentUser().subscribe((user) => {
-      this._currentUser.next(user);
+      this._currentUserSubject.next(user);
     });
   }
 
   logout(): void {
-    this._currentUser.next(null);
+    this._currentUserSubject.next(null);
   }
 
   getUser(userId: string): Observable<User> {
@@ -39,6 +39,10 @@ export class UserService implements OnInit {
 
   fetchCurrentUser(): Observable<User> {
     return this.http.get<User>(`${this.API_ENDPOINTS.USER}/me`);
+  }
+
+  getAllUser(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.API_ENDPOINTS.USER}/all`);
   }
 
   fetchUsers(

@@ -1,6 +1,5 @@
 import { Component } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { AuthService } from "src/app/shared/services/auth.service";
 import { UserRole } from "src/app/shared/enums/user-role.enum";
 import { ValidatorsService } from "src/app/shared/services/validators.service";
 import { UserService } from "../../../services/user.service";
