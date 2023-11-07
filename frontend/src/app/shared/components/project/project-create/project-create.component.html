@@ -53,8 +53,26 @@
     <mat-form-field appearance="fill">
       <mat-label>Owner</mat-label>
       <mat-select formControlName="owner">
-        <mat-option *ngFor="let owner of owners" [value]="owner">
+        <mat-option *ngFor="let owner of users" [value]="owner">
           {{ owner.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Managers</mat-label>
+      <mat-select formControlName="owner">
+        <mat-option *ngFor="let manager of users" [value]="manager">
+          {{ manager.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Users</mat-label>
+      <mat-select formControlName="owner">
+        <mat-option *ngFor="let user of users" [value]="user">
+          {{ user.name }}
         </mat-option>
       </mat-select>
     </mat-form-field>

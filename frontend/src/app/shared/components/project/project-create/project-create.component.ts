@@ -13,15 +13,15 @@ import { UserService } from "src/app/shared/services/user.service";
   styleUrls: ["./project-create.component.css"],
 })
 export class ProjectCreateComponent {
-  owners: Array<IdNameDTO> = [];
+  users: Array<IdNameDTO> = [];
 
   createForm: FormGroup = this.fb.group({
     title: ["", [Validators.required, Validators.minLength(2)]],
     hours: [null],
     status: [false],
-    owner: [User],
-    managers: [User],
-    users: [User],
+    owner: [""],
+    managers: [""],
+    users: [""],
   });
 
   constructor(
@@ -44,7 +44,7 @@ export class ProjectCreateComponent {
   setOwners() {
     this.userService.getAllUser().subscribe((users: User[]) => {
       const transformedUsers = this.transformUsersToAssigments(users);
-      this.owners = transformedUsers;
+      this.users = transformedUsers;
     });
   }
 
@@ -72,10 +72,10 @@ export class ProjectCreateComponent {
       managers,
       users
     );
-    // this.projectService.createProject(project).subscribe((createdProject) => {
-    //   if (createdProject) {
-    //     this.notification.showSuccess("Project created");
-    //   }
-    // });
+    this.projectService.createProject(project).subscribe((createdProject) => {
+      if (createdProject) {
+        this.notification.showSuccess("Project created");
+      }
+    });
   }
 }

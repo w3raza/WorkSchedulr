@@ -23,4 +23,8 @@ export class ProjectService {
       `${this.API_ENDPOINTS.PROJECT}`
     );
   }
+
+  createProject(project: Project): Observable<Project> {
+    return this.http.post<Project>(`${this.API_ENDPOINTS.PROJECT}`, project);
+  }
 }

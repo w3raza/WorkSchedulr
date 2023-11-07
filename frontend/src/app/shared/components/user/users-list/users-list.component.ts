@@ -7,6 +7,7 @@ import { UserCreateComponent } from "../user-create/user-create.component";
 import { PaginatorHelper } from "src/app/shared/services/paginator.service.ts";
 import { ConfirmDialogComponent } from "../../confirm-dialog/confirm-dialog.component";
 import { NotificationService } from "src/app/shared/services/notification.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-users-list",
@@ -23,7 +24,8 @@ export class UsersListComponent extends PaginatorHelper {
   constructor(
     private userService: UserService,
     public dialog: MatDialog,
-    private notification: NotificationService
+    private notification: NotificationService,
+    private router: Router
   ) {
     super();
     this.fetchUsers();
@@ -60,7 +62,14 @@ export class UsersListComponent extends PaginatorHelper {
     });
 
     dialogRef.afterClosed().subscribe((response) => {
-      console.log("reposne:" + response);
+      if (response) {
+        let currentUrl = this.router.url;
+        this.router
+          .navigateByUrl("/", { skipLocationChange: true })
+          .then(() => {
+            this.router.navigate([currentUrl]);
+          });
+      }
     });
   }
 
