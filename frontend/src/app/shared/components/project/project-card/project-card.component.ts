@@ -1,6 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { Router } from "@angular/router";
 import { Project } from "src/app/shared/models/project.modal";
+import { ProjectDataService } from "src/app/shared/services/projec.data.service";
 
 @Component({
   selector: "app-project-card",
@@ -13,10 +14,14 @@ export class ProjectCardComponent {
   @Input() backgroundStyle?: { [klass: string]: any };
   @Input() buttonStyle?: { [klass: string]: any };
 
-  constructor(private router: Router) {}
+  constructor(
+    private projectDataService: ProjectDataService,
+    private router: Router
+  ) {}
 
   redirectToProjectInfo() {
     if (this.project && this.project.id) {
+      this.projectDataService.changeProject(this.project);
       this.router.navigate(["projects/", this.project.id]);
     }
   }

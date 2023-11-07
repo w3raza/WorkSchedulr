@@ -15,6 +15,7 @@ import { MatTableModule } from "@angular/material/table";
 import { MatCardModule } from "@angular/material/card";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatDialogModule } from "@angular/material/dialog";
+import { MatListModule } from "@angular/material/list";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { FullCalendarModule } from "@fullcalendar/angular";
 
@@ -83,6 +84,7 @@ import { ProjectCreateComponent } from "./shared/components/project/project-crea
     MatCardModule,
     MatPaginatorModule,
     MatDialogModule,
+    MatListModule,
     MatSlideToggleModule,
     BrowserAnimationsModule,
     FullCalendarModule,

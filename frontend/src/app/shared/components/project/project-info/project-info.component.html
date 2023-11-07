@@ -1,7 +1,58 @@
-<div class="user-profile">
-  <ng-container>
+<div class="project-profile">
+  <mat-card-actions>
     <button (click)="backToList()" class="cancel-btn" matTooltip="Cancel">
       <mat-icon>keyboard_arrow_left</mat-icon>
     </button>
-  </ng-container>
+    <button
+      *forRoles="[role.ADMIN]"
+      mat-icon-button
+      (click)="editProject()"
+      class="edit-btn"
+      matTooltip="Edit"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button
+      *forRoles="[role.ADMIN]"
+      mat-icon-button
+      (click)="deleteProject()"
+      class="delete-btn"
+      matTooltip="Delete"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </mat-card-actions>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ project.title }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Total Hours: {{ project.hours }}</p>
+      <p>Created Date: {{ getCreatedDate() | date : "mediumDate" }}</p>
+      <p>Status: {{ project.status ? "Active" : "Inactive" }}</p>
+      <p>
+        Project Owner:
+        {{ project.owner.firstName + " " + project.owner.lastName }}
+      </p>
+
+      <mat-divider></mat-divider>
+
+      <h3>Managers</h3>
+      <mat-list>
+        <mat-list-item *ngFor="let manager of project.managers">
+          {{ manager.firstName + " " + manager.lastName }}
+        </mat-list-item>
+      </mat-list>
+
+      <mat-divider></mat-divider>
+
+      <h3>Users</h3>
+      <mat-list>
+        <mat-list-item *ngFor="let user of project.users">
+          {{ user.firstName + " " + user.lastName }}
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
 </div>
