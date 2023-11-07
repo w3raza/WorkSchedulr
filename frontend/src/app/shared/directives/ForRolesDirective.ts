@@ -14,6 +14,7 @@ export class ForRolesDirective implements OnDestroy {
   private roles: string[] = [];
   private user: User | null = null;
   private subscription: Subscription;
+  private viewCreated: boolean = false;
 
   @Input()
   set forRoles(roles: string | string[]) {
@@ -26,7 +27,10 @@ export class ForRolesDirective implements OnDestroy {
     private templateRef: TemplateRef<string>,
     private userService: UserService
   ) {
-    this.userService.ngOnInit();
+    const token = localStorage.getItem("auth_token");
+    if (token) {
+      this.userService.ngOnInit();
+    }
     this.subscription = this.userService.currentUser$.subscribe(
       (currentUser) => {
         if (currentUser) {
@@ -46,15 +50,21 @@ export class ForRolesDirective implements OnDestroy {
   }
 
   private updateView() {
-    if (!this.user || !this.user.userRoles) return;
+    if (!this.user || !this.user.userRoles) {
+      this.viewContainer.clear();
+      this.viewCreated = false;
+      return;
+    }
 
     const userRoles = convertToStringArray(this.user.userRoles);
     const hasMatchingRole = userRoles.some((role) => this.roles.includes(role));
 
-    if (hasMatchingRole) {
+    if (hasMatchingRole && !this.viewCreated) {
       this.viewContainer.createEmbeddedView(this.templateRef);
-    } else {
+      this.viewCreated = true;
+    } else if (!hasMatchingRole && this.viewCreated) {
       this.viewContainer.clear();
+      this.viewCreated = false;
     }
   }
 }
