@@ -12,7 +12,7 @@
       <input
         matInput
         type="text"
-        formControlName="project"
+        formControlName="title"
         placeholder="project"
         (blur)="onBlur('project')"
       />
@@ -61,7 +61,7 @@
 
     <mat-form-field appearance="fill">
       <mat-label>Managers</mat-label>
-      <mat-select formControlName="owner">
+      <mat-select formControlName="managers" multiple>
         <mat-option *ngFor="let manager of users" [value]="manager">
           {{ manager.name }}
         </mat-option>
@@ -70,7 +70,7 @@
 
     <mat-form-field appearance="fill">
       <mat-label>Users</mat-label>
-      <mat-select formControlName="owner">
+      <mat-select formControlName="users" multiple>
         <mat-option *ngFor="let user of users" [value]="user">
           {{ user.name }}
         </mat-option>

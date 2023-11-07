@@ -1,5 +1,7 @@
 package com.workSchedulr.controller;
 
+import com.workSchedulr.dto.ProjectDTO;
+import com.workSchedulr.mapper.ProjectMapper;
 import com.workSchedulr.model.Project;
 import com.workSchedulr.service.ProjectService;
 import jakarta.annotation.Nullable;
@@ -17,6 +19,7 @@ import java.util.UUID;
 @RequestMapping("/project")
 public class ProjectController {
     private final ProjectService projectService;
+    private final ProjectMapper projectMapper;
 
     @GetMapping()
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -26,7 +29,8 @@ public class ProjectController {
 
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> createProject(@RequestBody Project project){
+    public ResponseEntity<?> createProject(@RequestBody ProjectDTO projectDTO){
+        Project project = projectMapper.mapToProject(projectDTO);
         return ResponseEntity.ok(projectService.createProject(project));
     }
 }

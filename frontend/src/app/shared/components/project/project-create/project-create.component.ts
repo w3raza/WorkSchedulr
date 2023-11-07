@@ -16,12 +16,12 @@ export class ProjectCreateComponent {
   users: Array<IdNameDTO> = [];
 
   createForm: FormGroup = this.fb.group({
-    title: ["", [Validators.required, Validators.minLength(2)]],
+    title: [null, [Validators.required, Validators.minLength(2)]],
     hours: [null],
     status: [false],
-    owner: [""],
-    managers: [""],
-    users: [""],
+    owner: [null],
+    managers: [null],
+    users: [null],
   });
 
   constructor(
@@ -66,7 +66,7 @@ export class ProjectCreateComponent {
       "",
       title,
       hours,
-      [0],
+      [],
       status,
       owner,
       managers,
