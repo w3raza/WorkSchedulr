@@ -5,11 +5,7 @@ spring:
     username: admin
     password: 1234
     driver-class-name: org.postgresql.Driver
-  tomcat:
-    max-wait: 20000
-    max-active: 50
-    max-idle: 20
-    min-idle: 15
+
   # JPA & Hibernate
   jpa:
     hibernate:
@@ -29,10 +25,3 @@ security:
     token:
       secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
       expire-length: 360000 # 360 seconds * 1000 miliseconds
-
-UserController:
-  signin: Authenticates user and returns its JWT token.
-  signup: Creates user and returns its JWT token
-#  delete: Deletes specific user by username
-#  search: Returns specific user by username
-#  me: Returns current user's data

@@ -5,6 +5,7 @@ import com.workSchedulr.mapper.ProjectMapper;
 import com.workSchedulr.model.Project;
 import com.workSchedulr.service.ProjectService;
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,5 +33,12 @@ public class ProjectController {
     public ResponseEntity<?> createProject(@RequestBody ProjectDTO projectDTO){
         Project project = projectMapper.mapToProject(projectDTO);
         return ResponseEntity.ok(projectService.createProject(project));
+    }
+
+    @DeleteMapping()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<String> deleteProject(@NotNull @RequestParam UUID id) {
+        projectService.deleteProject(id);
+        return ResponseEntity.ok("Delete project.");
     }
 }

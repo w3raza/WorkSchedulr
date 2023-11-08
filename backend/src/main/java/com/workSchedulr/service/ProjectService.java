@@ -1,5 +1,6 @@
 package com.workSchedulr.service;
 
+import com.workSchedulr.exception.ProjectNotFoundException;
 import com.workSchedulr.model.Project;
 import com.workSchedulr.repository.ProjectRepository;
 import lombok.AllArgsConstructor;
@@ -34,5 +35,10 @@ public class ProjectService {
             project.setOwner(userService.getCurrentUser());
         }
         return projectRepository.save(project);
+    }
+
+    public void deleteProject(UUID id) {
+        projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
+        projectRepository.deleteById(id);
     }
 }

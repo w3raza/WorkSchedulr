@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { ProjectHelper } from "src/app/shared/helper/project.helper";
 import { IdNameDTO } from "src/app/shared/models/IdNameDTO.modal";
 import { Project } from "src/app/shared/models/project.modal";
 import { User } from "src/app/shared/models/user.model";
@@ -30,7 +31,7 @@ export class ProjectCreateComponent {
     private projectService: ProjectService,
     private notification: NotificationService
   ) {
-    this.setOwners();
+    this.setUsers();
   }
 
   getControl(name: string) {
@@ -41,22 +42,11 @@ export class ProjectCreateComponent {
     this.getControl(controlName)?.markAsTouched();
   }
 
-  setOwners() {
+  setUsers() {
     this.userService.getAllUser().subscribe((users: User[]) => {
-      const transformedUsers = this.transformUsersToAssigments(users);
+      const transformedUsers = ProjectHelper.transformUsersToAssigments(users);
       this.users = transformedUsers;
     });
-  }
-
-  transformUsersToAssigments(users: User[]): IdNameDTO[] {
-    return users.map((user) => ({
-      ...user,
-      name: this.getFullNameForm(user.firstName, user.lastName),
-    }));
-  }
-
-  getFullNameForm(name: string, surname: string): string {
-    return `${name} ${surname}`;
   }
 
   createProject() {

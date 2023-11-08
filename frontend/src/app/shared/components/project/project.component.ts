@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { Project } from "../../models/project.modal";
 import { ProjectService } from "../../services/project.service";
 import { MatDialog } from "@angular/material/dialog";
-import { UserCreateComponent } from "../user/user-create/user-create.component";
 import { UserRole } from "../../enums/user-role.enum";
 import { ProjectCreateComponent } from "./project-create/project-create.component";
 
@@ -14,6 +13,9 @@ import { ProjectCreateComponent } from "./project-create/project-create.componen
 export class ProjectComponent implements OnInit {
   projects: Project[] = [];
   role: typeof UserRole = UserRole;
+
+  filterProjectStatus: { value: boolean; viewValue: string }[] = [];
+  selectedStatus: any = null;
 
   colors: string[] = [
     "rgba(92,41,0,0.2)",
@@ -38,7 +40,17 @@ export class ProjectComponent implements OnInit {
   constructor(
     private projectService: ProjectService,
     public dialog: MatDialog
-  ) {}
+  ) {
+    this.filterProjectStatus = this.initActiveStatus();
+  }
+
+  initActiveStatus(): { value: any; viewValue: string }[] {
+    return [
+      { value: true, viewValue: "ENABLE" },
+      { value: false, viewValue: "DISABLED" },
+      { value: null, viewValue: "Default" },
+    ];
+  }
 
   ngOnInit(): void {
     this.fetchProjects();

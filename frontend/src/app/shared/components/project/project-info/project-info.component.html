@@ -1,58 +1,98 @@
 <div class="project-profile">
   <mat-card-actions>
-    <button (click)="backToList()" class="cancel-btn" matTooltip="Cancel">
+    <button (click)="backToList()" class="back-btn" matTooltip="Cancel">
       <mat-icon>keyboard_arrow_left</mat-icon>
     </button>
-    <button
-      *forRoles="[role.ADMIN]"
-      mat-icon-button
-      (click)="editProject()"
-      class="edit-btn"
-      matTooltip="Edit"
-    >
-      <mat-icon>edit</mat-icon>
-    </button>
-    <button
-      *forRoles="[role.ADMIN]"
-      mat-icon-button
-      (click)="deleteProject()"
-      class="delete-btn"
-      matTooltip="Delete"
-    >
-      <mat-icon>delete</mat-icon>
-    </button>
+    <ng-container *forRoles="[role.ADMIN]">
+      <button
+        *ngIf="!editMode"
+        mat-icon-button
+        (click)="editProject()"
+        class="edit-btn"
+        matTooltip="Edit"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button
+        *ngIf="editMode"
+        mat-icon-button
+        class="cancel-btn"
+        (click)="editMode = false"
+        matTooltip="Cancel"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+      <button
+        *ngIf="!editMode"
+        mat-icon-button
+        (click)="deleteProject(project.id)"
+        class="delete-btn"
+        matTooltip="Delete"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button
+        *ngIf="editMode"
+        mat-icon-button
+        type="submit"
+        class="save-btn"
+        matTooltip="Save"
+      >
+        <mat-icon>done</mat-icon>
+      </button>
+    </ng-container>
   </mat-card-actions>
 
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>{{ project.title }}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <p>Total Hours: {{ project.hours }}</p>
-      <p>Created Date: {{ getCreatedDate() | date : "mediumDate" }}</p>
-      <p>Status: {{ project.status ? "Active" : "Inactive" }}</p>
-      <p>
-        Project Owner:
+  <form [formGroup]="projectForm" (ngSubmit)="editMode ? saveProject() : null">
+    <div class="project-field">
+      <label>Title:</label>
+      <div *ngIf="!editMode">{{ project.title }}</div>
+      <input *ngIf="editMode" formControlName="title" id="title" />
+    </div>
+    <div class="project-field">
+      <label>Total Hours:</label>
+      <div *ngIf="!editMode">{{ project.hours }}</div>
+      <input
+        *ngIf="editMode"
+        type="number"
+        formControlName="hours"
+        id="hours"
+      />
+    </div>
+    <div class="project-field">
+      <label>Created Date:</label>
+      <div *ngIf="!editMode">
+        {{ getCreatedDate() | date : "mediumDate" }}
+      </div>
+      <input
+        *ngIf="editMode"
+        type="date"
+        formControlName="createdDate"
+        id="createdDate"
+      />
+    </div>
+    <div class="project-field">
+      <label>Status:</label>
+      <div *ngIf="!editMode">
+        {{ project.status ? "Active" : "Inactive" }}
+      </div>
+      <select *ngIf="editMode" formControlName="status" id="status">
+        <option [value]="true">Active</option>
+        <option [value]="false">Inactive</option>
+      </select>
+    </div>
+    <div class="project-field">
+      <label>Project Owner:</label>
+      <div *ngIf="!editMode">
         {{ project.owner.firstName + " " + project.owner.lastName }}
-      </p>
-
-      <mat-divider></mat-divider>
-
-      <h3>Managers</h3>
-      <mat-list>
-        <mat-list-item *ngFor="let manager of project.managers">
-          {{ manager.firstName + " " + manager.lastName }}
-        </mat-list-item>
-      </mat-list>
-
-      <mat-divider></mat-divider>
-
-      <h3>Users</h3>
-      <mat-list>
-        <mat-list-item *ngFor="let user of project.users">
-          {{ user.firstName + " " + user.lastName }}
-        </mat-list-item>
-      </mat-list>
-    </mat-card-content>
-  </mat-card>
+      </div>
+      <mat-form-field *ngIf="editMode" appearance="fill">
+        <select formControlName="owner">
+          <option *ngFor="let owner of users" [value]="owner">
+            {{ owner.name }}
+          </option>
+        </select>
+      </mat-form-field>
+    </div>
+  </form>
 </div>
