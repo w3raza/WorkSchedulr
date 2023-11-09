@@ -35,6 +35,13 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.createProject(project));
     }
 
+    @PatchMapping()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> updateProject(@RequestBody ProjectDTO projectDTO){
+        Project project = projectMapper.mapToProject(projectDTO);
+        return ResponseEntity.ok(projectService.updateProject(project));
+    }
+
     @DeleteMapping()
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteProject(@NotNull @RequestParam UUID id) {

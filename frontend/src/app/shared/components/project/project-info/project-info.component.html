@@ -1,5 +1,6 @@
 <div class="project-profile">
-  <mat-card-actions>
+  <mat-dialog-actions>
+    <h2 mat-dialog-title>Project details</h2>
     <button (click)="backToList()" class="back-btn" matTooltip="Cancel">
       <mat-icon>keyboard_arrow_left</mat-icon>
     </button>
@@ -37,11 +38,12 @@
         type="submit"
         class="save-btn"
         matTooltip="Save"
+        (click)="saveProject()"
       >
         <mat-icon>done</mat-icon>
       </button>
     </ng-container>
-  </mat-card-actions>
+  </mat-dialog-actions>
 
   <form [formGroup]="projectForm" (ngSubmit)="editMode ? saveProject() : null">
     <div class="project-field">
@@ -87,11 +89,44 @@
         {{ project.owner.firstName + " " + project.owner.lastName }}
       </div>
       <mat-form-field *ngIf="editMode" appearance="fill">
-        <select formControlName="owner">
-          <option *ngFor="let owner of users" [value]="owner">
+        <mat-select formControlName="owner">
+          <mat-option *ngFor="let owner of users" [value]="owner.name">
             {{ owner.name }}
-          </option>
-        </select>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="project-field">
+      <label>Project Managers:</label>
+      <div *ngIf="!editMode">
+        <div *ngFor="let manager of project.managers">
+          {{ manager.firstName + " " + manager.lastName }}
+        </div>
+      </div>
+      <mat-form-field *ngIf="editMode" appearance="fill">
+        <mat-label>Managers</mat-label>
+        <mat-select formControlName="managers" multiple>
+          <mat-option *ngFor="let manager of users" [value]="manager">
+            {{ manager.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="project-field">
+      <label>Project Users:</label>
+      <div *ngIf="!editMode">
+        <div *ngFor="let user of project.users">
+          {{ user.firstName + " " + user.lastName }}
+        </div>
+      </div>
+      <mat-form-field *ngIf="editMode" appearance="fill">
+        <mat-label>Users</mat-label>
+        <mat-select formControlName="users" multiple>
+          <mat-option *ngFor="let user of users" [value]="user">
+            {{ user.name }}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
     </div>
   </form>

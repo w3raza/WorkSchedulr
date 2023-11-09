@@ -32,9 +32,9 @@ public class Project {
     @ManyToOne
     private User owner;
 
-    @ManyToMany(mappedBy = "projects")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<User> managers = new HashSet<>();
 
-    @ManyToMany(mappedBy = "projects")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<User> users = new HashSet<>();
 }

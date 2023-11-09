@@ -54,7 +54,11 @@ export class ProjectInfoComponent {
       createdDate: [""],
       status: [""],
       owner: [null],
+      managers: [null],
+      users: [null],
     });
+
+    this.setUsers();
   }
 
   get form() {
@@ -79,14 +83,31 @@ export class ProjectInfoComponent {
       hours: this.project.hours,
       createdDate: this.getCreatedDate(),
       status: this.project.status,
-      owner: this.project.owner,
+      owner: new IdNameDTO(this.project.owner.id, this.project.owner.firstName),
+      managers: this.project.managers,
+      users: this.project.users,
     });
   }
 
   saveProject(): void {
+    console.log("Jestem");
     if (this.projectForm.valid) {
-      const formValues = this.projectForm.value;
-      this.editMode = false;
+      const { title, hours, status, owner, managers, users } =
+        this.projectForm.value;
+      const project = new Project(
+        this.project.id,
+        title,
+        hours,
+        [],
+        status,
+        owner,
+        managers,
+        users
+      );
+      this.projectService.updateProject(project).subscribe((updatedProject) => {
+        this.project = updatedProject;
+        this.editMode = false;
+      });
     }
   }
 

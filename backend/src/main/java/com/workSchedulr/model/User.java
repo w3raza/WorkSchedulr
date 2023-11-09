@@ -51,7 +51,7 @@ public class User implements UserDetails {
   @ElementCollection(fetch = FetchType.EAGER)
   Set<UserRole> userRoles = new HashSet<>();
 
-  @ManyToMany
+  @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
   @JoinTable(
           name = "user_project",
           joinColumns = @JoinColumn(name = "user_id"),

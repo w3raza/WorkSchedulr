@@ -28,6 +28,10 @@ export class ProjectService {
     return this.http.post<Project>(`${this.API_ENDPOINTS.PROJECT}`, project);
   }
 
+  updateProject(project: Project): Observable<Project> {
+    return this.http.patch<Project>(`${this.API_ENDPOINTS.PROJECT}`, project);
+  }
+
   deleteProject(id: string): Observable<string> {
     return this.http.delete<string>(`${this.API_ENDPOINTS.PROJECT}?id=${id}`, {
       responseType: "text" as "json",

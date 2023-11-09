@@ -1,4 +1,3 @@
-export interface IdNameDTO {
-  id: string;
-  name: string;
+export class IdNameDTO {
+  constructor(public id: string, public name: string) {}
 }
