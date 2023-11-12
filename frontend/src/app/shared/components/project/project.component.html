@@ -9,7 +9,7 @@
       <mat-label>Status</mat-label>
       <mat-select
         [(value)]="selectedStatus"
-        (selectionChange)="fetchProjects()"
+        (selectionChange)="fetchProjects(null)"
       >
         <mat-option
           *ngFor="let status of filterProjectStatus"
@@ -18,6 +18,25 @@
           {{ status.viewValue }}
         </mat-option>
       </mat-select>
+    </mat-form-field>
+    <mat-form-field class="flex-fill" appearance="fill">
+      <mat-label>Search Projects</mat-label>
+      <input
+        type="text"
+        matInput
+        placeholder="Search Projects"
+        [formControl]="searchControl"
+        (selectionChange)="fetchProjects(null)"
+      />
+
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option
+          *ngFor="let project of filteredProjects | async"
+          [value]="project.title"
+        >
+          {{ project.title }}
+        </mat-option>
+      </mat-autocomplete>
     </mat-form-field>
     <span class="spacer">
       <button

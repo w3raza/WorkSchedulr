@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { Project } from "../../models/project.modal";
 import { ProjectService } from "../../services/project.service";
 import { MatDialog } from "@angular/material/dialog";
@@ -6,6 +6,8 @@ import { UserRole } from "../../enums/user-role.enum";
 import { ProjectCreateComponent } from "./project-create/project-create.component";
 import { PaginatorHelper } from "../../services/paginator.service.ts";
 import { AuthHelper } from "../../helper/auth.helper";
+import { Observable, debounceTime, map, startWith, switchMap } from "rxjs";
+import { FormControl } from "@angular/forms";
 
 @Component({
   selector: "app-project",
@@ -16,8 +18,12 @@ export class ProjectComponent extends PaginatorHelper {
   projects: Project[] = [];
   role: typeof UserRole = UserRole;
 
+  searchControl = new FormControl();
+  filteredProjects: Observable<Project[]> | undefined;
   filterProjectStatus: { value: boolean; viewValue: string }[] = [];
   selectedStatus: any = null;
+
+  userId: string | null = null;
 
   colors: string[] = [
     "rgba(92,41,0,0.2)",
@@ -45,6 +51,26 @@ export class ProjectComponent extends PaginatorHelper {
   ) {
     super();
     this.filterProjectStatus = this.initActiveStatus();
+    this.fetchProjects(null);
+    if (!AuthHelper.checkIsAdmin()) {
+      this.userId = AuthHelper.getCurrentUserId();
+    }
+
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(300),
+        switchMap((searchTerm) =>
+          this.projectService.fetchProjects(
+            this.userId,
+            this.selectedStatus,
+            searchTerm,
+            this.currentPage - 1
+          )
+        )
+      )
+      .subscribe((data) => {
+        this.projects = [...data.content];
+      });
   }
 
   initActiveStatus(): { value: any; viewValue: string }[] {
@@ -55,17 +81,14 @@ export class ProjectComponent extends PaginatorHelper {
     ];
   }
 
-  ngOnInit(): void {
-    this.fetchProjects();
-  }
-
-  fetchProjects() {
-    let userId = null;
-    if (!AuthHelper.checkIsAdmin()) {
-      userId = AuthHelper.getCurrentUserId();
-    }
+  fetchProjects(searchTerm: string | null) {
     this.projectService
-      .fetchProjects(userId, this.selectedStatus, this.currentPage - 1)
+      .fetchProjects(
+        this.userId,
+        this.selectedStatus,
+        searchTerm,
+        this.currentPage - 1
+      )
       .subscribe((data) => {
         this.projects = [...data.content];
       });

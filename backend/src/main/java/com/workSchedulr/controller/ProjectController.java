@@ -25,8 +25,9 @@ public class ProjectController {
     @GetMapping()
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Page<Project>> getProjectsByParams(@Nullable @RequestParam("userId") UUID userId,
-                                                             @Nullable @RequestParam Boolean status, Pageable pageable){
-        return ResponseEntity.ok(projectService.getProjectsByParams(userId, status, pageable));
+                                                             @Nullable @RequestParam Boolean status,
+                                                             @Nullable @RequestParam String title, Pageable pageable){
+        return ResponseEntity.ok(projectService.getProjectsByParams(userId, status, title, pageable));
     }
 
     @PostMapping()

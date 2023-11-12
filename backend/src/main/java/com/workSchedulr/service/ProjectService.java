@@ -22,13 +22,26 @@ public class ProjectService {
         return projectRepository.findById(projectId).orElseThrow(ProjectNotFoundException::new);
     }
 
-    public Page<Project> getProjectsByParams(UUID userId, Boolean status, Pageable pageable){
-        return Optional.ofNullable(userId).map(user -> status != null ?
-                        projectRepository.findAllByUsersAndStatus(userId, status, pageable)
-                        : projectRepository.findAllProjectsByUserId(userId, pageable)
-                )
-                .orElseGet(() -> Optional.ofNullable(status).map(st -> projectRepository.findAllByStatus(status, pageable))
-                .orElse(getAllProjects(pageable)));
+    public Page<Project> getProjectsByParams(UUID userId, Boolean status, String title, Pageable pageable) {
+        if (userId != null) {
+            if (status != null) {
+                return title == null || title.isEmpty() ?
+                        projectRepository.findAllByUsersAndStatus(userId, status, pageable) :
+                        projectRepository.findAllByUsersAndStatusAndTitleContaining(userId, status, title, pageable);
+            } else {
+                return title == null || title.isEmpty() ?
+                        projectRepository.findAllProjectsByUserId(userId, pageable) :
+                        projectRepository.findAllByUsersAndTitleContaining(userId, title, pageable);
+            }
+        } else if (status != null) {
+            return title == null || title.isEmpty() ?
+                    projectRepository.findAllByStatus(status, pageable) :
+                    projectRepository.findAllByStatusAndTitleContaining(status, title, pageable);
+        } else {
+            return title == null || title.isEmpty() ?
+                    getAllProjects(pageable) :
+                    projectRepository.findAllByTitleContaining(title, pageable);
+        }
     }
 
     public Page<Project> getAllProjects(Pageable pageable){

@@ -18,6 +18,7 @@ export class ProjectService {
   fetchProjects(
     userId: string | null,
     status: boolean | null,
+    title: string | null,
     page: number
   ): Observable<{
     content: Project[];
@@ -31,6 +32,10 @@ export class ProjectService {
 
     if (status !== null) {
       url += `&status=${status}`;
+    }
+
+    if (title !== null) {
+      url += `&title=${title}`;
     }
 
     return this.http.get<{ content: Project[]; properties: PageProperties }>(

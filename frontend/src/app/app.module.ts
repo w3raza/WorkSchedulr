@@ -20,6 +20,7 @@ import { MatDividerModule } from "@angular/material/divider";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { FullCalendarModule } from "@fullcalendar/angular";
 
 import { AppRoutingModule } from "./app-routing.module";
@@ -93,6 +94,7 @@ import { ProjectCreateComponent } from "./shared/components/project/project-crea
     MatNativeDateModule,
     MatSlideToggleModule,
     BrowserAnimationsModule,
+    MatAutocompleteModule,
     FullCalendarModule,
   ],
   providers: [
