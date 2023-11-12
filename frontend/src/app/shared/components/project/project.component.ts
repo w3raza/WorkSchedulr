@@ -4,13 +4,15 @@ import { ProjectService } from "../../services/project.service";
 import { MatDialog } from "@angular/material/dialog";
 import { UserRole } from "../../enums/user-role.enum";
 import { ProjectCreateComponent } from "./project-create/project-create.component";
+import { PaginatorHelper } from "../../services/paginator.service.ts";
+import { AuthHelper } from "../../helper/auth.helper";
 
 @Component({
   selector: "app-project",
   templateUrl: "./project.component.html",
   styleUrls: ["./project.component.css"],
 })
-export class ProjectComponent implements OnInit {
+export class ProjectComponent extends PaginatorHelper {
   projects: Project[] = [];
   role: typeof UserRole = UserRole;
 
@@ -41,6 +43,7 @@ export class ProjectComponent implements OnInit {
     private projectService: ProjectService,
     public dialog: MatDialog
   ) {
+    super();
     this.filterProjectStatus = this.initActiveStatus();
   }
 
@@ -57,9 +60,15 @@ export class ProjectComponent implements OnInit {
   }
 
   fetchProjects() {
-    this.projectService.fetchProjects().subscribe((data) => {
-      this.projects = [...data.content];
-    });
+    let userId = null;
+    if (!AuthHelper.checkIsAdmin()) {
+      userId = AuthHelper.getCurrentUserId();
+    }
+    this.projectService
+      .fetchProjects(userId, this.selectedStatus, this.currentPage - 1)
+      .subscribe((data) => {
+        this.projects = [...data.content];
+      });
   }
 
   getBackgroundColor(index: number) {

@@ -15,12 +15,26 @@ export class ProjectService {
   };
   constructor(private http: HttpClient) {}
 
-  fetchProjects(): Observable<{
+  fetchProjects(
+    userId: string | null,
+    status: boolean | null,
+    page: number
+  ): Observable<{
     content: Project[];
     properties: PageProperties;
   }> {
+    let url = `${this.API_ENDPOINTS.PROJECT}?page=${page}`;
+
+    if (userId !== null) {
+      url += `&userId=${userId}`;
+    }
+
+    if (status !== null) {
+      url += `&status=${status}`;
+    }
+
     return this.http.get<{ content: Project[]; properties: PageProperties }>(
-      `${this.API_ENDPOINTS.PROJECT}`
+      url
     );
   }
 

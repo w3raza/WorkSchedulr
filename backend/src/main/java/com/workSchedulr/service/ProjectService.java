@@ -1,9 +1,7 @@
 package com.workSchedulr.service;
 
 import com.workSchedulr.exception.ProjectNotFoundException;
-import com.workSchedulr.exception.UserNotFoundException;
 import com.workSchedulr.model.Project;
-import com.workSchedulr.model.User;
 import com.workSchedulr.repository.ProjectRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,12 +22,13 @@ public class ProjectService {
         return projectRepository.findById(projectId).orElseThrow(ProjectNotFoundException::new);
     }
 
-    public Page<Project> getProjectByUserId(UUID userId, Pageable pageable){
-        if(userId != null) {
-            return projectRepository.findAllProjectsByUserId(userId, pageable);
-        }else{
-            return getAllProjects(pageable);
-        }
+    public Page<Project> getProjectsByParams(UUID userId, Boolean status, Pageable pageable){
+        return Optional.ofNullable(userId).map(user -> status != null ?
+                        projectRepository.findAllByUsersAndStatus(userId, status, pageable)
+                        : projectRepository.findAllProjectsByUserId(userId, pageable)
+                )
+                .orElseGet(() -> Optional.ofNullable(status).map(st -> projectRepository.findAllByStatus(status, pageable))
+                .orElse(getAllProjects(pageable)));
     }
 
     public Page<Project> getAllProjects(Pageable pageable){
