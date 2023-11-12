@@ -1,0 +1,97 @@
+<div class="ng-container row justify-content-center">
+  <div class="content col-4">
+    <ul class="nav nav-pills nav-justified mb-3" role="tablist">
+      <li
+        class="nav-item"
+        role="presentation"
+        *ngFor="let tab of ['login', 'register']; let i = index"
+      >
+        <button
+          [ngClass]="active == tab ? 'nav-link active' : 'nav-link'"
+          id="tab"
+          (click)="tab == 'login' ? onLoginTab() : onRegisterTab()"
+        >
+          {{ tab == "login" ? "Sign in" : "Sign up" }}
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <ng-container
+        *ngFor="let form of ['loginForm', 'registerForm']; let i = index"
+      >
+        <div
+          [ngClass]="
+            active == (i == 0 ? 'login' : 'register')
+              ? 'tab-pane fade show active'
+              : 'tab-pane fade'
+          "
+        >
+          <form [formGroup]="i == 0 ? loginForm : registerForm">
+            <ng-container *ngIf="i == 0">
+              <!-- Login Form Inputs -->
+              <ng-container *ngFor="let field of ['email', 'password']">
+                <input
+                  type="{{ field }}"
+                  formControlName="{{ field }}"
+                  placeholder="{{
+                    field.charAt(0).toUpperCase() + field.slice(1)
+                  }}"
+                  (blur)="onBlur(field)"
+                />
+                <!-- Display Errors -->
+                <ng-container *ngFor="let error of getControlErrors(field)">
+                  <div>{{ error }}</div>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="i == 1">
+              <!-- Register Form Inputs -->
+              <ng-container
+                *ngFor="
+                  let field of [
+                    'email',
+                    'password',
+                    'firstName',
+                    'lastName',
+                    'phone'
+                  ]
+                "
+              >
+                <input
+                  type="{{ getFieldType(field) }}"
+                  formControlName="{{ field }}"
+                  placeholder="{{
+                    field.charAt(0).toUpperCase() + field.slice(1)
+                  }}"
+                  (blur)="onBlur(field)"
+                />
+                <!-- Display Errors -->
+                <ng-container *ngFor="let error of getControlErrors(field)">
+                  <div>{{ error }}</div>
+                </ng-container>
+              </ng-container>
+              <div class="form-outline mb-4">
+                <input
+                  type="date"
+                  formControlName="birth"
+                  placeholder="Birth"
+                  class="form-control"
+                />
+              </div>
+            </ng-container>
+
+            <button
+              id="submit-button-{{ i }}"
+              [disabled]="!(i == 0 ? loginForm.valid : registerForm.valid)"
+              (click)="i == 0 ? login() : register()"
+            >
+              {{ i == 0 ? "Sign in" : "Sign up" }}
+            </button>
+          </form>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

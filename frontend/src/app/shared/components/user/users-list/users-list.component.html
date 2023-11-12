@@ -1,0 +1,95 @@
+<div class="users-container">
+  <mat-toolbar>
+    <mat-form-field
+      class="flex-fill"
+      appearance="fill"
+      [hideRequiredMarker]="true"
+    >
+      <mat-label>Role</mat-label>
+      <mat-select [(value)]="selectedRole" (selectionChange)="fetchUsers()">
+        <mat-option *ngFor="let role of roles" [value]="role">
+          {{ role }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field
+      class="flex-fill"
+      appearance="fill"
+      [hideRequiredMarker]="true"
+    >
+      <mat-label>Status</mat-label>
+      <mat-select [(value)]="selectedStatus" (selectionChange)="fetchUsers()">
+        <mat-option
+          *ngFor="let status of filterUserStatus"
+          [value]="status.value"
+        >
+          {{ status.viewValue }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <span class="spacer"></span>
+    <button mat-icon-button (click)="openAddUserModal()" matTooltip="Add">
+      <mat-icon>add</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <mat-table [dataSource]="users">
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+      <mat-cell *matCellDef="let user">
+        <a [routerLink]="['/user', user.id]">{{
+          user.firstName + " " + user.lastName
+        }}</a>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="role">
+      <mat-header-cell *matHeaderCellDef> Role </mat-header-cell>
+      <mat-cell *matCellDef="let user">
+        {{ user.userRoles.join(", ") }}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+      <mat-cell *matCellDef="let user">
+        <mat-slide-toggle
+          [(ngModel)]="user.status"
+          (change)="toggleUserStatus(user)"
+        >
+          {{ user.status ? "ENABLE" : "DISABLED" }}
+        </mat-slide-toggle>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="delete">
+      <mat-header-cell *matHeaderCellDef class="delete-column">
+      </mat-header-cell>
+      <mat-cell *matCellDef="let user" class="delete-column">
+        <button
+          mat-icon-button
+          (click)="deleteUser(user.email)"
+          matTooltip="Delete"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row
+      *matHeaderRowDef="['name', 'role', 'status', 'delete']"
+    ></mat-header-row>
+    <mat-row
+      *matRowDef="let row; columns: ['name', 'role', 'status', 'delete']"
+    ></mat-row>
+  </mat-table>
+
+  <mat-paginator
+    [length]="users.length"
+    [pageSize]="pageSize"
+    [pageIndex]="currentPage - 1"
+    (page)="pageChanged($event)"
+  ></mat-paginator>
+</div>

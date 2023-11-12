@@ -1,0 +1,72 @@
+<div>
+  <mat-toolbar>
+    <mat-form-field
+      *forRoles="[role.ADMIN]"
+      class="flex-fill"
+      appearance="fill"
+      [hideRequiredMarker]="true"
+    >
+      <mat-label>Status</mat-label>
+      <mat-select
+        [(value)]="selectedStatus"
+        (selectionChange)="fetchProjects()"
+      >
+        <mat-option
+          *ngFor="let status of filterProjectStatus"
+          [value]="status.value"
+        >
+          {{ status.viewValue }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="flex-fill" appearance="fill">
+      <mat-label>Search Projects</mat-label>
+      <input
+        type="text"
+        matInput
+        placeholder="Search Projects"
+        [formControl]="searchControl"
+        (selectionChange)="fetchProjects()"
+      />
+
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option
+          *ngFor="let project of filteredProjects | async"
+          [value]="project.title"
+        >
+          {{ project.title }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <span class="spacer">
+      <button
+        *forRoles="[role.ADMIN]"
+        class="create-btn"
+        mat-icon-button
+        (click)="openAddUserModal()"
+        matTooltip="Add"
+      >
+        <mat-icon>add</mat-icon>
+      </button>
+    </span>
+  </mat-toolbar>
+  <div class="content">
+    <div class="overflow-auto gap">
+      <div
+        *ngFor="let project of projects; index as i"
+        class="project-card-container"
+      >
+        <app-project-card
+          *ngIf="project"
+          [project]="project"
+          [backgroundStyle]="getBackgroundColor(i)"
+          [buttonStyle]="getButtonColor(i)"
+        >
+        </app-project-card>
+      </div>
+      <div class="w-100" *ngIf="!projects.length">
+        <h6 message="You don't have any active projects"></h6>
+      </div>
+    </div>
+  </div>
+</div>

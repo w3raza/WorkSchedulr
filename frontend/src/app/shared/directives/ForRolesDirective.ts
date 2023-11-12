@@ -5,15 +5,16 @@ import {
   ViewContainerRef,
   OnDestroy,
 } from "@angular/core";
-import { AuthService } from "src/app/auth/auth.service";
-import { LoginResponse } from "../models/loginResponse.model";
 import { Subscription } from "rxjs";
+import { UserService } from "../services/user.service";
+import { User } from "../models/user.model";
 
 @Directive({ selector: "[forRoles]" })
 export class ForRolesDirective implements OnDestroy {
   private roles: string[] = [];
-  private userLogin: LoginResponse | null = null;
+  private user: User | null = null;
   private subscription: Subscription;
+  private viewCreated: boolean = false;
 
   @Input()
   set forRoles(roles: string | string[]) {
@@ -24,14 +25,20 @@ export class ForRolesDirective implements OnDestroy {
   constructor(
     private viewContainer: ViewContainerRef,
     private templateRef: TemplateRef<string>,
-    private authService: AuthService
+    private userService: UserService
   ) {
-    this.subscription = this.authService.userLogin$.subscribe((userLogin) => {
-      if (userLogin) {
-        this.userLogin = userLogin;
-        this.updateView();
+    const token = localStorage.getItem("auth_token");
+    if (token) {
+      this.userService.ngOnInit();
+    }
+    this.subscription = this.userService.currentUser$.subscribe(
+      (currentUser) => {
+        if (currentUser) {
+          this.user = currentUser;
+          this.updateView();
+        }
       }
-    });
+    );
   }
 
   ngOnDestroy(): void {
@@ -43,15 +50,21 @@ export class ForRolesDirective implements OnDestroy {
   }
 
   private updateView() {
-    if (!this.userLogin || !this.userLogin.userRoles) return;
+    if (!this.user || !this.user.userRoles) {
+      this.viewContainer.clear();
+      this.viewCreated = false;
+      return;
+    }
 
-    const userRoles = convertToStringArray(this.userLogin.userRoles);
+    const userRoles = convertToStringArray(this.user.userRoles);
     const hasMatchingRole = userRoles.some((role) => this.roles.includes(role));
 
-    if (hasMatchingRole) {
+    if (hasMatchingRole && !this.viewCreated) {
       this.viewContainer.createEmbeddedView(this.templateRef);
-    } else {
+      this.viewCreated = true;
+    } else if (!hasMatchingRole && this.viewCreated) {
       this.viewContainer.clear();
+      this.viewCreated = false;
     }
   }
 }

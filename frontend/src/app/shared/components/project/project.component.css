@@ -1,0 +1,14 @@
+.mat-toolbar {
+  background-color: #2c2c2c;
+  color: white;
+}
+
+.overflow-auto {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+mat-form-field {
+  margin-top: 20px;
+}

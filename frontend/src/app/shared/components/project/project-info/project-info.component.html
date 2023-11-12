@@ -1,0 +1,133 @@
+<div class="project-profile">
+  <mat-dialog-actions>
+    <h2 mat-dialog-title>Project details</h2>
+    <button (click)="backToList()" class="back-btn" matTooltip="Cancel">
+      <mat-icon>keyboard_arrow_left</mat-icon>
+    </button>
+    <ng-container *forRoles="[role.ADMIN]">
+      <button
+        *ngIf="!editMode"
+        mat-icon-button
+        (click)="editProject()"
+        class="edit-btn"
+        matTooltip="Edit"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button
+        *ngIf="editMode"
+        mat-icon-button
+        class="cancel-btn"
+        (click)="editMode = false"
+        matTooltip="Cancel"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+      <button
+        *ngIf="!editMode"
+        mat-icon-button
+        (click)="deleteProject(project.id)"
+        class="delete-btn"
+        matTooltip="Delete"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button
+        *ngIf="editMode"
+        mat-icon-button
+        type="submit"
+        class="save-btn"
+        matTooltip="Save"
+        (click)="saveProject()"
+      >
+        <mat-icon>done</mat-icon>
+      </button>
+    </ng-container>
+  </mat-dialog-actions>
+
+  <form [formGroup]="projectForm" (ngSubmit)="editMode ? saveProject() : null">
+    <div class="project-field">
+      <label>Title:</label>
+      <div *ngIf="!editMode">{{ project.title }}</div>
+      <input *ngIf="editMode" formControlName="title" id="title" />
+    </div>
+    <div class="project-field">
+      <label>Total Hours:</label>
+      <div *ngIf="!editMode">{{ project.hours }}</div>
+      <input
+        *ngIf="editMode"
+        type="number"
+        formControlName="hours"
+        id="hours"
+      />
+    </div>
+    <div class="project-field">
+      <label>Created Date:</label>
+      <div *ngIf="!editMode">
+        {{ getCreatedDate() | date : "mediumDate" }}
+      </div>
+      <input
+        *ngIf="editMode"
+        type="date"
+        formControlName="createdDate"
+        id="createdDate"
+      />
+    </div>
+    <div class="project-field">
+      <label>Status:</label>
+      <div *ngIf="!editMode">
+        {{ project.status ? "Active" : "Inactive" }}
+      </div>
+      <select *ngIf="editMode" formControlName="status" id="status">
+        <option [value]="true">Active</option>
+        <option [value]="false">Inactive</option>
+      </select>
+    </div>
+    <div class="project-field">
+      <label>Project Owner:</label>
+      <div *ngIf="!editMode">
+        {{ project.owner.firstName + " " + project.owner.lastName }}
+      </div>
+      <mat-form-field *ngIf="editMode" appearance="fill">
+        <mat-select formControlName="owner">
+          <mat-option *ngFor="let owner of users" [value]="owner.name">
+            {{ owner.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="project-field">
+      <label>Project Managers:</label>
+      <div *ngIf="!editMode">
+        <div *ngFor="let manager of project.managers">
+          {{ manager.firstName + " " + manager.lastName }}
+        </div>
+      </div>
+      <mat-form-field *ngIf="editMode" appearance="fill">
+        <mat-label>Managers</mat-label>
+        <mat-select formControlName="managers" multiple>
+          <mat-option *ngFor="let manager of users" [value]="manager">
+            {{ manager.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="project-field">
+      <label>Project Users:</label>
+      <div *ngIf="!editMode">
+        <div *ngFor="let user of project.users">
+          {{ user.firstName + " " + user.lastName }}
+        </div>
+      </div>
+      <mat-form-field *ngIf="editMode" appearance="fill">
+        <mat-label>Users</mat-label>
+        <mat-select formControlName="users" multiple>
+          <mat-option *ngFor="let user of users" [value]="user">
+            {{ user.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
+</div>

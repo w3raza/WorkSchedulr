@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { NotificationService } from "./notification.service";
-import { AuthService } from "../../auth/auth.service";
+import { AuthService } from "./auth.service";
 
 @Injectable({
   providedIn: "root",
@@ -24,12 +24,14 @@ export class ErrorService {
 
     switch (error.status) {
       case 401:
+      case 403:
         this.authService.handleLogout();
         return "You are signed out";
+      case 0:
       case 503:
         return "Service Unavailable";
       default:
-        return `${error.message}`;
+        return `${error.message || "An unknown error occurred"}`;
     }
   }
 }

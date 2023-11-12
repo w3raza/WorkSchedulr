@@ -1,0 +1,23 @@
+.users-container {
+  padding: 10px;
+}
+
+mat-form-field {
+  margin-top: 20px;
+}
+
+a {
+  color: black;
+  font-weight: 450;
+  margin-left: 15px;
+  border: none;
+  text-decoration: none;
+  background-color: white;
+}
+
+.delete-column {
+  flex: 0 0 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
