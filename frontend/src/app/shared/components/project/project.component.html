@@ -9,7 +9,7 @@
       <mat-label>Status</mat-label>
       <mat-select
         [(value)]="selectedStatus"
-        (selectionChange)="fetchProjects(null)"
+        (selectionChange)="fetchProjects()"
       >
         <mat-option
           *ngFor="let status of filterProjectStatus"
@@ -26,7 +26,7 @@
         matInput
         placeholder="Search Projects"
         [formControl]="searchControl"
-        (selectionChange)="fetchProjects(null)"
+        (selectionChange)="fetchProjects()"
       />
 
       <mat-autocomplete #auto="matAutocomplete">

@@ -6,7 +6,7 @@ import { UserRole } from "../../enums/user-role.enum";
 import { ProjectCreateComponent } from "./project-create/project-create.component";
 import { PaginatorHelper } from "../../services/paginator.service.ts";
 import { AuthHelper } from "../../helper/auth.helper";
-import { Observable, debounceTime, map, startWith, switchMap } from "rxjs";
+import { Observable, debounceTime, map, startWith, switchMap, tap } from "rxjs";
 import { FormControl } from "@angular/forms";
 
 @Component({
@@ -24,6 +24,7 @@ export class ProjectComponent extends PaginatorHelper {
   selectedStatus: any = null;
 
   userId: string | null = null;
+  searchTerm: string | null = null;
 
   colors: string[] = [
     "rgba(92,41,0,0.2)",
@@ -51,14 +52,20 @@ export class ProjectComponent extends PaginatorHelper {
   ) {
     super();
     this.filterProjectStatus = this.initActiveStatus();
-    this.fetchProjects(null);
+    this.fetchProjects();
     if (!AuthHelper.checkIsAdmin()) {
       this.userId = AuthHelper.getCurrentUserId();
     }
+    this.initProjectSubscription();
+  }
 
+  private initProjectSubscription() {
     this.searchControl.valueChanges
       .pipe(
         debounceTime(300),
+        tap((searchTerm) => {
+          this.searchTerm = searchTerm;
+        }),
         switchMap((searchTerm) =>
           this.projectService.fetchProjects(
             this.userId,
@@ -81,12 +88,12 @@ export class ProjectComponent extends PaginatorHelper {
     ];
   }
 
-  fetchProjects(searchTerm: string | null) {
+  fetchProjects() {
     this.projectService
       .fetchProjects(
         this.userId,
         this.selectedStatus,
-        searchTerm,
+        this.searchTerm,
         this.currentPage - 1
       )
       .subscribe((data) => {
