@@ -54,10 +54,13 @@ public class User implements UserDetails {
   @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
   @JoinTable(
           name = "user_project",
-          joinColumns = @JoinColumn(name = "user_id"),
+          joinColumns = @JoinColumn(name = "owner_id"),
           inverseJoinColumns = @JoinColumn(name = "project_id")
   )
   Set<Project> projects = new HashSet<>();
+
+  @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+  List<CalendarEvent> calendarEvents = new ArrayList<>();
 
   public User() {
     this.userRoles.add(UserRole.ROLE_USER);

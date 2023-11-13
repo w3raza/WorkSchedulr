@@ -90,7 +90,6 @@ export class ProjectInfoComponent {
   }
 
   saveProject(): void {
-    console.log("Jestem");
     if (this.projectForm.valid) {
       const { title, hours, status, owner, managers, users } =
         this.projectForm.value;

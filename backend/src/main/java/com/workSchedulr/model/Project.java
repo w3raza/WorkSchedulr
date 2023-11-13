@@ -30,6 +30,7 @@ public class Project {
     private boolean status;
 
     @ManyToOne
+    @JoinColumn(name="owner_id", nullable=false)
     private User owner;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)

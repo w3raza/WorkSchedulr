@@ -10,6 +10,8 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import { INITIAL_EVENTS, createEventId } from "./event-utils";
+import { CalendarEventService } from "../../services/calendarEvent.service";
+import { AuthHelper } from "../../helper/auth.helper";
 
 @Component({
   selector: "app-calendar",
@@ -25,7 +27,7 @@ export class CalendarComponent {
       center: "title",
       right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
     },
-    initialView: "dayGridMonth",
+    initialView: "timeGridDay",
     initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
     weekends: true,
     editable: true,
@@ -42,7 +44,11 @@ export class CalendarComponent {
     */
   });
   currentEvents = signal<EventApi[]>([]);
-  constructor(private changeDetector: ChangeDetectorRef) {}
+
+  constructor(
+    private changeDetector: ChangeDetectorRef,
+    private calendarEventService: CalendarEventService
+  ) {}
 
   handleCalendarToggle() {
     this.calendarVisible.update((bool) => !bool);
@@ -61,12 +67,18 @@ export class CalendarComponent {
     calendarApi.unselect(); // clear date selection
 
     if (title) {
-      calendarApi.addEvent({
-        id: createEventId(),
+      const newEvent = {
         title,
         start: selectInfo.startStr,
         end: selectInfo.endStr,
         allDay: selectInfo.allDay,
+        // Dodaj tutaj userId
+      };
+
+      this.calendarEventService.createEvent(newEvent).subscribe({
+        next: (event) => {
+          calendarApi.addEvent(event);
+        },
       });
     }
   }
@@ -82,6 +94,24 @@ export class CalendarComponent {
 
   handleEvents(events: EventApi[]) {
     this.currentEvents.set(events);
-    this.changeDetector.detectChanges(); // workaround for pressionChangedAfterItHasBeenCheckedError
+    this.changeDetector.detectChanges();
+  }
+
+  ngOnInit() {
+    const userId = AuthHelper.getCurrentUserId();
+    console.log("userId " + userId);
+    if (userId) {
+      this.loadEventsForUser(userId);
+    }
+  }
+
+  loadEventsForUser(userId: string) {
+    this.calendarEventService.getEvents(userId).subscribe({
+      next: (events) => {
+        this.calendarOptions.mutate((options) => {
+          options.events = events;
+        });
+      },
+    });
   }
 }
