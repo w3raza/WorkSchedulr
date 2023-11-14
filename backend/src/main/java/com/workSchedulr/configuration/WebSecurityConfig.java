@@ -44,6 +44,9 @@ public class WebSecurityConfig {
             .requestMatchers(HttpMethod.PATCH, "/project/**").permitAll()
             .requestMatchers(HttpMethod.DELETE, "/project/**").permitAll()
             .requestMatchers(HttpMethod.GET, "/calendarEvent/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/calendarEvent/**").permitAll()
+            .requestMatchers(HttpMethod.PATCH, "/calendarEvent/**").permitAll()
+            .requestMatchers(HttpMethod.DELETE, "/calendarEvent/**").permitAll()
         // Disallow everything else..
             .anyRequest()
             .authenticated());

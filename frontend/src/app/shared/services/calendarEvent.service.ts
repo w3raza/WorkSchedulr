@@ -19,6 +19,7 @@ export class CalendarEventService {
   }
 
   createEvent(event: any): Observable<any> {
+    console.log(event);
     return this.http.post(`${this.API_ENDPOINTS.CALENDAR}`, event);
   }
 }

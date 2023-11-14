@@ -19,7 +19,7 @@ export class ErrorService {
 
   private getErrorMessage(error: HttpErrorResponse): string {
     if (error.error instanceof ErrorEvent) {
-      return `Error: ${error.error.message}`;
+      return `Error: ${error.error}`;
     }
 
     switch (error.status) {
@@ -31,7 +31,7 @@ export class ErrorService {
       case 503:
         return "Service Unavailable";
       default:
-        return `${error.message || "An unknown error occurred"}`;
+        return `${error.error || "An unknown error occurred"}`;
     }
   }
 }

@@ -6,7 +6,7 @@ import { UserRole } from "../../enums/user-role.enum";
 import { ProjectCreateComponent } from "./project-create/project-create.component";
 import { PaginatorHelper } from "../../services/paginator.service.ts";
 import { AuthHelper } from "../../helper/auth.helper";
-import { Observable, debounceTime, map, startWith, switchMap, tap } from "rxjs";
+import { Observable, debounceTime, switchMap, tap } from "rxjs";
 import { FormControl } from "@angular/forms";
 
 @Component({
@@ -47,14 +47,15 @@ export class ProjectComponent extends PaginatorHelper {
   ];
 
   constructor(
+    private authHelper: AuthHelper,
     private projectService: ProjectService,
     public dialog: MatDialog
   ) {
     super();
     this.filterProjectStatus = this.initActiveStatus();
     this.fetchProjects();
-    if (!AuthHelper.checkIsAdmin()) {
-      this.userId = AuthHelper.getCurrentUserId();
+    if (!this.authHelper.checkIsAdmin()) {
+      this.userId = this.authHelper.getCurrentUserId();
     }
     this.initProjectSubscription();
   }

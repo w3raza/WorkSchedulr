@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Data
@@ -21,19 +21,19 @@ public class CalendarEvent {
 
     @NotNull
     @Size(min = 5, max = 255, message = "Minimum title length: 5 characters")
-    String title;
+    private String title;
 
     @NotNull(message = "Time of start, can't be null")
-    private LocalDateTime startTime;
+    private ZonedDateTime startTime;
 
     @NotNull(message = "Time of end, can't be null")
-    private LocalDateTime endTime;
+    private ZonedDateTime endTime;
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
-    Project project;
+    private Project project;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    User owner;
+    private User owner;
 }

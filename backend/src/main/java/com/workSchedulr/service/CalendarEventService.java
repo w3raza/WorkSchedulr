@@ -12,8 +12,16 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CalendarEventService {
     private final CalendarEventRepository calendarEventRepository;
+    private final UserService userService;
 
     public List<CalendarEvent> getCalendarEventsForUser(UUID userId){
         return calendarEventRepository.findCalendarEventByOwner(userId);
+    }
+
+    public CalendarEvent createCalendarEvents(CalendarEvent calendarEvent){
+        if(calendarEvent.getOwner() == null){
+            calendarEvent.setOwner(userService.getCurrentUser());
+        }
+        return calendarEventRepository.save(calendarEvent);
     }
 }

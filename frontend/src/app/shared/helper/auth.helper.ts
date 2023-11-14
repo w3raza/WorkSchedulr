@@ -1,27 +1,35 @@
+import { Injectable } from "@angular/core";
+import { UserService } from "../services/user.service";
 import { UserRole } from "../enums/user-role.enum";
+import { User } from "../models/user.model";
 
+@Injectable({
+  providedIn: "root",
+})
 export class AuthHelper {
-  static getUserRole() {
+  constructor(private userService: UserService) {}
+
+  getUserRoles(): UserRole[] | null {
     const user = this.getCurrentUser();
     if (user) {
-      return JSON.parse(user).userRoles;
+      return user.userRoles;
     }
+    return null;
   }
 
-  static getCurrentUser(): string | null {
-    return localStorage.getItem("currentUser");
+  getCurrentUser(): User | null {
+    let currentUser: User | null = null;
+    this.userService.currentUser$.subscribe((user) => (currentUser = user));
+    return currentUser;
   }
 
-  static getCurrentUserId(): string | null {
+  getCurrentUserId(): string | null {
     const user = this.getCurrentUser();
-    if (user) {
-      return JSON.parse(user).id;
-    } else {
-      return null;
-    }
+    return user ? user.id : null;
   }
 
-  static checkIsAdmin(): boolean {
-    return AuthHelper.getUserRole() === UserRole.ADMIN;
+  checkIsAdmin(): boolean {
+    const roles = this.getUserRoles();
+    return roles ? roles.includes(UserRole.ADMIN) : false;
   }
 }

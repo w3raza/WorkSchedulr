@@ -46,6 +46,7 @@ export class CalendarComponent {
   currentEvents = signal<EventApi[]>([]);
 
   constructor(
+    private authHelper: AuthHelper,
     private changeDetector: ChangeDetectorRef,
     private calendarEventService: CalendarEventService
   ) {}
@@ -66,13 +67,16 @@ export class CalendarComponent {
 
     calendarApi.unselect(); // clear date selection
 
+    const user = this.authHelper.getCurrentUser();
+
     if (title) {
       const newEvent = {
+        id: null,
         title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay,
-        // Dodaj tutaj userId
+        startTime: selectInfo.startStr,
+        endTime: selectInfo.endStr,
+        project: null,
+        owner: user,
       };
 
       this.calendarEventService.createEvent(newEvent).subscribe({
@@ -98,7 +102,7 @@ export class CalendarComponent {
   }
 
   ngOnInit() {
-    const userId = AuthHelper.getCurrentUserId();
+    const userId = this.authHelper.getCurrentUserId();
     console.log("userId " + userId);
     if (userId) {
       this.loadEventsForUser(userId);
