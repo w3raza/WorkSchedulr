@@ -1,3 +1,24 @@
-::ng-deep .cdk-overlay-container {
-  z-index: 1000; /* or a value higher than the calendar's z-index */
+.modal-overlay {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 500px;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #1a1a1a;
+}
+
+.modal-content {
+  padding: 20px;
+  border-radius: 5px;
+  width: 50%;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

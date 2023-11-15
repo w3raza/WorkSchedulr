@@ -10,7 +10,6 @@ export class EventComponent implements IEventComponent {
   taskDescription: string = "";
   selectedProject: string = "";
   selectedType: string = "";
-  issueTracker: string = "";
 
   // Implement the interface properties
   @Output() close = new EventEmitter<void>();
@@ -19,12 +18,12 @@ export class EventComponent implements IEventComponent {
   // Other component properties and methods
 
   // Method to close the modal
-  onCancel() {
+  closeModal() {
     this.close.emit();
   }
 
   // Method to submit the modal's data
-  onSubmit() {
+  submitModal() {
     // Here, we would gather all the form data into an object
     const eventData = {
       description: this.taskDescription,
@@ -35,6 +34,6 @@ export class EventComponent implements IEventComponent {
     // Emit the task data to the parent component
     this.submit.emit(eventData);
     // Close the modal
-    this.onCancel();
+    this.closeModal();
   }
 }
