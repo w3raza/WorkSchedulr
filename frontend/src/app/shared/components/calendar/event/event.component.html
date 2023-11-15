@@ -1,0 +1,42 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <h2 mat-dialog-title>Task Manager</h2>
+    <mat-dialog-content class="mat-typography">
+      <!-- Your form fields go here -->
+      <form>
+        <!-- Task Description -->
+        <mat-form-field appearance="fill">
+          <mat-label>Task description</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="taskDescription"
+            name="taskDescription"
+          ></textarea>
+        </mat-form-field>
+        <!-- Project Dropdown -->
+        <mat-form-field appearance="fill">
+          <mat-label>Project</mat-label>
+          <mat-select [(ngModel)]="selectedProject" name="project">
+            <!-- Options go here -->
+          </mat-select>
+        </mat-form-field>
+        <!-- Issue Tracker Input -->
+        <mat-form-field appearance="fill">
+          <mat-label>Issue Tracker</mat-label>
+          <input matInput [(ngModel)]="issueTracker" name="issueTracker" />
+        </mat-form-field>
+        <!-- Type Dropdown -->
+        <mat-form-field appearance="fill">
+          <mat-label>Type</mat-label>
+          <mat-select [(ngModel)]="selectedType" name="type">
+            <!-- Options go here -->
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="onCancel()">Cancel</button>
+      <button mat-button color="primary" (click)="onSubmit()">Submit</button>
+    </mat-dialog-actions>
+  </div>
+</div>

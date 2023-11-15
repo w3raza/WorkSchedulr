@@ -48,6 +48,7 @@ import { ProjectCardComponent } from "./shared/components/project/project-card/p
 import { ProjectInfoComponent } from "./shared/components/project/project-info/project-info.component";
 import { ConfirmDialogComponent } from "./shared/components/confirm-dialog/confirm-dialog.component";
 import { ProjectCreateComponent } from "./shared/components/project/project-create/project-create.component";
+import { EventComponent } from "./shared/components/calendar/event/event.component";
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { ProjectCreateComponent } from "./shared/components/project/project-crea
     ProjectInfoComponent,
     ConfirmDialogComponent,
     ProjectCreateComponent,
+    EventComponent,
   ],
   imports: [
     BrowserModule,

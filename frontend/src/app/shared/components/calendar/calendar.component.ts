@@ -1,4 +1,9 @@
-import { Component, signal, ChangeDetectorRef } from "@angular/core";
+import {
+  Component,
+  signal,
+  ChangeDetectorRef,
+  ViewContainerRef,
+} from "@angular/core";
 import {
   CalendarOptions,
   DateSelectArg,
@@ -9,9 +14,11 @@ import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
-import { INITIAL_EVENTS, createEventId } from "./event-utils";
+import { INITIAL_EVENTS } from "./event-utils";
 import { CalendarEventService } from "../../services/calendarEvent.service";
 import { AuthHelper } from "../../helper/auth.helper";
+import { EventComponent } from "./event/event.component";
+import { ModalService } from "../../services/modal.service";
 
 @Component({
   selector: "app-calendar",
@@ -28,7 +35,7 @@ export class CalendarComponent {
       right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
     },
     initialView: "timeGridDay",
-    initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
+    initialEvents: INITIAL_EVENTS,
     weekends: true,
     editable: true,
     selectable: true,
@@ -48,8 +55,12 @@ export class CalendarComponent {
   constructor(
     private authHelper: AuthHelper,
     private changeDetector: ChangeDetectorRef,
-    private calendarEventService: CalendarEventService
-  ) {}
+    private calendarEventService: CalendarEventService,
+    private modalService: ModalService,
+    private viewContainerRef: ViewContainerRef
+  ) {
+    this.modalService.setViewContainerRef(this.viewContainerRef);
+  }
 
   handleCalendarToggle() {
     this.calendarVisible.update((bool) => !bool);
@@ -62,30 +73,31 @@ export class CalendarComponent {
   }
 
   handleDateSelect(selectInfo: DateSelectArg) {
-    const title = prompt("Please enter a new title for your event");
-    const calendarApi = selectInfo.view.calendar;
+    this.modalService.openModal(EventComponent).then((result) => {
+      const calendarApi = selectInfo.view.calendar;
+      calendarApi.unselect();
 
-    calendarApi.unselect(); // clear date selection
+      const user = this.authHelper.getCurrentUser();
 
-    const user = this.authHelper.getCurrentUser();
+      if (result) {
+        const newEvent = {
+          id: null,
+          result,
+          startTime: selectInfo.startStr,
+          endTime: selectInfo.endStr,
+          project: null,
+          owner: user,
+        };
 
-    if (title) {
-      const newEvent = {
-        id: null,
-        title,
-        startTime: selectInfo.startStr,
-        endTime: selectInfo.endStr,
-        project: null,
-        owner: user,
-      };
-
-      this.calendarEventService.createEvent(newEvent).subscribe({
-        next: (event) => {
-          calendarApi.addEvent(event);
-        },
-      });
-    }
+        this.calendarEventService.createEvent(newEvent).subscribe({
+          next: (event) => {
+            calendarApi.addEvent(event);
+          },
+        });
+      }
+    });
   }
+
   handleEventClick(clickInfo: EventClickArg) {
     if (
       confirm(
