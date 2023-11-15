@@ -1,24 +1,28 @@
-<div class="modal-overlay">
-  <div class="modal-content">
-    <header class="modal-header">
-      <h2>Task Manager</h2>
-      <button (click)="closeModal()">&times;</button>
-    </header>
-    <section class="modal-body">
-      <!-- Your form fields go here -->
-      <form (ngSubmit)="submitModal()">
-        <div class="form-group">
-          <label for="taskDescription">New task:</label>
-          <textarea
-            id="taskDescription"
-            [(ngModel)]="taskDescription"
-            name="taskDescription"
-          ></textarea>
-        </div>
-        <!-- Additional form fields for Project, Issue Tracker, and Type -->
-        <button type="submit">Submit</button>
-        <button type="button" (click)="closeModal()">Cancel</button>
-      </form>
-    </section>
-  </div>
+<div class="container">
+  <mat-dialog-actions>
+    <h2 mat-dialog-title>Task Manager</h2>
+    <button mat-icon-button mat-dialog-close matTooltip="Cancel">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </mat-dialog-actions>
+  <mat-dialog-content class="mat-typography">
+    <form class="">
+      <mat-form-field appearance="fill">
+        <mat-label>Task description</mat-label>
+        <textarea
+          matInput
+          [(ngModel)]="taskDescription"
+          name="taskDescription"
+        ></textarea>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Project</mat-label>
+        <mat-select [(ngModel)]="selectedProject" name="project"> </mat-select>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-button color="primary" (click)="onSubmit()">Submit</button>
+  </mat-dialog-actions>
 </div>

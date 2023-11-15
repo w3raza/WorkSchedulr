@@ -18,7 +18,7 @@ import { INITIAL_EVENTS } from "./event-utils";
 import { CalendarEventService } from "../../services/calendarEvent.service";
 import { AuthHelper } from "../../helper/auth.helper";
 import { EventComponent } from "./event/event.component";
-import { ModalService } from "../../services/modal.service";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: "app-calendar",
@@ -56,11 +56,8 @@ export class CalendarComponent {
     private authHelper: AuthHelper,
     private changeDetector: ChangeDetectorRef,
     private calendarEventService: CalendarEventService,
-    private modalService: ModalService,
-    private viewContainerRef: ViewContainerRef
-  ) {
-    this.modalService.setViewContainerRef(this.viewContainerRef);
-  }
+    public dialog: MatDialog
+  ) {}
 
   handleCalendarToggle() {
     this.calendarVisible.update((bool) => !bool);
@@ -73,7 +70,12 @@ export class CalendarComponent {
   }
 
   handleDateSelect(selectInfo: DateSelectArg) {
-    this.modalService.openModal(EventComponent).then((result) => {
+    const dialogRef = this.dialog.open(EventComponent, {
+      width: "400px",
+      height: "350px",
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
       const calendarApi = selectInfo.view.calendar;
       calendarApi.unselect();
 
@@ -82,10 +84,10 @@ export class CalendarComponent {
       if (result) {
         const newEvent = {
           id: null,
-          result,
+          title: result.title,
           startTime: selectInfo.startStr,
           endTime: selectInfo.endStr,
-          project: null,
+          project: result.project,
           owner: user,
         };
 

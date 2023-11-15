@@ -1,39 +1,27 @@
-import { Component, Output, EventEmitter } from "@angular/core";
-import { IEventComponent } from "./ievent.component";
+import { Component } from "@angular/core";
+import { MatDialogRef } from "@angular/material/dialog";
 
 @Component({
-  selector: "app-modal",
+  selector: "app-event",
   templateUrl: "./event.component.html",
   styleUrls: ["./event.component.css"],
 })
-export class EventComponent implements IEventComponent {
+export class EventComponent {
   taskDescription: string = "";
   selectedProject: string = "";
-  selectedType: string = "";
 
-  // Implement the interface properties
-  @Output() close = new EventEmitter<void>();
-  @Output() submit = new EventEmitter<any>(); // Again, replace 'any' with your data type
+  constructor(public dialogRef: MatDialogRef<EventComponent>) {}
 
-  // Other component properties and methods
-
-  // Method to close the modal
-  closeModal() {
-    this.close.emit();
+  onCancel() {
+    this.dialogRef.close();
   }
 
-  // Method to submit the modal's data
-  submitModal() {
-    // Here, we would gather all the form data into an object
+  onSubmit() {
     const eventData = {
       description: this.taskDescription,
       project: this.selectedProject,
-      type: this.selectedType,
-      // ... any other data fields
     };
-    // Emit the task data to the parent component
-    this.submit.emit(eventData);
-    // Close the modal
-    this.closeModal();
+    this.dialogRef.close(eventData);
+    this.onCancel();
   }
 }
