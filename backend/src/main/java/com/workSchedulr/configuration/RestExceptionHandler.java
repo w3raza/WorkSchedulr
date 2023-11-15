@@ -1,23 +1,23 @@
 package com.workSchedulr.configuration;
 
 import com.workSchedulr.exception.CustomException;
+import com.workSchedulr.exception.UserNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 public class RestExceptionHandler {
 
-    @ExceptionHandler(value = { CustomException.class })
-    @ResponseBody
-    public ResponseEntity<?> handleException(CustomException ex) {
-        return ResponseEntity
-                .status(ex.getHttpStatus())
-                .body((ex.getMessage()));
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException ex) {
+        return ResponseEntity.status(ex.getStatusCode()).body(ex.getReason());
     }
 
     @ExceptionHandler(value = { ConstraintViolationException.class })

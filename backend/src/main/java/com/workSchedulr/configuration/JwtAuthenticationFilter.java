@@ -1,7 +1,6 @@
 package com.workSchedulr.configuration;
 
 import com.workSchedulr.exception.CustomException;
-import io.jsonwebtoken.InvalidClaimException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
@@ -21,6 +19,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -34,9 +33,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (CustomException ex) {
-            //this is very important, since it guarantees the user is not authenticated at all
             SecurityContextHolder.clearContext();
             response.sendError(ex.getHttpStatus().value(), ex.getMessage());
+            return;
+        } catch (Exception e) {
+            SecurityContextHolder.clearContext();
+            response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server error");
             return;
         }
         filterChain.doFilter(request, response);
