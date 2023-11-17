@@ -12,7 +12,7 @@ import { ValidatorsService } from "../../services/validators.service";
 })
 export class UserComponent {
   userForm!: FormGroup;
-  user: User = new User("", "", "", "", "", "", "", false, false, []);
+  user: User = new User("", "", "", "", "", "", "", false, false, [], [], []);
   isEditing = false;
   control: keyof User | null = null;
 

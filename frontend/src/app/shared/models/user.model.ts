@@ -1,4 +1,6 @@
 import { UserRole } from "../enums/user-role.enum";
+import { CalendarEvent } from "./calendar-event.model";
+import { Project } from "./project.modal";
 
 export class User {
   constructor(
@@ -11,6 +13,8 @@ export class User {
     public birth: string,
     public student: boolean,
     public status: boolean,
-    public userRoles: UserRole[]
+    public userRoles: UserRole[],
+    public projects: Project[],
+    public calendarEvents: CalendarEvent[]
   ) {}
 }

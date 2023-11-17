@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Repository
 public interface CalendarEventRepository extends JpaRepository<CalendarEvent, UUID> {
-    @Query("SELECT c FROM User u JOIN u.projects c WHERE u.id = :userId")
+    @Query("SELECT c FROM User u JOIN u.calendarEvents c WHERE u.id = :userId")
 
     List<CalendarEvent> findCalendarEventByOwner(UUID userId);
 }

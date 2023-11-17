@@ -82,7 +82,9 @@ export class UserCreateComponent {
       birth,
       student,
       false,
-      [UserRole[role as keyof typeof UserRole]]
+      [UserRole[role as keyof typeof UserRole]],
+      [],
+      []
     );
     this.userService.createUser(user).subscribe((createdUser) => {
       if (createdUser) {

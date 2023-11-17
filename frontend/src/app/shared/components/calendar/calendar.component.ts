@@ -19,6 +19,7 @@ import { CalendarEventService } from "../../services/calendarEvent.service";
 import { AuthHelper } from "../../helper/auth.helper";
 import { EventComponent } from "./event/event.component";
 import { MatDialog } from "@angular/material/dialog";
+import { CalendarEvent } from "../../models/calendar-event.model";
 
 @Component({
   selector: "app-calendar",
@@ -76,20 +77,21 @@ export class CalendarComponent {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
+      console.log("Received result from dialog:", result);
+
       const calendarApi = selectInfo.view.calendar;
       calendarApi.unselect();
 
       const user = this.authHelper.getCurrentUser();
-
-      if (result) {
-        const newEvent = {
-          id: null,
-          title: result.title,
-          startTime: selectInfo.startStr,
-          endTime: selectInfo.endStr,
-          project: result.project,
-          owner: user,
-        };
+      if (result && user) {
+        const newEvent = new CalendarEvent(
+          "",
+          result.description,
+          selectInfo.startStr,
+          selectInfo.endStr,
+          result.project,
+          user
+        );
 
         this.calendarEventService.createEvent(newEvent).subscribe({
           next: (event) => {

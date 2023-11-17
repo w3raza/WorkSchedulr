@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
+import { CalendarEvent } from "../models/calendar-event.model";
 
 @Injectable({
   providedIn: "root",
@@ -18,8 +19,11 @@ export class CalendarEventService {
     return this.http.get(`${this.API_ENDPOINTS.CALENDAR}?userId=${userId}`);
   }
 
-  createEvent(event: any): Observable<any> {
+  createEvent(event: CalendarEvent): Observable<CalendarEvent> {
     console.log(event);
-    return this.http.post(`${this.API_ENDPOINTS.CALENDAR}`, event);
+    return this.http.post<CalendarEvent>(
+      `${this.API_ENDPOINTS.CALENDAR}`,
+      event
+    );
   }
 }

@@ -20,8 +20,8 @@ public class CalendarEvent {
     private UUID id;
 
     @NotNull
-    @Size(min = 5, max = 255, message = "Minimum title length: 5 characters")
-    private String title;
+    @Size(min = 5, max = 255, message = "Minimum description length: 5 characters")
+    private String description;
 
     @NotNull(message = "Time of start, can't be null")
     private ZonedDateTime startTime;
@@ -35,5 +35,5 @@ public class CalendarEvent {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User owner;
+    private User user;
 }

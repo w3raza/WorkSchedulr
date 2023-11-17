@@ -17,7 +17,11 @@
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Project</mat-label>
-        <mat-select [(ngModel)]="selectedProject" name="project"> </mat-select>
+        <mat-select [(ngModel)]="selectedProject" name="project">
+          <mat-option *ngFor="let project of projects" [value]="project"
+            >{{ project.title }}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
     </form>
   </mat-dialog-content>

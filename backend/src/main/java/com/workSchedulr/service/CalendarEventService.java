@@ -19,8 +19,8 @@ public class CalendarEventService {
     }
 
     public CalendarEvent createCalendarEvents(CalendarEvent calendarEvent){
-        if(calendarEvent.getOwner() == null){
-            calendarEvent.setOwner(userService.getCurrentUser());
+        if(calendarEvent.getUser() == null){
+            calendarEvent.setUser(userService.getCurrentUser());
         }
         return calendarEventRepository.save(calendarEvent);
     }
