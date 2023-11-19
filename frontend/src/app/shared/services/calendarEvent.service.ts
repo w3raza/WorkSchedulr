@@ -15,8 +15,10 @@ export class CalendarEventService {
 
   constructor(private http: HttpClient) {}
 
-  getEvents(userId: string): Observable<any> {
-    return this.http.get(`${this.API_ENDPOINTS.CALENDAR}?userId=${userId}`);
+  getEvents(userId: string | null): Observable<CalendarEvent[]> {
+    return this.http.get<CalendarEvent[]>(
+      `${this.API_ENDPOINTS.CALENDAR}?userId=${userId}`
+    );
   }
 
   createEvent(event: CalendarEvent): Observable<CalendarEvent> {

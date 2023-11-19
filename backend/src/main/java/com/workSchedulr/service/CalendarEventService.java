@@ -3,8 +3,11 @@ package com.workSchedulr.service;
 import com.workSchedulr.model.CalendarEvent;
 import com.workSchedulr.repository.CalendarEventRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,9 +22,20 @@ public class CalendarEventService {
     }
 
     public CalendarEvent createCalendarEvents(CalendarEvent calendarEvent){
-        if(calendarEvent.getUser() == null){
-            calendarEvent.setUser(userService.getCurrentUser());
+        if(isValid(calendarEvent)) {
+            if (calendarEvent.getUser() == null) {
+                calendarEvent.setUser(userService.getCurrentUser());
+            }
+            return calendarEventRepository.save(calendarEvent);
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Events cannot overlap");
         }
-        return calendarEventRepository.save(calendarEvent);
+    }
+
+    private Boolean isValid(CalendarEvent event) {
+        ZonedDateTime start = event.getStartTime();
+        ZonedDateTime end = event.getEndTime();
+
+        return calendarEventRepository.findOverlappingEvents(event.getUser().getId(), start, end).isEmpty();
     }
 }

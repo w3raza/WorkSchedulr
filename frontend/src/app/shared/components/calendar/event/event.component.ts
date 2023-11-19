@@ -1,5 +1,5 @@
-import { Component } from "@angular/core";
-import { MatDialogRef } from "@angular/material/dialog";
+import { Component, Inject } from "@angular/core";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { AuthHelper } from "src/app/shared/helper/auth.helper";
 import { Project } from "src/app/shared/models/project.modal";
 import { ProjectService } from "src/app/shared/services/project.service";
@@ -14,17 +14,12 @@ export class EventComponent {
   selectedProject!: Project;
 
   projects: Project[] = [];
-  userId: string | null = null;
 
   constructor(
     public dialogRef: MatDialogRef<EventComponent>,
-    private authHelper: AuthHelper,
-    private projectService: ProjectService
+    @Inject(MAT_DIALOG_DATA) public data: { projects: Project[] }
   ) {
-    if (!this.authHelper.checkIsAdmin()) {
-      this.userId = this.authHelper.getCurrentUserId();
-    }
-    this.getAllProjectsForUser();
+    this.projects = data.projects;
   }
 
   onCancel() {
@@ -36,15 +31,6 @@ export class EventComponent {
       description: this.taskDescription,
       project: this.selectedProject,
     };
-    console.log("eventData before closing dialog:", eventData);
     this.dialogRef.close(eventData);
-  }
-
-  private getAllProjectsForUser(): void {
-    this.projectService
-      .fetchProjects(this.userId, null, null, 0)
-      .subscribe((data) => {
-        this.projects = [...data.content];
-      });
   }
 }

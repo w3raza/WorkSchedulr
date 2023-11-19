@@ -4,9 +4,9 @@ import { User } from "./user.model";
 export class CalendarEvent {
   constructor(
     public id: string,
-    public description: string,
-    public startTime: string,
-    public endTime: string,
+    public title: string,
+    public startTime: Date,
+    public endTime: Date,
     public project: Project,
     public user: User
   ) {}

@@ -4,7 +4,6 @@ import com.workSchedulr.dto.CalendarEventDTO;
 import com.workSchedulr.mapper.CalendarEventMapper;
 import com.workSchedulr.model.CalendarEvent;
 import com.workSchedulr.service.CalendarEventService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

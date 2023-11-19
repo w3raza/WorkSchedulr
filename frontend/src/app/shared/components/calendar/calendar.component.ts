@@ -1,9 +1,4 @@
-import {
-  Component,
-  signal,
-  ChangeDetectorRef,
-  ViewContainerRef,
-} from "@angular/core";
+import { Component, signal, ChangeDetectorRef } from "@angular/core";
 import {
   CalendarOptions,
   DateSelectArg,
@@ -20,6 +15,9 @@ import { AuthHelper } from "../../helper/auth.helper";
 import { EventComponent } from "./event/event.component";
 import { MatDialog } from "@angular/material/dialog";
 import { CalendarEvent } from "../../models/calendar-event.model";
+import { CalendarHelper } from "../../helper/calendar.helper";
+import { Project } from "../../models/project.modal";
+import { ProjectService } from "../../services/project.service";
 
 @Component({
   selector: "app-calendar",
@@ -53,12 +51,55 @@ export class CalendarComponent {
   });
   currentEvents = signal<EventApi[]>([]);
 
+  projects: Project[] = [];
+  projectsId: Array<string> = [];
+  userId: string | null = null;
+
   constructor(
     private authHelper: AuthHelper,
+    private projectService: ProjectService,
     private changeDetector: ChangeDetectorRef,
     private calendarEventService: CalendarEventService,
     public dialog: MatDialog
-  ) {}
+  ) {
+    this.fetchEvents();
+
+    if (!this.authHelper.checkIsAdmin()) {
+      this.userId = this.authHelper.getCurrentUserId();
+    }
+    this.getAllProjectsForUser();
+  }
+
+  fetchEvents(): void {
+    const userId = this.authHelper.getCurrentUserId();
+    this.calendarEventService.getEvents(userId).subscribe({
+      next: (events: CalendarEvent[]) => {
+        const fullCalendarEvents = events.map((event) => ({
+          id: event.id,
+          title: event.title,
+          start: event.startTime,
+          end: event.endTime,
+          allDay: false,
+          backgroundColor: CalendarHelper.setColor(
+            event.project.id,
+            this.projectsId
+          ),
+        }));
+        this.calendarOptions.mutate((options) => {
+          options.events = fullCalendarEvents;
+        });
+      },
+    });
+  }
+
+  private getAllProjectsForUser(): void {
+    this.projectService
+      .fetchProjects(this.userId, null, null, 0)
+      .subscribe((data) => {
+        this.projects = [...data.content];
+        this.projectsId = this.projects?.map((project) => project.id);
+      });
+  }
 
   handleCalendarToggle() {
     this.calendarVisible.update((bool) => !bool);
@@ -74,31 +115,29 @@ export class CalendarComponent {
     const dialogRef = this.dialog.open(EventComponent, {
       width: "400px",
       height: "350px",
+      data: { projects: this.projects },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log("Received result from dialog:", result);
-
       const calendarApi = selectInfo.view.calendar;
-      calendarApi.unselect();
 
       const user = this.authHelper.getCurrentUser();
       if (result && user) {
         const newEvent = new CalendarEvent(
           "",
           result.description,
-          selectInfo.startStr,
-          selectInfo.endStr,
+          selectInfo.start,
+          selectInfo.end,
           result.project,
           user
         );
 
-        this.calendarEventService.createEvent(newEvent).subscribe({
-          next: (event) => {
-            calendarApi.addEvent(event);
-          },
+        this.calendarEventService.createEvent(newEvent).subscribe((event) => {
+          console.log(event);
+          calendarApi.addEvent(event, true);
         });
       }
+      calendarApi.unselect();
     });
   }
 
@@ -115,23 +154,5 @@ export class CalendarComponent {
   handleEvents(events: EventApi[]) {
     this.currentEvents.set(events);
     this.changeDetector.detectChanges();
-  }
-
-  ngOnInit() {
-    const userId = this.authHelper.getCurrentUserId();
-    console.log("userId " + userId);
-    if (userId) {
-      this.loadEventsForUser(userId);
-    }
-  }
-
-  loadEventsForUser(userId: string) {
-    this.calendarEventService.getEvents(userId).subscribe({
-      next: (events) => {
-        this.calendarOptions.mutate((options) => {
-          options.events = events;
-        });
-      },
-    });
   }
 }
