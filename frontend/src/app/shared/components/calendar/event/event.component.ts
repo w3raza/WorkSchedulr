@@ -11,7 +11,7 @@ import { ProjectService } from "src/app/shared/services/project.service";
   styleUrls: ["./event.component.css"],
 })
 export class EventComponent {
-  taskDescription: string = "";
+  title: string = "";
   selectedProject!: Project;
   existingEventId?: string;
 
@@ -26,7 +26,7 @@ export class EventComponent {
     this.projects = data.projects;
     if (data.event) {
       this.existingEventId = data.event.id;
-      this.taskDescription = data.event.title.split(this.projectNameInfo)[0]; // Extracting the original title
+      this.title = data.event.title.split(this.projectNameInfo)[0]; // Extracting the original title
       this.selectedProject = data.event.project;
     }
   }
@@ -38,7 +38,7 @@ export class EventComponent {
   onSubmit() {
     const eventData = {
       id: this.existingEventId,
-      description: this.taskDescription,
+      title: this.title,
       project: this.selectedProject,
     };
     this.dialogRef.close(eventData);

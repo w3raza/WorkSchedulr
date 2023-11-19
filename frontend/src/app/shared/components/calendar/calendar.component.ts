@@ -135,7 +135,7 @@ export class CalendarComponent {
       if (result && user) {
         const newEvent = new CalendarEvent(
           "",
-          result.description,
+          result.title,
           selectInfo.start,
           selectInfo.end,
           result.project,
@@ -177,6 +177,22 @@ export class CalendarComponent {
           this.updateEvent(result).subscribe((updatedEvent) => {
             if (updatedEvent) {
               this.notification.showSuccess("Event updated");
+              let calendarEvent = clickInfo.event;
+
+              calendarEvent.setProp(
+                "title",
+                `${
+                  updatedEvent.title.split(this.projectNameInfo)[0]
+                }${this.getProjectName(updatedEvent)}`
+              );
+              calendarEvent.setExtendedProp("project", updatedEvent.project);
+              calendarEvent.setProp(
+                "backgroundColor",
+                CalendarHelper.setColor(
+                  updatedEvent.project.id,
+                  this.projectsId
+                )
+              );
             }
           });
         }
