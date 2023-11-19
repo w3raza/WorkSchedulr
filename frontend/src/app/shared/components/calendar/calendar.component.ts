@@ -4,6 +4,7 @@ import {
   DateSelectArg,
   EventClickArg,
   EventApi,
+  EventChangeArg,
 } from "@fullcalendar/core";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -45,11 +46,9 @@ export class CalendarComponent {
     select: this.handleDateSelect.bind(this),
     eventClick: this.handleEventClick.bind(this),
     eventsSet: this.handleEvents.bind(this),
-    /* you can update a remote database when these fire:
-    eventAdd:
-    eventChange:
-    eventRemove:
-    */
+    // eventAdd:
+    eventChange: this.handleEventChange.bind(this),
+    // eventRemove:
   });
   currentEvents = signal<EventApi[]>([]);
 
@@ -98,19 +97,6 @@ export class CalendarComponent {
     });
   }
 
-  getProjectName(calendar: CalendarEvent): string {
-    return this.projectNameInfo + calendar.project.title;
-  }
-
-  private getAllProjectsForUser(): void {
-    this.projectService
-      .fetchProjects(this.userId, null, null, 0)
-      .subscribe((data) => {
-        this.projects = [...data.content];
-        this.projectsId = this.projects?.map((project) => project.id);
-      });
-  }
-
   handleCalendarToggle() {
     this.calendarVisible.update((bool) => !bool);
   }
@@ -130,8 +116,8 @@ export class CalendarComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       const calendarApi = selectInfo.view.calendar;
-
       const user = this.authHelper.getCurrentUser();
+
       if (result && user) {
         const newEvent = new CalendarEvent(
           "",
@@ -143,6 +129,9 @@ export class CalendarComponent {
         );
 
         this.calendarEventService.createEvent(newEvent).subscribe((event) => {
+          event.title = `${
+            event.title.split(this.projectNameInfo)[0]
+          }${this.getProjectName(event)}`;
           calendarApi.addEvent(event, true);
         });
       }
@@ -166,37 +155,80 @@ export class CalendarComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        if (result.delete) {
-          this.deleteEvent(result.id).subscribe((note) => {
-            if (note) {
-              this.notification.showSuccess(note);
-            }
-          });
-          clickInfo.event.remove();
-        } else {
-          this.updateEvent(result).subscribe((updatedEvent) => {
-            if (updatedEvent) {
-              this.notification.showSuccess("Event updated");
-              let calendarEvent = clickInfo.event;
-
-              calendarEvent.setProp(
-                "title",
-                `${
-                  updatedEvent.title.split(this.projectNameInfo)[0]
-                }${this.getProjectName(updatedEvent)}`
-              );
-              calendarEvent.setExtendedProp("project", updatedEvent.project);
-              calendarEvent.setProp(
-                "backgroundColor",
-                CalendarHelper.setColor(
-                  updatedEvent.project.id,
-                  this.projectsId
-                )
-              );
-            }
-          });
-        }
+        this.processEventUpdate(result, clickInfo);
       }
+    });
+  }
+
+  handleEventChange(changeInfo: EventChangeArg) {
+    const updatedEvent = {
+      id: changeInfo.event.id,
+      title: changeInfo.event.title,
+      start: changeInfo.event.start,
+      end: changeInfo.event.end,
+    };
+
+    this.updateEventOnServer(updatedEvent);
+  }
+
+  handleEvents(events: EventApi[]) {
+    this.currentEvents.set(events);
+    this.changeDetector.detectChanges();
+  }
+
+  private getProjectName(calendar: CalendarEvent): string {
+    return this.projectNameInfo + calendar.project.title;
+  }
+
+  private getAllProjectsForUser(): void {
+    this.projectService
+      .fetchProjects(this.userId, null, null, 0)
+      .subscribe((data) => {
+        this.projects = [...data.content];
+        this.projectsId = this.projects?.map((project) => project.id);
+      });
+  }
+
+  private processEventUpdate(result: any, clickInfo: EventClickArg) {
+    if (result.delete) {
+      this.deleteEvent(result.id).subscribe((note) => {
+        if (note) {
+          this.notification.showSuccess(note);
+        }
+      });
+      clickInfo.event.remove();
+    } else {
+      this.updateEvent(result).subscribe((updatedEvent) => {
+        if (updatedEvent) {
+          this.proccessUpdateEvent(clickInfo, updatedEvent);
+        }
+      });
+    }
+  }
+
+  private proccessUpdateEvent(
+    clickInfo: EventClickArg | EventChangeArg,
+    updatedEvent: CalendarEvent
+  ) {
+    this.notification.showSuccess("Event updated");
+    let calendarApi = clickInfo.event;
+
+    calendarApi.setProp(
+      "title",
+      `${
+        updatedEvent.title.split(this.projectNameInfo)[0]
+      }${this.getProjectName(updatedEvent)}`
+    );
+    calendarApi.setExtendedProp("project", updatedEvent.project);
+    calendarApi.setProp(
+      "backgroundColor",
+      CalendarHelper.setColor(updatedEvent.project.id, this.projectsId)
+    );
+  }
+
+  private updateEventOnServer(eventData: any) {
+    this.calendarEventService.updateEvent(eventData).subscribe(() => {
+      this.notification.showSuccess("Event updated");
     });
   }
 
@@ -206,11 +238,6 @@ export class CalendarComponent {
 
   private deleteEvent(id: string): Observable<string> {
     return this.calendarEventService.deleteEvent(id);
-  }
-
-  handleEvents(events: EventApi[]) {
-    this.currentEvents.set(events);
-    this.changeDetector.detectChanges();
   }
 
   private getProjectFromEvent(event: EventImpl): Project | undefined {
