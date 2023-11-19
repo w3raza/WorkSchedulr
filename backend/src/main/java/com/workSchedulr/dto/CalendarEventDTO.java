@@ -9,8 +9,16 @@ import java.util.UUID;
 public class CalendarEventDTO {
     private UUID id;
     private String title;
-    private ZonedDateTime startTime;
-    private ZonedDateTime endTime;
+    private ZonedDateTime start;
+    private ZonedDateTime end;
     private ProjectDTO project;
     private UserDTO user;
+
+    public ZonedDateTime getStartTime(){
+        return start;
+    }
+
+    public ZonedDateTime getEndTime(){
+        return end;
+    }
 }

@@ -75,10 +75,7 @@ export class CalendarComponent {
     this.calendarEventService.getEvents(userId).subscribe({
       next: (events: CalendarEvent[]) => {
         const fullCalendarEvents = events.map((event) => ({
-          id: event.id,
-          title: event.title,
-          start: event.startTime,
-          end: event.endTime,
+          ...event,
           allDay: false,
           backgroundColor: CalendarHelper.setColor(
             event.project.id,
@@ -133,7 +130,6 @@ export class CalendarComponent {
         );
 
         this.calendarEventService.createEvent(newEvent).subscribe((event) => {
-          console.log(event);
           calendarApi.addEvent(event, true);
         });
       }

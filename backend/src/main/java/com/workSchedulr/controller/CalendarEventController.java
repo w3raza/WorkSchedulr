@@ -4,6 +4,7 @@ import com.workSchedulr.dto.CalendarEventDTO;
 import com.workSchedulr.mapper.CalendarEventMapper;
 import com.workSchedulr.model.CalendarEvent;
 import com.workSchedulr.service.CalendarEventService;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +22,7 @@ public class CalendarEventController {
 
     @GetMapping()
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<List<CalendarEvent>> getCalendarEventsForUser(@RequestParam("userId") UUID userId){
+    public ResponseEntity<List<CalendarEvent>> getCalendarEventsForUser(@Nullable @RequestParam("userId") UUID userId){
         return ResponseEntity.ok(calendarEventService.getCalendarEventsForUser(userId));
     }
 

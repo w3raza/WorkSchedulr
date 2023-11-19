@@ -18,6 +18,9 @@ public class CalendarEventService {
     private final UserService userService;
 
     public List<CalendarEvent> getCalendarEventsForUser(UUID userId){
+        if(userId == null){
+            userId = userService.getCurrentUser().getId();
+        }
         return calendarEventRepository.findCalendarEventByOwner(userId);
     }
 
@@ -33,8 +36,8 @@ public class CalendarEventService {
     }
 
     private Boolean isValid(CalendarEvent event) {
-        ZonedDateTime start = event.getStartTime();
-        ZonedDateTime end = event.getEndTime();
+        ZonedDateTime start = event.getStart();
+        ZonedDateTime end = event.getEnd();
 
         return calendarEventRepository.findOverlappingEvents(event.getUser().getId(), start, end).isEmpty();
     }

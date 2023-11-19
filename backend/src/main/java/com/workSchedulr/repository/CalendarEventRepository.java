@@ -15,8 +15,8 @@ public interface CalendarEventRepository extends JpaRepository<CalendarEvent, UU
     List<CalendarEvent> findCalendarEventByOwner(UUID userId);
 
     @Query("SELECT ce FROM CalendarEvent ce WHERE ce.user.id = :userId " +
-            "AND ((ce.startTime <= :start AND ce.endTime > :start) " +
-            "OR (ce.startTime < :end AND ce.endTime >= :end) " +
-            "OR (ce.startTime >= :start AND ce.endTime <= :end))")
+            "AND ((ce.start <= :start AND ce.end > :start) " +
+            "OR (ce.start < :end AND ce.end >= :end) " +
+            "OR (ce.start >= :start AND ce.end <= :end))")
     List<CalendarEvent> findOverlappingEvents(UUID userId, ZonedDateTime start, ZonedDateTime end);
 }

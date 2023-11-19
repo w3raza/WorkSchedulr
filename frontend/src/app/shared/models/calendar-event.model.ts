@@ -5,8 +5,8 @@ export class CalendarEvent {
   constructor(
     public id: string,
     public title: string,
-    public startTime: Date,
-    public endTime: Date,
+    public start: Date,
+    public end: Date,
     public project: Project,
     public user: User
   ) {}
