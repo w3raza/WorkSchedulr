@@ -22,10 +22,22 @@ export class CalendarEventService {
   }
 
   createEvent(event: CalendarEvent): Observable<CalendarEvent> {
-    console.log(event);
     return this.http.post<CalendarEvent>(
       `${this.API_ENDPOINTS.CALENDAR}`,
       event
     );
+  }
+
+  updateEvent(event: CalendarEvent): Observable<CalendarEvent> {
+    return this.http.patch<CalendarEvent>(
+      `${this.API_ENDPOINTS.CALENDAR}`,
+      event
+    );
+  }
+
+  deleteEvent(id: string): Observable<string> {
+    return this.http.delete<string>(`${this.API_ENDPOINTS.CALENDAR}?id=${id}`, {
+      responseType: "text" as "json",
+    });
   }
 }

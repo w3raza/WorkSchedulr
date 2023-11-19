@@ -9,7 +9,6 @@ import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
-import { INITIAL_EVENTS } from "./event-utils";
 import { CalendarEventService } from "../../services/calendarEvent.service";
 import { AuthHelper } from "../../helper/auth.helper";
 import { EventComponent } from "./event/event.component";
@@ -18,6 +17,9 @@ import { CalendarEvent } from "../../models/calendar-event.model";
 import { CalendarHelper } from "../../helper/calendar.helper";
 import { Project } from "../../models/project.modal";
 import { ProjectService } from "../../services/project.service";
+import { EventImpl } from "@fullcalendar/core/internal";
+import { NotificationService } from "../../services/notification.service";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-calendar",
@@ -34,7 +36,7 @@ export class CalendarComponent {
       right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
     },
     initialView: "timeGridDay",
-    initialEvents: INITIAL_EVENTS,
+    allDaySlot: false,
     weekends: true,
     editable: true,
     selectable: true,
@@ -54,12 +56,14 @@ export class CalendarComponent {
   projects: Project[] = [];
   projectsId: Array<string> = [];
   userId: string | null = null;
+  projectNameInfo: string = ", ProjectName: ";
 
   constructor(
     private authHelper: AuthHelper,
     private projectService: ProjectService,
     private changeDetector: ChangeDetectorRef,
     private calendarEventService: CalendarEventService,
+    private notification: NotificationService,
     public dialog: MatDialog
   ) {
     this.fetchEvents();
@@ -76,17 +80,26 @@ export class CalendarComponent {
       next: (events: CalendarEvent[]) => {
         const fullCalendarEvents = events.map((event) => ({
           ...event,
-          allDay: false,
           backgroundColor: CalendarHelper.setColor(
             event.project.id,
             this.projectsId
           ),
+          title: `${
+            event.title.split(this.projectNameInfo)[0]
+          }${this.getProjectName(event)}`,
+          extendedProps: {
+            projectId: event.project.id,
+          },
         }));
         this.calendarOptions.mutate((options) => {
           options.events = fullCalendarEvents;
         });
       },
     });
+  }
+
+  getProjectName(calendar: CalendarEvent): string {
+    return this.projectNameInfo + calendar.project.title;
   }
 
   private getAllProjectsForUser(): void {
@@ -138,17 +151,54 @@ export class CalendarComponent {
   }
 
   handleEventClick(clickInfo: EventClickArg) {
-    if (
-      confirm(
-        `Are you sure you want to delete the event '${clickInfo.event.title}'`
-      )
-    ) {
-      clickInfo.event.remove();
-    }
+    const dialogRef = this.dialog.open(EventComponent, {
+      width: "400px",
+      height: "350px",
+      data: {
+        projects: this.projects,
+        event: {
+          id: clickInfo.event.id,
+          title: clickInfo.event.title,
+          project: this.getProjectFromEvent(clickInfo.event),
+        },
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        if (result.delete) {
+          this.deleteEvent(result.id).subscribe((note) => {
+            if (note) {
+              this.notification.showSuccess(note);
+            }
+          });
+          clickInfo.event.remove();
+        } else {
+          this.updateEvent(result).subscribe((updatedEvent) => {
+            if (updatedEvent) {
+              this.notification.showSuccess("Event updated");
+            }
+          });
+        }
+      }
+    });
+  }
+
+  private updateEvent(calendarEvent: CalendarEvent): Observable<CalendarEvent> {
+    return this.calendarEventService.updateEvent(calendarEvent);
+  }
+
+  private deleteEvent(id: string): Observable<string> {
+    return this.calendarEventService.deleteEvent(id);
   }
 
   handleEvents(events: EventApi[]) {
     this.currentEvents.set(events);
     this.changeDetector.detectChanges();
+  }
+
+  private getProjectFromEvent(event: EventImpl): Project | undefined {
+    const projectId = event.extendedProps["projectId"];
+    return this.projects.find((p) => p.id === projectId);
   }
 }

@@ -8,6 +8,7 @@ import { PaginatorHelper } from "../../services/paginator.service.ts";
 import { AuthHelper } from "../../helper/auth.helper";
 import { Observable, debounceTime, switchMap, tap } from "rxjs";
 import { FormControl } from "@angular/forms";
+import { NotificationService } from "../../services/notification.service";
 
 @Component({
   selector: "app-project",
@@ -49,6 +50,7 @@ export class ProjectComponent extends PaginatorHelper {
   constructor(
     private authHelper: AuthHelper,
     private projectService: ProjectService,
+    private notificationService: NotificationService,
     public dialog: MatDialog
   ) {
     super();
@@ -122,7 +124,7 @@ export class ProjectComponent extends PaginatorHelper {
     });
 
     dialogRef.afterClosed().subscribe((response) => {
-      console.log("reposne:" + response);
+      this.notificationService.showSuccess(response);
     });
   }
 }

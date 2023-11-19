@@ -12,7 +12,6 @@ export class CalendarHelper {
       "#206040",
       "#0066cc",
     ];
-    console.log(id);
     return colors[ids.indexOf(id)] || "#3475C1";
   }
 }
