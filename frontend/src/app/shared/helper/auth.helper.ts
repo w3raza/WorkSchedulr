@@ -43,4 +43,13 @@ export class AuthHelper {
     const roles = this.getUserRoles();
     return roles ? roles.includes(UserRole.ADMIN) : false;
   }
+
+  checkIsManager(): boolean {
+    const roles = this.getUserRoles();
+    return roles ? roles.includes(UserRole.MANAGER) : false;
+  }
+
+  checkIsNotUser(): boolean {
+    return this.checkIsAdmin() || this.checkIsManager();
+  }
 }

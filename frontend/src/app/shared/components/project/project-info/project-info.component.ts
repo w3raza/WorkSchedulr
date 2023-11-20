@@ -83,7 +83,7 @@ export class ProjectInfoComponent {
       hours: this.project.hours,
       createdDate: this.getCreatedDate(),
       status: this.project.status,
-      owner: new IdNameDTO(this.project.owner.id, this.project.owner.firstName),
+      owner: this.project.owner,
       managers: this.project.managers,
       users: this.project.users,
     });
