@@ -11,9 +11,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.CharBuffer;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -24,6 +26,7 @@ import java.util.UUID;
 public class UserService {
 
   private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
   public User getUserById(UUID userId) {
     return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
@@ -59,13 +62,17 @@ public class UserService {
   }
 
   public User createUser(User user) {
+    if(user.getPassword() != null){
+      user.setPassword(passwordEncoder.encode(CharBuffer.wrap(user.getPassword())));
+    }
     return userRepository.save(user);
   }
 
   public User updateUser(UUID id, UserUpdateDTO dto) {
     User user = getUserById(id);
-
-    Optional.ofNullable(dto.getPassword()).ifPresent(user::setPassword);
+    if(dto.getPassword() != null){
+      user.setPassword(passwordEncoder.encode(CharBuffer.wrap(dto.getPassword())));
+    }
     Optional.ofNullable(dto.getEmail()).ifPresent(user::setEmail);
     Optional.ofNullable(dto.getFirstName()).ifPresent(user::setFirstName);
     Optional.ofNullable(dto.getLastName()).ifPresent(user::setLastName);
