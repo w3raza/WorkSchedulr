@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { MatDialogRef } from "@angular/material/dialog";
 import { ProjectHelper } from "src/app/shared/helper/project.helper";
 import { IdNameDTO } from "src/app/shared/models/IdNameDTO.modal";
 import { Project } from "src/app/shared/models/project.modal";
@@ -29,7 +30,7 @@ export class ProjectCreateComponent {
     private fb: FormBuilder,
     private userService: UserService,
     private projectService: ProjectService,
-    private notification: NotificationService
+    public dialogRef: MatDialogRef<ProjectCreateComponent>
   ) {
     this.setUsers();
   }
@@ -63,9 +64,7 @@ export class ProjectCreateComponent {
       users
     );
     this.projectService.createProject(project).subscribe((createdProject) => {
-      if (createdProject) {
-        this.notification.showSuccess("Project created");
-      }
+      this.dialogRef.close(createdProject);
     });
   }
 }

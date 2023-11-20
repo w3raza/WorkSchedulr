@@ -118,13 +118,20 @@ export class ProjectComponent extends PaginatorHelper {
     };
   }
 
-  openAddUserModal() {
+  openCreateProjectModal() {
     const dialogRef = this.dialog.open(ProjectCreateComponent, {
       width: "500px",
     });
 
-    dialogRef.afterClosed().subscribe((response) => {
-      this.notificationService.showSuccess(response);
+    dialogRef.afterClosed().subscribe((newProject) => {
+      if (newProject) {
+        this.addProjectToList(newProject);
+        this.notificationService.showSuccess("Project created");
+      }
     });
+  }
+
+  addProjectToList(newProject: Project) {
+    this.projects = [newProject, ...this.projects];
   }
 }
