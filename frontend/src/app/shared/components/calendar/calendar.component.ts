@@ -23,6 +23,10 @@ import { NotificationService } from "../../services/notification.service";
 import { Observable } from "rxjs";
 import { User } from "../../models/user.model";
 import { UserRole } from "../../enums/user-role.enum";
+import { IdNameDTO } from "../../models/IdNameDTO.modal";
+import { UserHelper } from "../../helper/user.helper";
+import { UserService } from "../../services/user.service";
+import { MatTabChangeEvent } from "@angular/material/tabs";
 
 @Component({
   selector: "app-calendar",
@@ -59,7 +63,7 @@ export class CalendarComponent {
   projectsId: Array<string> = [];
   userId: string | null = null;
   projectNameInfo: string = ", ProjectName: ";
-  users: User[] = []; // Przechowuje listę użytkowników
+  users: Array<IdNameDTO> = [];
 
   constructor(
     private authHelper: AuthHelper,
@@ -67,9 +71,10 @@ export class CalendarComponent {
     private changeDetector: ChangeDetectorRef,
     private calendarEventService: CalendarEventService,
     private notification: NotificationService,
+    private userService: UserService,
     public dialog: MatDialog
   ) {
-    this.fetchEvents();
+    this.fetchEvents(null);
     this.userId = this.authHelper.getCurrentUserId();
     this.getAllProjectsForUser();
     if (this.authHelper.checkIsNotUser()) {
@@ -77,39 +82,11 @@ export class CalendarComponent {
     }
   }
 
-  generateCalendarOptionsForUser(user: User): CalendarOptions {
-    return {
-      plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, listPlugin],
-      headerToolbar: {
-        left: "prev,next today",
-        center: "title",
-        right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
-      },
-      initialView: "timeGridDay",
-      allDaySlot: false,
-      weekends: true,
-      editable: true,
-      selectable: true,
-      selectMirror: true,
-      dayMaxEvents: true,
-      events: (fetchInfo, successCallback, failureCallback) => {
-        // this.loadEventsForUser(user, fetchInfo.start, fetchInfo.end)
-        //   .then(events => successCallback(events))
-        //   .catch(error => failureCallback(error));
-      },
-      // Możesz dodać inne potrzebne hooki i funkcje obsługi
-    };
-  }
+  fetchEvents(userId: string | null): void {
+    if (userId == null) {
+      userId = this.authHelper.getCurrentUserId();
+    }
 
-  // private loadEventsForUser(user: User, start: Date, end: Date): Promise<EventApi[]> {
-  //   // Tutaj implementacja pobierania wydarzeń dla konkretnego użytkownika
-  //   // w określonym przedziale czasowym
-  //   // Na przykład:
-  //   // return this.calendarEventService.getEventsForUser(user.id, start, end);
-  // }
-
-  fetchEvents(): void {
-    const userId = this.authHelper.getCurrentUserId();
     this.calendarEventService.getEvents(userId).subscribe({
       next: (events: CalendarEvent[]) => {
         const fullCalendarEvents = events.map((event) => ({
@@ -131,7 +108,19 @@ export class CalendarComponent {
       },
     });
   }
-  loadUsers(): void {}
+
+  loadUsers(): void {
+    this.userService.getAllUser().subscribe((users: User[]) => {
+      const transformedUsers = UserHelper.transformUsersToAssigments(users);
+      this.users = transformedUsers;
+      console.log(this.users);
+    });
+  }
+
+  onTabChanged(event: MatTabChangeEvent): void {
+    const selectedUser = this.users[event.index];
+    this.fetchEvents(selectedUser.id);
+  }
 
   handleCalendarToggle() {
     this.calendarVisible.update((bool) => !bool);

@@ -45,3 +45,32 @@ b {
   max-width: 1100px;
   margin: 0 auto;
 }
+
+.demo-app-main {
+  position: relative;
+}
+
+.users-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: white; /* lub inny kolor według preferencji */
+  border: 1px solid #ccc; /* opcjonalna obramówka */
+  padding: 10px;
+  z-index: 100; /* aby upewnić się, że kontener jest nad kalendarzem */
+  max-height: 100%;
+  overflow: auto; /* dla przewijania, jeśli lista użytkowników jest długa */
+}
+
+.mat-tab-group {
+  overflow-x: auto; /* Dodaje suwak poziomy, gdy zakładki nie mieszczą się w widoku */
+  white-space: nowrap; /* Zapobiega przenoszeniu zakładek do nowej linii */
+}
+
+.mat-tab-labels {
+  display: flex; /* Wyświetla zakładki w linii */
+}
+
+.mat-tab-label {
+  flex: 0 0 auto; /* Zakładki nie będą się rozciągać, zachowają swoją szerokość */
+}

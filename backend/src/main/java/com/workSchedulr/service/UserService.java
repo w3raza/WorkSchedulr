@@ -2,6 +2,7 @@ package com.workSchedulr.service;
 
 import com.workSchedulr.dto.UserUpdateDTO;
 import com.workSchedulr.exception.UserNotFoundException;
+import com.workSchedulr.exception.UserUnAuthorizedException;
 import com.workSchedulr.model.User;
 import com.workSchedulr.model.UserRole;
 import com.workSchedulr.repository.UserRepository;
@@ -33,6 +34,18 @@ public class UserService {
   }
 
   public Set<User> getAllUser(){
+    User user = getCurrentUser();
+
+    if (user == null) {
+      throw new UserUnAuthorizedException();
+    }
+
+    if (!user.hasRole(UserRole.ROLE_ADMIN)) {
+      Set<User> usersManagedBy = userRepository.findUsersByManagerId(user.getId());
+      usersManagedBy.add(user);
+      return usersManagedBy;
+    }
+
     return new HashSet<>(userRepository.findAll());
   }
 

@@ -12,6 +12,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatTableModule } from "@angular/material/table";
+import { MatTabsModule } from "@angular/material/tabs";
 import { MatCardModule } from "@angular/material/card";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatDialogModule } from "@angular/material/dialog";
@@ -87,6 +88,7 @@ import { EventComponent } from "./shared/components/calendar/event/event.compone
     MatSelectModule,
     MatToolbarModule,
     MatTableModule,
+    MatTabsModule,
     MatCardModule,
     MatPaginatorModule,
     MatDialogModule,

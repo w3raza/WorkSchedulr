@@ -1,42 +1,5 @@
 <div class="demo-app">
   <div class="demo-app-sidebar">
-    <!-- <div class="demo-app-sidebar-section">
-      <h2>Instructions</h2>
-      <ul>
-        <li>Select dates and you will be prompted to create a new event</li>
-        <li>Drag, drop, and resize events</li>
-        <li>Click an event to delete it</li>
-      </ul>
-    </div> -->
-    <!-- <div class="demo-app-sidebar-section">
-      <label>
-        <input
-          type="checkbox"
-          [checked]="calendarVisible"
-          (change)="handleCalendarToggle()"
-        />
-        toggle whole calendar
-      </label>
-    </div> -->
-    <!-- <div class="demo-app-sidebar-section">
-      <label>
-        <input
-          type="checkbox"
-          [checked]="calendarOptions().weekends"
-          (change)="handleWeekendsToggle()"
-        />
-        toggle weekends
-      </label>
-    </div> -->
-    <div *forRoles="[role.ADMIN] || [role.MANAGER]" class="users-container">
-      <div *ngFor="let user of users">
-        <h3>{{ user.firstName }}'s Calendar</h3>
-        <full-calendar
-          [options]="generateCalendarOptionsForUser(user)"
-        ></full-calendar>
-      </div>
-    </div>
-
     <div class="demo-app-sidebar-section">
       <h2>All Events ({{ currentEvents.length }})</h2>
       <ul>
@@ -49,6 +12,13 @@
   </div>
 
   <div class="demo-app-main">
+    <div *forRoles="[role.ADMIN, role.MANAGER]" class="demo-app-main">
+      <mat-tab-group (selectedTabChange)="onTabChanged($event)">
+        <mat-tab *ngFor="let user of users" label="{{ user.name }}">
+          <full-calendar></full-calendar>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
     <full-calendar *ngIf="calendarVisible()" [options]="calendarOptions()">
       <ng-template #eventContent let-arg>
         <b>{{ arg.timeText }}</b>
