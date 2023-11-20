@@ -1,11 +1,10 @@
 import { Component } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialogRef } from "@angular/material/dialog";
-import { ProjectHelper } from "src/app/shared/helper/project.helper";
+import { UserHelper } from "src/app/shared/helper/user.helper";
 import { IdNameDTO } from "src/app/shared/models/IdNameDTO.modal";
 import { Project } from "src/app/shared/models/project.modal";
 import { User } from "src/app/shared/models/user.model";
-import { NotificationService } from "src/app/shared/services/notification.service";
 import { ProjectService } from "src/app/shared/services/project.service";
 import { UserService } from "src/app/shared/services/user.service";
 
@@ -45,7 +44,7 @@ export class ProjectCreateComponent {
 
   setUsers() {
     this.userService.getAllUser().subscribe((users: User[]) => {
-      const transformedUsers = ProjectHelper.transformUsersToAssigments(users);
+      const transformedUsers = UserHelper.transformUsersToAssigments(users);
       this.users = transformedUsers;
     });
   }

@@ -61,14 +61,15 @@ export class UsersListComponent extends PaginatorHelper {
       width: "500px",
     });
 
-    dialogRef.afterClosed().subscribe((response) => {
-      if (response) {
+    dialogRef.afterClosed().subscribe((createdUser) => {
+      if (createdUser) {
         let currentUrl = this.router.url;
         this.router
           .navigateByUrl("/", { skipLocationChange: true })
           .then(() => {
             this.router.navigate([currentUrl]);
           });
+        this.notification.showSuccess("User created");
       }
     });
   }
