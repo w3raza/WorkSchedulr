@@ -59,13 +59,12 @@ export class CalendarComponent {
   currentEvents = signal<EventApi[]>([]);
 
   projects: Project[] = [];
-  projectsId: Array<string> = [];
+  projectsId: string[] = [];
   projectNameInfo: string = ", ProjectName: ";
 
   role: typeof UserRole = UserRole;
-  userIdNameDTOs: Array<IdNameDTO> = [];
+  userIdNameDTOs: IdNameDTO[] = [];
   users: User[] = [];
-  userId: string | null = null;
   user: User | null = null;
 
   constructor(
@@ -77,61 +76,62 @@ export class CalendarComponent {
     private userService: UserService,
     public dialog: MatDialog
   ) {
-    this.userId = this.authHelper.getCurrentUserId();
-    this.user = this.authHelper.getCurrentUser();
+    this.initialize();
+  }
 
+  private initialize(): void {
+    this.user = this.authHelper.getCurrentUser();
     this.fetchEvents();
     this.getAllProjectsForUser();
-
     if (this.authHelper.checkIsNotUser()) {
       this.loadUsers();
     }
   }
 
   fetchEvents(): void {
-    if (this.userId == null) {
-      this.userId = this.authHelper.getCurrentUserId();
-    }
+    const userId = this.user
+      ? this.user.id
+      : this.authHelper.getCurrentUserId();
 
-    this.calendarEventService.getEvents(this.userId).subscribe({
-      next: (events: CalendarEvent[]) => {
-        const fullCalendarEvents = events.map((event) => ({
-          ...event,
-          backgroundColor: CalendarHelper.setColor(
-            event.project.id,
-            this.projectsId
-          ),
-          title: `${
-            event.title.split(this.projectNameInfo)[0]
-          }${this.getProjectName(event)}`,
-          extendedProps: {
-            projectId: event.project.id,
-          },
-        }));
-        this.calendarOptions.mutate((options) => {
-          options.events = fullCalendarEvents;
-        });
-      },
+    this.calendarEventService.getEvents(userId).subscribe({
+      next: (events: CalendarEvent[]) => this.handleCalendarEvent(events),
+    });
+  }
+
+  private handleCalendarEvent(events: CalendarEvent[]): void {
+    const fullCalendarEvents = events.map((event) => ({
+      ...event,
+      backgroundColor: CalendarHelper.setColor(
+        event.project.id,
+        this.projectsId
+      ),
+      title: `${
+        event.title.split(this.projectNameInfo)[0]
+      }${this.getProjectName(event)}`,
+      extendedProps: { projectId: event.project.id },
+    }));
+
+    this.calendarOptions.mutate((options) => {
+      options.events = fullCalendarEvents;
     });
   }
 
   loadUsers(): void {
-    this.userService.getAllUser().subscribe((users: User[]) => {
-      const transformedUsers = UserHelper.transformUsersToAssigments(users);
-      this.userIdNameDTOs = transformedUsers;
-      this.users = users;
+    this.userService.getAllUser().subscribe({
+      next: (users: User[]) => this.handleUsers(users),
     });
   }
 
+  private handleUsers(users: User[]): void {
+    this.users = users;
+    this.userIdNameDTOs = UserHelper.transformUsersToAssignments(users);
+  }
+
   onTabChanged(event: MatTabChangeEvent): void {
-    this.userId = this.userIdNameDTOs[event.index].id;
-    const user = this.users.find((u) => u.id === this.userId);
-    if (user) {
-      this.user = user;
-    } else {
-      this.user = null;
-    }
+    const selectedUserId = this.userIdNameDTOs[event.index]?.id;
+    this.user = this.users.find((u) => u.id === selectedUserId) || null;
     this.fetchEvents();
+    this.getAllProjectsForUser();
   }
 
   handleCalendarToggle() {
@@ -217,8 +217,12 @@ export class CalendarComponent {
   }
 
   private getAllProjectsForUser(): void {
+    const userId = this.user
+      ? this.user.id
+      : this.authHelper.getCurrentUserId();
+
     this.projectService
-      .fetchProjects(this.userId, null, null, 0)
+      .fetchProjects(userId, null, null, 0)
       .subscribe((data) => {
         this.projects = [...data.content];
         this.projectsId = this.projects?.map((project) => project.id);

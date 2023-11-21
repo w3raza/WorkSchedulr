@@ -44,7 +44,7 @@ export class ProjectCreateComponent {
 
   setUsers() {
     this.userService.getAllUser().subscribe((users: User[]) => {
-      const transformedUsers = UserHelper.transformUsersToAssigments(users);
+      const transformedUsers = UserHelper.transformUsersToAssignments(users);
       this.users = transformedUsers;
     });
   }

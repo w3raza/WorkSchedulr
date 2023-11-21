@@ -10,7 +10,7 @@ export class UserHelper {
     return foundKey ?? null;
   }
 
-  static transformUsersToAssigments(users: User[]): IdNameDTO[] {
+  static transformUsersToAssignments(users: User[]): IdNameDTO[] {
     return users.map((user) => ({
       ...user,
       name: this.getFullNameForm(user.firstName, user.lastName),
