@@ -58,12 +58,15 @@ export class CalendarComponent {
   });
   currentEvents = signal<EventApi[]>([]);
 
-  role: typeof UserRole = UserRole;
   projects: Project[] = [];
   projectsId: Array<string> = [];
-  userId: string | null = null;
   projectNameInfo: string = ", ProjectName: ";
-  users: Array<IdNameDTO> = [];
+
+  role: typeof UserRole = UserRole;
+  userIdNameDTOs: Array<IdNameDTO> = [];
+  users: User[] = [];
+  userId: string | null = null;
+  user: User | null = null;
 
   constructor(
     private authHelper: AuthHelper,
@@ -74,20 +77,23 @@ export class CalendarComponent {
     private userService: UserService,
     public dialog: MatDialog
   ) {
-    this.fetchEvents(null);
     this.userId = this.authHelper.getCurrentUserId();
+    this.user = this.authHelper.getCurrentUser();
+
+    this.fetchEvents();
     this.getAllProjectsForUser();
+
     if (this.authHelper.checkIsNotUser()) {
       this.loadUsers();
     }
   }
 
-  fetchEvents(userId: string | null): void {
-    if (userId == null) {
-      userId = this.authHelper.getCurrentUserId();
+  fetchEvents(): void {
+    if (this.userId == null) {
+      this.userId = this.authHelper.getCurrentUserId();
     }
 
-    this.calendarEventService.getEvents(userId).subscribe({
+    this.calendarEventService.getEvents(this.userId).subscribe({
       next: (events: CalendarEvent[]) => {
         const fullCalendarEvents = events.map((event) => ({
           ...event,
@@ -112,14 +118,20 @@ export class CalendarComponent {
   loadUsers(): void {
     this.userService.getAllUser().subscribe((users: User[]) => {
       const transformedUsers = UserHelper.transformUsersToAssigments(users);
-      this.users = transformedUsers;
-      console.log(this.users);
+      this.userIdNameDTOs = transformedUsers;
+      this.users = users;
     });
   }
 
   onTabChanged(event: MatTabChangeEvent): void {
-    const selectedUser = this.users[event.index];
-    this.fetchEvents(selectedUser.id);
+    this.userId = this.userIdNameDTOs[event.index].id;
+    const user = this.users.find((u) => u.id === this.userId);
+    if (user) {
+      this.user = user;
+    } else {
+      this.user = null;
+    }
+    this.fetchEvents();
   }
 
   handleCalendarToggle() {
@@ -139,18 +151,17 @@ export class CalendarComponent {
       data: { projects: this.projects },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe((createdEvent) => {
       const calendarApi = selectInfo.view.calendar;
-      const user = this.authHelper.getCurrentUser();
 
-      if (result && user) {
+      if (createdEvent && this.user) {
         const newEvent = new CalendarEvent(
           "",
-          result.title,
+          createdEvent.title,
           selectInfo.start,
           selectInfo.end,
-          result.project,
-          user
+          createdEvent.project,
+          this.user
         );
 
         this.calendarEventService.createEvent(newEvent).subscribe((event) => {

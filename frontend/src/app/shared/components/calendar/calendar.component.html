@@ -14,7 +14,7 @@
   <div class="demo-app-main">
     <div *forRoles="[role.ADMIN, role.MANAGER]" class="demo-app-main">
       <mat-tab-group (selectedTabChange)="onTabChanged($event)">
-        <mat-tab *ngFor="let user of users" label="{{ user.name }}">
+        <mat-tab *ngFor="let user of userIdNameDTOs" label="{{ user.name }}">
           <full-calendar></full-calendar>
         </mat-tab>
       </mat-tab-group>
