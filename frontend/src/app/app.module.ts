@@ -39,11 +39,10 @@ import { HomeComponent } from "./shared/components/home/home.component";
 import { BillComponent } from "./shared/components/bill/bill.component";
 import { SuccessSnackBarComponent } from "./shared/components/snack-bar/success-snack-bar.component";
 import { ErrorSnackBarComponent } from "./shared/components/snack-bar/error-snack-bar.component";
-import { UserComponent } from "./shared/components/user/user.component";
+import { UserComponent } from "./shared/components/user/user-profile/user.component";
 import { CalendarComponent } from "./shared/components/calendar/calendar.component";
-import { ProjectComponent } from "./shared/components/project/project.component";
+import { ProjectComponent } from "./shared/components/project/project-list/project.component";
 import { UsersListComponent } from "./shared/components/user/users-list/users-list.component";
-import { UserProfileComponent } from "./shared/components/user/user-profile/user-profile.component";
 import { UserCreateComponent } from "./shared/components/user/user-create/user-create.component";
 import { ProjectCardComponent } from "./shared/components/project/project-card/project-card.component";
 import { ProjectInfoComponent } from "./shared/components/project/project-info/project-info.component";
@@ -65,7 +64,6 @@ import { EventComponent } from "./shared/components/calendar/event/event.compone
     CalendarComponent,
     ProjectComponent,
     UsersListComponent,
-    UserProfileComponent,
     UserCreateComponent,
     ProjectCardComponent,
     ProjectInfoComponent,

@@ -1,9 +1,10 @@
 import { Component } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
-import { User } from "../../models/user.model";
-import { UserService } from "../../services/user.service";
-import { ValidatorsService } from "../../services/validators.service";
+import { User } from "../../../models/user.model";
+import { UserService } from "../../../services/user.service";
+import { ValidatorsService } from "../../../services/validators.service";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "app-user",
@@ -15,18 +16,36 @@ export class UserComponent {
   user: User = new User("", "", "", "", "", "", "", false, false, [], [], []);
   isEditing = false;
   control: keyof User | null = null;
+  userId: string | null = null;
 
   constructor(
+    private route: ActivatedRoute,
     private fb: FormBuilder,
     private userService: UserService,
     private validatorsService: ValidatorsService
   ) {
     this.createForm();
-    this.userService.currentUser$.subscribe((currentUser) => {
-      if (currentUser) {
-        this.fetchUserData(currentUser);
-      }
+    this.route.paramMap.subscribe((params) => {
+      this.userId = params.get("id");
     });
+    this.fetchUser();
+  }
+
+  fetchUser() {
+    if (this.userId == null) {
+      this.userService.getCurrentUser().subscribe((currentUser) => {
+        console.log("User compomenet:" + currentUser);
+        if (currentUser) {
+          this.fetchUserData(currentUser);
+        }
+      });
+    } else {
+      this.userService.getUser(this.userId).subscribe((user) => {
+        if (user) {
+          this.fetchUserData(user);
+        }
+      });
+    }
   }
 
   fetchUserData(user: User): void {

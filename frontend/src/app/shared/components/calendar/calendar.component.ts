@@ -80,7 +80,11 @@ export class CalendarComponent {
   }
 
   private initialize(): void {
-    this.user = this.authHelper.getCurrentUser();
+    this.userService.getCurrentUser().subscribe((currentUser) => {
+      if (currentUser) {
+        this.user = currentUser;
+      }
+    });
     this.fetchEvents();
     this.getAllProjectsForUser();
     if (this.authHelper.checkIsNotUser()) {
@@ -91,7 +95,7 @@ export class CalendarComponent {
   fetchEvents(): void {
     const userId = this.user
       ? this.user.id
-      : this.authHelper.getCurrentUserId();
+      : this.userService.getCurrentUserId();
 
     this.calendarEventService.getEvents(userId).subscribe({
       next: (events: CalendarEvent[]) => this.handleCalendarEvent(events),
@@ -219,7 +223,7 @@ export class CalendarComponent {
   private getAllProjectsForUser(): void {
     const userId = this.user
       ? this.user.id
-      : this.authHelper.getCurrentUserId();
+      : this.userService.getCurrentUserId();
 
     this.projectService
       .fetchProjects(userId, null, null, 0)

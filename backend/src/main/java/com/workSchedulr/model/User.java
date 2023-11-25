@@ -97,4 +97,8 @@ public class User implements UserDetails {
   public boolean hasRole(UserRole role) {
     return userRoles.contains(role);
   }
+
+  public List<CalendarEvent> getCalendarEvents(){
+    return new ArrayList<>();
+  }
 }

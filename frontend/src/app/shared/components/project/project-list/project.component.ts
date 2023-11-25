@@ -1,14 +1,15 @@
 import { Component } from "@angular/core";
-import { Project } from "../../models/project.modal";
-import { ProjectService } from "../../services/project.service";
+import { Project } from "../../../models/project.modal";
+import { ProjectService } from "../../../services/project.service";
 import { MatDialog } from "@angular/material/dialog";
-import { UserRole } from "../../enums/user-role.enum";
-import { ProjectCreateComponent } from "./project-create/project-create.component";
-import { PaginatorHelper } from "../../services/paginator.service.ts";
-import { AuthHelper } from "../../helper/auth.helper";
+import { UserRole } from "../../../enums/user-role.enum";
+import { ProjectCreateComponent } from "../project-create/project-create.component";
+import { PaginatorHelper } from "../../../services/paginator.service.ts";
+import { AuthHelper } from "../../../helper/auth.helper";
 import { Observable, debounceTime, switchMap, tap } from "rxjs";
 import { FormControl } from "@angular/forms";
-import { NotificationService } from "../../services/notification.service";
+import { NotificationService } from "../../../services/notification.service";
+import { UserService } from "src/app/shared/services/user.service";
 
 @Component({
   selector: "app-project",
@@ -49,6 +50,7 @@ export class ProjectComponent extends PaginatorHelper {
 
   constructor(
     private authHelper: AuthHelper,
+    private userService: UserService,
     private projectService: ProjectService,
     private notificationService: NotificationService,
     public dialog: MatDialog
@@ -57,7 +59,7 @@ export class ProjectComponent extends PaginatorHelper {
     this.filterProjectStatus = this.initActiveStatus();
     this.fetchProjects();
     if (!this.authHelper.checkIsAdmin()) {
-      this.userId = this.authHelper.getCurrentUserId();
+      this.userId = this.userService.getCurrentUserId();
     }
     this.initProjectSubscription();
   }

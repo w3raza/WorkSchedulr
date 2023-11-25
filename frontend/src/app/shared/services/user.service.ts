@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { Observable, Subject, of, tap } from "rxjs";
 
 import { User } from "../models/user.model";
 import { UserUpdateDTO } from "../models/userUpdateDTO.model";
@@ -15,22 +15,41 @@ export class UserService {
   private readonly API_ENDPOINTS = {
     USER: `${this.BASE_URL}/user`,
   };
-
-  private _currentUserSubject = new BehaviorSubject<User | null>(null);
-  currentUser$ = this._currentUserSubject.asObservable();
+  private currentUser: User | null = null;
   users: User[] = [];
   properties: Subject<PageProperties> = new Subject<PageProperties>();
 
   constructor(private http: HttpClient) {}
 
-  ngOnInit(): void {
-    this.fetchCurrentUser().subscribe((user) => {
-      this._currentUserSubject.next(user);
-    });
+  setCurrentUser(user: User): void {
+    this.currentUser = user;
   }
 
-  logout(): void {
-    this._currentUserSubject.next(null);
+  getCurrentUser(): Observable<User | null> {
+    if (this.currentUser == null) {
+      return this.fetchCurrentUser().pipe(
+        tap((currentUser) => {
+          this.setCurrentUser(currentUser);
+        })
+      );
+    } else {
+      return of(this.currentUser);
+    }
+  }
+
+  getCurrentUserId(): string | null {
+    if (this.currentUser == null) {
+      this.getCurrentUser().subscribe((currentUser) => {
+        if (currentUser) {
+          this.setCurrentUser(currentUser);
+        }
+      });
+    }
+    return this.currentUser ? this.currentUser.id : null;
+  }
+
+  clearCurrentUser(): void {
+    this.currentUser = null;
   }
 
   getUser(userId: string): Observable<User> {

@@ -12,12 +12,13 @@
   </div>
 
   <div class="demo-app-main">
-    <div *forRoles="[role.ADMIN, role.MANAGER]" class="demo-app-main">
-      <mat-tab-group (selectedTabChange)="onTabChanged($event)">
-        <mat-tab *ngFor="let user of userIdNameDTOs" label="{{ user.name }}">
-          <full-calendar></full-calendar>
-        </mat-tab>
-      </mat-tab-group>
+    <div *forRoles="[role.ADMIN, role.MANAGER]">
+      <div class="scrollable-tab-container">
+        <mat-tab-group (selectedTabChange)="onTabChanged($event)">
+          <mat-tab *ngFor="let user of userIdNameDTOs" label="{{ user.name }}">
+          </mat-tab>
+        </mat-tab-group>
+      </div>
     </div>
     <full-calendar *ngIf="calendarVisible()" [options]="calendarOptions()">
       <ng-template #eventContent let-arg>
