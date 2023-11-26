@@ -16,7 +16,7 @@ export class UserComponent {
   user: User = new User("", "", "", "", "", "", "", false, false, [], [], []);
   isEditing = false;
   control: keyof User | null = null;
-  userId: string | null = null;
+  userId!: string | null;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,17 +32,16 @@ export class UserComponent {
   }
 
   fetchUser() {
-    if (this.userId == null) {
-      this.userService.getCurrentUser().subscribe((currentUser) => {
-        console.log("User compomenet:" + currentUser);
-        if (currentUser) {
-          this.fetchUserData(currentUser);
-        }
-      });
-    } else {
+    if (this.userId) {
       this.userService.getUser(this.userId).subscribe((user) => {
         if (user) {
           this.fetchUserData(user);
+        }
+      });
+    } else {
+      this.userService.getCurrentUser().subscribe((currentUser) => {
+        if (currentUser) {
+          this.fetchUserData(currentUser);
         }
       });
     }

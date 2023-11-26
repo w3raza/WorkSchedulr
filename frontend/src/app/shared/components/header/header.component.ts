@@ -24,7 +24,6 @@ export class HeaderComponent {
       this.isAuthenticated = isAuthenticated;
     });
     this.userService.getCurrentUser().subscribe((currentUser) => {
-      console.log("Value: " + currentUser);
       if (currentUser) {
         this.userId = currentUser.id;
       }

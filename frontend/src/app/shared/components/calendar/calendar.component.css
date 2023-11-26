@@ -1,22 +1,3 @@
-h2 {
-  margin: 0;
-  font-size: 16px;
-}
-
-ul {
-  margin: 0;
-  padding: 0 0 0 1.5em;
-}
-
-li {
-  margin: 1.5em 0;
-  padding: 0;
-}
-
-b {
-  margin-right: 3px;
-}
-
 .demo-app {
   display: flex;
   min-height: 100%;
@@ -36,9 +17,29 @@ b {
   padding: 2em;
 }
 
+h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+ul {
+  margin: 0;
+  padding: 0 0 0 1.5em;
+}
+
+li {
+  margin: 1.5em 0;
+  padding: 0;
+}
+
+b {
+  margin-right: 3px;
+}
+
 .demo-app-main {
   flex-grow: 1;
   padding: 3em;
+  overflow-x: hidden;
 }
 
 .fc {
@@ -46,41 +47,7 @@ b {
   margin: 0 auto;
 }
 
-.demo-app-main {
-  position: relative;
-}
-
-.users-container {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background-color: white; /* lub inny kolor według preferencji */
-  border: 1px solid #ccc; /* opcjonalna obramówka */
-  padding: 10px;
-  z-index: 100; /* aby upewnić się, że kontener jest nad kalendarzem */
-  max-height: 100%;
-  overflow: auto; /* dla przewijania, jeśli lista użytkowników jest długa */
-}
-
-.mat-tab-label {
-  flex: 0 0 auto; /* Zakładki nie będą się rozciągać, zachowają swoją szerokość */
-}
-
 .scrollable-tab-container {
   overflow-x: auto; /* Włącza poziome przewijanie, gdy zawartość przekracza szerokość elementu */
   white-space: nowrap; /* Zapobiega przenoszeniu elementów do nowej linii */
-}
-
-.mat-tab-group {
-  display: block; /* Wyświetla element jako blok, co jest wymagane dla przewijania */
-}
-
-.mat-tab-labels {
-  display: flex; /* Wyświetla dzieci w linii */
-  flex-wrap: nowrap; /* Zapobiega zawijaniu się elementów */
-}
-
-.mat-tab-label {
-  display: inline-block; /* Dzieci muszą być inline-block, aby przewijanie było możliwe */
-  min-width: 120px; /* Minimalna szerokość każdej zakładki */
 }
