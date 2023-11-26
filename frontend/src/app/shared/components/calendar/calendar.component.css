@@ -48,6 +48,12 @@ b {
 }
 
 .scrollable-tab-container {
-  overflow-x: auto; /* Włącza poziome przewijanie, gdy zawartość przekracza szerokość elementu */
-  white-space: nowrap; /* Zapobiega przenoszeniu elementów do nowej linii */
+  overflow-x: auto;
+  white-space: nowrap;
+  background-color: rgb(99, 99, 99);
+}
+
+.custom-color-primary {
+  --mat-primary-500: white;
+  --mat-primary-contrast: white;
 }

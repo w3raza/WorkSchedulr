@@ -83,6 +83,11 @@ export class UsersListComponent extends PaginatorHelper {
         this.userService.deleteUser(email).subscribe((note) => {
           if (note) {
             this.notification.showSuccess(note);
+            const index = this.users.findIndex((user) => user.email === email);
+            if (index !== -1) {
+              this.users.splice(index, 1);
+              this.users = [...this.users];
+            }
           }
         });
       }

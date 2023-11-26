@@ -1,4 +1,9 @@
-import { Component, signal, ChangeDetectorRef } from "@angular/core";
+import {
+  Component,
+  signal,
+  ChangeDetectorRef,
+  ViewEncapsulation,
+} from "@angular/core";
 import {
   CalendarOptions,
   DateSelectArg,
@@ -32,6 +37,7 @@ import { MatTabChangeEvent } from "@angular/material/tabs";
   selector: "app-calendar",
   templateUrl: "./calendar.component.html",
   styleUrls: ["./calendar.component.css"],
+  encapsulation: ViewEncapsulation.None,
 })
 export class CalendarComponent {
   calendarVisible = signal(true);
