@@ -87,7 +87,7 @@
   </mat-table>
 
   <mat-paginator
-    [length]="users.length"
+    [length]="totalElements"
     [pageSize]="pageSize"
     [pageIndex]="currentPage - 1"
     (page)="pageChanged($event)"

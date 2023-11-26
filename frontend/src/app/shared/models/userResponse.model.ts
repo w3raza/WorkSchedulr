@@ -1,4 +1,7 @@
-export interface PageProperties {
+import { User } from "./user.model";
+
+export interface UserResponse {
+  content: User[];
   last: boolean;
   totalPages: number;
   totalElements: number;

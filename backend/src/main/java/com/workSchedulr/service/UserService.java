@@ -8,7 +8,9 @@ import com.workSchedulr.model.UserRole;
 import com.workSchedulr.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,20 +43,30 @@ public class UserService {
     }
 
     if (!user.hasRole(UserRole.ROLE_ADMIN)) {
-      Set<User> usersManagedBy = userRepository.findUsersByManagerId(user.getId());
-      usersManagedBy.add(user);
-      return usersManagedBy;
+      return getAllUserForManager(user);
+    }else{
+      return getAllUserForAdmin();
     }
+  }
 
+  private Set<User> getAllUserForAdmin(){
     return new HashSet<>(userRepository.findAll());
   }
 
+  private Set<User> getAllUserForManager(User user){
+    Set<User> usersManagedBy = userRepository.findUsersByManagerId(user.getId());
+    usersManagedBy.add(user);
+    return usersManagedBy;
+  }
+
   public Page<User> getUsersByParams(String userRole, Boolean status, Pageable pageable) {
+    Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("lastName"));
+
     return Optional.ofNullable(userRole)
-            .map(role -> status != null ? getByUserRoleAndStatus(role, status, pageable) : getByUserRole(role, pageable))
+            .map(role -> status != null ? getByUserRoleAndStatus(role, status, sortedPageable) : getByUserRole(role, sortedPageable))
             .orElseGet(() -> Optional.ofNullable(status)
-                    .map(st -> userRepository.findAllByStatus(st, pageable))
-                    .orElse(userRepository.findAll(pageable)));
+                    .map(st -> userRepository.findAllByStatus(st, sortedPageable))
+                    .orElse(userRepository.findAll(sortedPageable)));
   }
 
   public User getCurrentUser() {

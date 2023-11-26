@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { ChangeDetectorRef, Component } from "@angular/core";
 import { UserService } from "../../../services/user.service";
 import { User } from "src/app/shared/models/user.model";
 import { UserRole } from "src/app/shared/enums/user-role.enum";
@@ -21,6 +21,7 @@ export class UsersListComponent extends PaginatorHelper {
   selectedStatus: any = null;
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private userService: UserService,
     public dialog: MatDialog,
     private notification: NotificationService
@@ -47,10 +48,12 @@ export class UsersListComponent extends PaginatorHelper {
       .fetchUsers(
         this.selectedStatus,
         this.currentPage - 1,
+        this.pageSize,
         UserRole[this.selectedRole as keyof typeof UserRole]
       )
       .subscribe((data) => {
         this.users = [...data.content];
+        this.updatePaginationData(data.totalElements);
       });
   }
 
@@ -59,14 +62,10 @@ export class UsersListComponent extends PaginatorHelper {
       width: "500px",
     });
 
-    dialogRef.afterClosed().subscribe((createdUser) => {
-      if (createdUser) {
-        this.users.push(createdUser);
-        this.users = [...this.users];
-      } else {
-        this.fetchUsers();
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.notification.showSuccess("User created");
       }
-      this.notification.showSuccess("User created");
     });
   }
 
