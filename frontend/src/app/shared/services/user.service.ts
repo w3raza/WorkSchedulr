@@ -1,10 +1,11 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { Observable, of, tap } from "rxjs";
 
 import { User } from "../models/user.model";
 import { UserUpdateDTO } from "../models/userUpdateDTO.model";
-import { PageProperties } from "../models/page.modal";
+import { UserResponse } from "../models/userResponse.model";
+
 import { environment } from "src/environments/environment";
 
 @Injectable({
@@ -15,22 +16,40 @@ export class UserService {
   private readonly API_ENDPOINTS = {
     USER: `${this.BASE_URL}/user`,
   };
-
-  private _currentUserSubject = new BehaviorSubject<User | null>(null);
-  currentUser$ = this._currentUserSubject.asObservable();
+  private currentUser: User | null = null;
   users: User[] = [];
-  properties: Subject<PageProperties> = new Subject<PageProperties>();
 
   constructor(private http: HttpClient) {}
 
-  ngOnInit(): void {
-    this.fetchCurrentUser().subscribe((user) => {
-      this._currentUserSubject.next(user);
-    });
+  setCurrentUser(user: User): void {
+    this.currentUser = user;
   }
 
-  logout(): void {
-    this._currentUserSubject.next(null);
+  getCurrentUser(): Observable<User | null> {
+    if (this.currentUser == null) {
+      return this.fetchCurrentUser().pipe(
+        tap((currentUser) => {
+          this.setCurrentUser(currentUser);
+        })
+      );
+    } else {
+      return of(this.currentUser);
+    }
+  }
+
+  getCurrentUserId(): string | null {
+    if (this.currentUser == null) {
+      this.getCurrentUser().subscribe((currentUser) => {
+        if (currentUser) {
+          this.setCurrentUser(currentUser);
+        }
+      });
+    }
+    return this.currentUser ? this.currentUser.id : null;
+  }
+
+  clearCurrentUser(): void {
+    this.currentUser = null;
   }
 
   getUser(userId: string): Observable<User> {
@@ -48,9 +67,10 @@ export class UserService {
   fetchUsers(
     status: boolean,
     page: number,
+    size: number,
     role: string
-  ): Observable<{ content: User[]; properties: PageProperties }> {
-    let url = `${this.API_ENDPOINTS.USER}?page=${page}`;
+  ): Observable<UserResponse> {
+    let url = `${this.API_ENDPOINTS.USER}?page=${page}&size=${size}`;
 
     if (role !== undefined) {
       url += `&role=${role}`;
@@ -60,7 +80,7 @@ export class UserService {
       url += `&status=${status}`;
     }
 
-    return this.http.get<{ content: User[]; properties: PageProperties }>(url);
+    return this.http.get<UserResponse>(url);
   }
 
   updateUser(userId: string, user: Partial<UserUpdateDTO>): Observable<User> {

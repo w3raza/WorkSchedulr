@@ -2,18 +2,23 @@ package com.workSchedulr.service;
 
 import com.workSchedulr.dto.UserUpdateDTO;
 import com.workSchedulr.exception.UserNotFoundException;
+import com.workSchedulr.exception.UserUnAuthorizedException;
 import com.workSchedulr.model.User;
 import com.workSchedulr.model.UserRole;
 import com.workSchedulr.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.CharBuffer;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -24,21 +29,44 @@ import java.util.UUID;
 public class UserService {
 
   private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
   public User getUserById(UUID userId) {
     return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
   }
 
   public Set<User> getAllUser(){
+    User user = getCurrentUser();
+
+    if (user == null) {
+      throw new UserUnAuthorizedException();
+    }
+
+    if (!user.hasRole(UserRole.ROLE_ADMIN)) {
+      return getAllUserForManager(user);
+    }else{
+      return getAllUserForAdmin();
+    }
+  }
+
+  private Set<User> getAllUserForAdmin(){
     return new HashSet<>(userRepository.findAll());
   }
 
+  private Set<User> getAllUserForManager(User user){
+    Set<User> usersManagedBy = userRepository.findUsersByManagerId(user.getId());
+    usersManagedBy.add(user);
+    return usersManagedBy;
+  }
+
   public Page<User> getUsersByParams(String userRole, Boolean status, Pageable pageable) {
+    Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("lastName"));
+
     return Optional.ofNullable(userRole)
-            .map(role -> status != null ? getByUserRoleAndStatus(role, status, pageable) : getByUserRole(role, pageable))
+            .map(role -> status != null ? getByUserRoleAndStatus(role, status, sortedPageable) : getByUserRole(role, sortedPageable))
             .orElseGet(() -> Optional.ofNullable(status)
-                    .map(st -> userRepository.findAllByStatus(st, pageable))
-                    .orElse(userRepository.findAll(pageable)));
+                    .map(st -> userRepository.findAllByStatus(st, sortedPageable))
+                    .orElse(userRepository.findAll(sortedPageable)));
   }
 
   public User getCurrentUser() {
@@ -59,13 +87,17 @@ public class UserService {
   }
 
   public User createUser(User user) {
+    if(user.getPassword() != null){
+      user.setPassword(passwordEncoder.encode(CharBuffer.wrap(user.getPassword())));
+    }
     return userRepository.save(user);
   }
 
   public User updateUser(UUID id, UserUpdateDTO dto) {
     User user = getUserById(id);
-
-    Optional.ofNullable(dto.getPassword()).ifPresent(user::setPassword);
+    if(dto.getPassword() != null){
+      user.setPassword(passwordEncoder.encode(CharBuffer.wrap(dto.getPassword())));
+    }
     Optional.ofNullable(dto.getEmail()).ifPresent(user::setEmail);
     Optional.ofNullable(dto.getFirstName()).ifPresent(user::setFirstName);
     Optional.ofNullable(dto.getLastName()).ifPresent(user::setLastName);

@@ -1,7 +1,10 @@
 package com.workSchedulr.service;
 
 import com.workSchedulr.exception.ProjectNotFoundException;
+import com.workSchedulr.exception.UserUnAuthorizedException;
 import com.workSchedulr.model.Project;
+import com.workSchedulr.model.User;
+import com.workSchedulr.model.UserRole;
 import com.workSchedulr.repository.ProjectRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,24 +26,35 @@ public class ProjectService {
     }
 
     public Page<Project> getProjectsByParams(UUID userId, Boolean status, String title, Pageable pageable) {
+        User user = userService.getCurrentUser();
+        if (user == null) {
+            throw new UserUnAuthorizedException();
+        }
+
+        boolean isTitleEmpty = (title == null || title.isEmpty());
+
+        if (!user.hasRole(UserRole.ROLE_ADMIN)) {
+            userId = user.getId();
+        }
+
         if (userId != null) {
             if (status != null) {
-                return title == null || title.isEmpty() ?
-                        projectRepository.findAllByUsersAndStatus(userId, status, pageable) :
-                        projectRepository.findAllByUsersAndStatusAndTitleContaining(userId, status, title, pageable);
+                return isTitleEmpty
+                        ? projectRepository.findAllByUsersAndManagersAndStatus(userId, status, pageable)
+                        : projectRepository.findAllByUsersAndManagersAndStatusAndTitleContaining(userId, status, title, pageable);
             } else {
-                return title == null || title.isEmpty() ?
-                        projectRepository.findAllProjectsByUserId(userId, pageable) :
-                        projectRepository.findAllByUsersAndTitleContaining(userId, title, pageable);
+                return isTitleEmpty
+                        ? projectRepository.findAllByUsersAndManagers(userId, pageable)
+                        : projectRepository.findAllByUsersAndManagersAndTitleContaining(userId, title, pageable);
             }
         } else if (status != null) {
-            return title == null || title.isEmpty() ?
-                    projectRepository.findAllByStatus(status, pageable) :
-                    projectRepository.findAllByStatusAndTitleContaining(status, title, pageable);
+            return isTitleEmpty
+                    ? projectRepository.findAllByStatus(status, pageable)
+                    : projectRepository.findAllByStatusAndTitleContaining(status, title, pageable);
         } else {
-            return title == null || title.isEmpty() ?
-                    getAllProjects(pageable) :
-                    projectRepository.findAllByTitleContaining(title, pageable);
+            return isTitleEmpty
+                    ? getAllProjects(pageable)
+                    : projectRepository.findAllByTitleContaining(title, pageable);
         }
     }
 

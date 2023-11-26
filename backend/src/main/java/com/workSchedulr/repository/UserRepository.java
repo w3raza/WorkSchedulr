@@ -1,6 +1,5 @@
 package com.workSchedulr.repository;
 
-import com.workSchedulr.model.Project;
 import com.workSchedulr.model.User;
 import com.workSchedulr.model.UserRole;
 import jakarta.transaction.Transactional;
@@ -8,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 import java.util.Set;
@@ -26,8 +24,8 @@ public interface UserRepository extends JpaRepository<User, UUID>{
 
   Page<User> findAllByUserRolesAndStatus(UserRole userRoles, boolean status, Pageable pageable);
 
-  @Query("SELECT p FROM User u JOIN u.projects p WHERE u.id = :userId")
-  Set<Project> findAllProjectsByUserId(@Param("userId") UUID userId);
+  @Query("SELECT u FROM User u JOIN u.projects p JOIN p.managers m WHERE m.id = :managerId")
+  Set<User> findUsersByManagerId(UUID managerId);
 
   @Transactional
   void deleteByEmail(String email);

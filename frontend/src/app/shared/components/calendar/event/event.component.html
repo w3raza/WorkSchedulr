@@ -1,0 +1,40 @@
+<div class="container">
+  <mat-dialog-actions>
+    <h2 mat-dialog-title>
+      {{ existingEventId ? "Edit Task" : "Create Task" }}
+    </h2>
+    <button mat-icon-button mat-dialog-close matTooltip="Cancel">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </mat-dialog-actions>
+  <mat-dialog-content class="mat-typography">
+    <form>
+      <mat-form-field appearance="fill">
+        <mat-label>Task description</mat-label>
+        <textarea matInput [(ngModel)]="title" name="title"></textarea>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Project</mat-label>
+        <mat-select [(ngModel)]="selectedProject" name="project">
+          <mat-option *ngFor="let project of projects" [value]="project">
+            {{ project.title }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button
+      mat-button
+      *ngIf="existingEventId"
+      color="warn"
+      (click)="onDelete()"
+    >
+      Delete
+    </button>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-button color="primary" (click)="onSubmit()">
+      {{ existingEventId ? "Update" : "Create" }}
+    </button>
+  </mat-dialog-actions>
+</div>

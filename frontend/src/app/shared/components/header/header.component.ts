@@ -1,34 +1,36 @@
-import { Component, Input, OnInit, OnDestroy } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { AuthService } from "../../services/auth.service";
 import { UserRole } from "../../enums/user-role.enum";
-import { Subscription } from "rxjs";
+import { UserService } from "../../services/user.service";
 
 @Component({
   selector: "app-header",
   templateUrl: "./header.component.html",
   styleUrls: ["./header.component.css"],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent {
   @Input() pageTitle!: string;
   @Input() logoSrc!: string;
   role: typeof UserRole = UserRole;
+  userId: string | null = null;
 
   isAuthenticated: boolean = false;
-  private userSubscription!: Subscription;
 
-  constructor(private authService: AuthService) {}
-
-  ngOnInit(): void {
+  constructor(
+    private authService: AuthService,
+    private userService: UserService
+  ) {
     this.authService.isAuthenticated.subscribe((isAuthenticated) => {
       this.isAuthenticated = isAuthenticated;
+    });
+    this.userService.getCurrentUser().subscribe((currentUser) => {
+      if (currentUser) {
+        this.userId = currentUser.id;
+      }
     });
   }
 
   signOut() {
     this.authService.logoutUser().subscribe();
-  }
-
-  ngOnDestroy(): void {
-    this.userSubscription.unsubscribe();
   }
 }

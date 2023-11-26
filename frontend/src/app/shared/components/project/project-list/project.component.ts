@@ -1,13 +1,15 @@
 import { Component } from "@angular/core";
-import { Project } from "../../models/project.modal";
-import { ProjectService } from "../../services/project.service";
+import { Project } from "../../../models/project.modal";
+import { ProjectService } from "../../../services/project.service";
 import { MatDialog } from "@angular/material/dialog";
-import { UserRole } from "../../enums/user-role.enum";
-import { ProjectCreateComponent } from "./project-create/project-create.component";
-import { PaginatorHelper } from "../../services/paginator.service.ts";
-import { AuthHelper } from "../../helper/auth.helper";
-import { Observable, debounceTime, map, startWith, switchMap, tap } from "rxjs";
+import { UserRole } from "../../../enums/user-role.enum";
+import { ProjectCreateComponent } from "../project-create/project-create.component";
+import { PaginatorHelper } from "../../../services/paginator.service.ts";
+import { AuthHelper } from "../../../helper/auth.helper";
+import { Observable, debounceTime, switchMap, tap } from "rxjs";
 import { FormControl } from "@angular/forms";
+import { NotificationService } from "../../../services/notification.service";
+import { UserService } from "src/app/shared/services/user.service";
 
 @Component({
   selector: "app-project",
@@ -47,14 +49,17 @@ export class ProjectComponent extends PaginatorHelper {
   ];
 
   constructor(
+    private authHelper: AuthHelper,
+    private userService: UserService,
     private projectService: ProjectService,
+    private notificationService: NotificationService,
     public dialog: MatDialog
   ) {
     super();
     this.filterProjectStatus = this.initActiveStatus();
     this.fetchProjects();
-    if (!AuthHelper.checkIsAdmin()) {
-      this.userId = AuthHelper.getCurrentUserId();
+    if (!this.authHelper.checkIsAdmin()) {
+      this.userId = this.userService.getCurrentUserId();
     }
     this.initProjectSubscription();
   }
@@ -115,13 +120,20 @@ export class ProjectComponent extends PaginatorHelper {
     };
   }
 
-  openAddUserModal() {
+  openCreateProjectModal() {
     const dialogRef = this.dialog.open(ProjectCreateComponent, {
       width: "500px",
     });
 
-    dialogRef.afterClosed().subscribe((response) => {
-      console.log("reposne:" + response);
+    dialogRef.afterClosed().subscribe((newProject) => {
+      if (newProject) {
+        this.addProjectToList(newProject);
+        this.notificationService.showSuccess("Project created");
+      }
     });
+  }
+
+  addProjectToList(newProject: Project) {
+    this.projects = [newProject, ...this.projects];
   }
 }

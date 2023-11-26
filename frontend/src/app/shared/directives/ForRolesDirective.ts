@@ -1,19 +1,11 @@
-import {
-  Directive,
-  Input,
-  TemplateRef,
-  ViewContainerRef,
-  OnDestroy,
-} from "@angular/core";
-import { Subscription } from "rxjs";
+import { Directive, Input, TemplateRef, ViewContainerRef } from "@angular/core";
 import { UserService } from "../services/user.service";
 import { User } from "../models/user.model";
 
 @Directive({ selector: "[forRoles]" })
-export class ForRolesDirective implements OnDestroy {
+export class ForRolesDirective {
   private roles: string[] = [];
   private user: User | null = null;
-  private subscription: Subscription;
   private viewCreated: boolean = false;
 
   @Input()
@@ -29,20 +21,13 @@ export class ForRolesDirective implements OnDestroy {
   ) {
     const token = localStorage.getItem("auth_token");
     if (token) {
-      this.userService.ngOnInit();
-    }
-    this.subscription = this.userService.currentUser$.subscribe(
-      (currentUser) => {
+      this.userService.getCurrentUser().subscribe((currentUser) => {
         if (currentUser) {
           this.user = currentUser;
           this.updateView();
         }
-      }
-    );
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+      });
+    }
   }
 
   private setRoles(roles: string | string[]) {

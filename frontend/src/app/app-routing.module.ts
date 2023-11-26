@@ -4,14 +4,13 @@ import { RouterModule, Routes } from "@angular/router";
 import { AuthComponent } from "./shared/components/auth/auth.component";
 import { HomeComponent } from "./shared/components/home/home.component";
 import { BillComponent } from "./shared/components/bill/bill.component";
-import { ProjectComponent } from "./shared/components/project/project.component";
-import { UserComponent } from "./shared/components/user/user.component";
+import { ProjectComponent } from "./shared/components/project/project-list/project.component";
+import { UserComponent } from "./shared/components/user/user-profile/user.component";
 import { CalendarComponent } from "./shared/components/calendar/calendar.component";
 
 import { AuthGuard } from "./shared/services/auth.guard";
 import { UserRole } from "./shared/enums/user-role.enum";
 import { UsersListComponent } from "./shared/components/user/users-list/users-list.component";
-import { UserProfileComponent } from "./shared/components/user/user-profile/user-profile.component";
 import { ProjectInfoComponent } from "./shared/components/project/project-info/project-info.component";
 
 const routes: Routes = [
@@ -58,17 +57,9 @@ const routes: Routes = [
     },
   },
   {
-    path: "user",
+    path: "user/:id",
     component: UserComponent,
     canActivate: [AuthGuard],
-  },
-  {
-    path: "user/:id",
-    component: UserProfileComponent,
-    canActivate: [AuthGuard],
-    data: {
-      roles: [UserRole.ADMIN],
-    },
   },
 ];
 

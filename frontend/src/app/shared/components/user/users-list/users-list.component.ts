@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { ChangeDetectorRef, Component } from "@angular/core";
 import { UserService } from "../../../services/user.service";
 import { User } from "src/app/shared/models/user.model";
 import { UserRole } from "src/app/shared/enums/user-role.enum";
@@ -7,7 +7,6 @@ import { UserCreateComponent } from "../user-create/user-create.component";
 import { PaginatorHelper } from "src/app/shared/services/paginator.service.ts";
 import { ConfirmDialogComponent } from "../../confirm-dialog/confirm-dialog.component";
 import { NotificationService } from "src/app/shared/services/notification.service";
-import { Router } from "@angular/router";
 
 @Component({
   selector: "app-users-list",
@@ -22,10 +21,10 @@ export class UsersListComponent extends PaginatorHelper {
   selectedStatus: any = null;
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private userService: UserService,
     public dialog: MatDialog,
-    private notification: NotificationService,
-    private router: Router
+    private notification: NotificationService
   ) {
     super();
     this.fetchUsers();
@@ -49,10 +48,12 @@ export class UsersListComponent extends PaginatorHelper {
       .fetchUsers(
         this.selectedStatus,
         this.currentPage - 1,
+        this.pageSize,
         UserRole[this.selectedRole as keyof typeof UserRole]
       )
       .subscribe((data) => {
         this.users = [...data.content];
+        this.updatePaginationData(data.totalElements);
       });
   }
 
@@ -61,14 +62,9 @@ export class UsersListComponent extends PaginatorHelper {
       width: "500px",
     });
 
-    dialogRef.afterClosed().subscribe((response) => {
-      if (response) {
-        let currentUrl = this.router.url;
-        this.router
-          .navigateByUrl("/", { skipLocationChange: true })
-          .then(() => {
-            this.router.navigate([currentUrl]);
-          });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.notification.showSuccess("User created");
       }
     });
   }
@@ -87,6 +83,11 @@ export class UsersListComponent extends PaginatorHelper {
         this.userService.deleteUser(email).subscribe((note) => {
           if (note) {
             this.notification.showSuccess(note);
+            const index = this.users.findIndex((user) => user.email === email);
+            if (index !== -1) {
+              this.users.splice(index, 1);
+              this.users = [...this.users];
+            }
           }
         });
       }

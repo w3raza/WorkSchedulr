@@ -1,5 +1,6 @@
 package com.workSchedulr.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -49,15 +50,15 @@ public class User implements UserDetails {
   @Enumerated(EnumType.STRING)
   @CollectionTable(name="user_role")
   @ElementCollection(fetch = FetchType.EAGER)
-  Set<UserRole> userRoles = new HashSet<>();
+  private Set<UserRole> userRoles = new HashSet<>();
 
-  @ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-  @JoinTable(
-          name = "user_project",
-          joinColumns = @JoinColumn(name = "user_id"),
-          inverseJoinColumns = @JoinColumn(name = "project_id")
-  )
-  Set<Project> projects = new HashSet<>();
+  @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+  @JsonIgnore
+  private Set<Project> projects = new HashSet<>();
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+  @JsonIgnore
+  private List<CalendarEvent> calendarEvents = new ArrayList<>();
 
   public User() {
     this.userRoles.add(UserRole.ROLE_USER);
@@ -95,5 +96,9 @@ public class User implements UserDetails {
 
   public boolean hasRole(UserRole role) {
     return userRoles.contains(role);
+  }
+
+  public List<CalendarEvent> getCalendarEvents(){
+    return new ArrayList<>();
   }
 }

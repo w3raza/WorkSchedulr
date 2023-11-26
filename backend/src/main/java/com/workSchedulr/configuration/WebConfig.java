@@ -22,6 +22,16 @@ public class WebConfig {
     @Bean
     public FilterRegistrationBean corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = getCorsConfiguration();
+        source.registerCorsConfiguration("/**", config);
+        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+
+        // should be set order to -100 because we need to CorsFilter before SpringSecurityFilter
+        bean.setOrder(CORS_FILTER_ORDER);
+        return bean;
+    }
+
+    private static CorsConfiguration getCorsConfiguration() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:4200");
@@ -36,11 +46,6 @@ public class WebConfig {
                 HttpMethod.PATCH.name(),
                 HttpMethod.DELETE.name()));
         config.setMaxAge(MAX_AGE);
-        source.registerCorsConfiguration("/**", config);
-        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
-
-        // should be set order to -100 because we need to CorsFilter before SpringSecurityFilter
-        bean.setOrder(CORS_FILTER_ORDER);
-        return bean;
+        return config;
     }
 }

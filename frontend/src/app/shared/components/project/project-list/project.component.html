@@ -1,7 +1,7 @@
 <div>
   <mat-toolbar>
     <mat-form-field
-      *forRoles="[role.ADMIN]"
+      *forRoles="[role.ADMIN, role.MANAGER]"
       class="flex-fill"
       appearance="fill"
       [hideRequiredMarker]="true"
@@ -43,7 +43,7 @@
         *forRoles="[role.ADMIN]"
         class="create-btn"
         mat-icon-button
-        (click)="openAddUserModal()"
+        (click)="openCreateProjectModal()"
         matTooltip="Add"
       >
         <mat-icon>add</mat-icon>

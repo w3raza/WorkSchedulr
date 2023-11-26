@@ -4,7 +4,6 @@ import { UserRole } from "src/app/shared/enums/user-role.enum";
 import { ValidatorsService } from "src/app/shared/services/validators.service";
 import { UserService } from "../../../services/user.service";
 import { User } from "src/app/shared/models/user.model";
-import { NotificationService } from "src/app/shared/services/notification.service";
 import { MatDialogRef } from "@angular/material/dialog";
 
 @Component({
@@ -49,7 +48,6 @@ export class UserCreateComponent {
     private fb: FormBuilder,
     private userService: UserService,
     private validatorsService: ValidatorsService,
-    private notification: NotificationService,
     public dialogRef: MatDialogRef<UserCreateComponent>
   ) {}
 
@@ -82,13 +80,12 @@ export class UserCreateComponent {
       birth,
       student,
       false,
-      [UserRole[role as keyof typeof UserRole]]
+      [UserRole[role as keyof typeof UserRole]],
+      [],
+      []
     );
     this.userService.createUser(user).subscribe((createdUser) => {
-      if (createdUser) {
-        this.notification.showSuccess("User created");
-        this.dialogRef.close(createdUser);
-      }
+      this.dialogRef.close(createdUser);
     });
   }
 }

@@ -11,8 +11,8 @@ import { NotificationService } from "src/app/shared/services/notification.servic
 import { MatDatepicker } from "@angular/material/datepicker";
 import { IdNameDTO } from "src/app/shared/models/IdNameDTO.modal";
 import { UserService } from "src/app/shared/services/user.service";
-import { ProjectHelper } from "src/app/shared/helper/project.helper";
 import { User } from "src/app/shared/models/user.model";
+import { UserHelper } from "src/app/shared/helper/user.helper";
 
 @Component({
   selector: "app-project-info",
@@ -67,7 +67,7 @@ export class ProjectInfoComponent {
 
   setUsers() {
     this.userService.getAllUser().subscribe((users: User[]) => {
-      const transformedUsers = ProjectHelper.transformUsersToAssigments(users);
+      const transformedUsers = UserHelper.transformUsersToAssignments(users);
       this.users = transformedUsers;
     });
   }
@@ -83,14 +83,13 @@ export class ProjectInfoComponent {
       hours: this.project.hours,
       createdDate: this.getCreatedDate(),
       status: this.project.status,
-      owner: new IdNameDTO(this.project.owner.id, this.project.owner.firstName),
+      owner: this.project.owner,
       managers: this.project.managers,
       users: this.project.users,
     });
   }
 
   saveProject(): void {
-    console.log("Jestem");
     if (this.projectForm.valid) {
       const { title, hours, status, owner, managers, users } =
         this.projectForm.value;

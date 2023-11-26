@@ -96,12 +96,11 @@ export class AuthService {
 
   private handleAuthentication(token: string): void {
     this.setAuthToken(token);
-    this.userService.ngOnInit();
   }
 
   handleLogout(): void {
     localStorage.removeItem("auth_token");
-    this.userService.logout();
+    this.userService.clearCurrentUser();
     this.isAuthenticatedSubject.next(false);
     this.router.navigate(["/login"]);
   }
