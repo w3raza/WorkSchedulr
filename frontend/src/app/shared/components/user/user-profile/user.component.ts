@@ -5,6 +5,7 @@ import { User } from "../../../models/user.model";
 import { UserService } from "../../../services/user.service";
 import { ValidatorsService } from "../../../services/validators.service";
 import { ActivatedRoute } from "@angular/router";
+import { switchMap } from "rxjs";
 
 @Component({
   selector: "app-user",
@@ -16,7 +17,7 @@ export class UserComponent {
   user: User = new User("", "", "", "", "", "", "", false, false, [], [], []);
   isEditing = false;
   control: keyof User | null = null;
-  userId!: string | null;
+  userId: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,26 +26,22 @@ export class UserComponent {
     private validatorsService: ValidatorsService
   ) {
     this.createForm();
-    this.route.paramMap.subscribe((params) => {
-      this.userId = params.get("id");
-    });
-    this.fetchUser();
-  }
-
-  fetchUser() {
-    if (this.userId) {
-      this.userService.getUser(this.userId).subscribe((user) => {
+    this.route.paramMap
+      .pipe(
+        switchMap((params) => {
+          this.userId = params.get("id");
+          if (this.userId && this.userId != "null") {
+            return this.userService.getUser(this.userId);
+          } else {
+            return this.userService.getCurrentUser();
+          }
+        })
+      )
+      .subscribe((user) => {
         if (user) {
           this.fetchUserData(user);
         }
       });
-    } else {
-      this.userService.getCurrentUser().subscribe((currentUser) => {
-        if (currentUser) {
-          this.fetchUserData(currentUser);
-        }
-      });
-    }
   }
 
   fetchUserData(user: User): void {

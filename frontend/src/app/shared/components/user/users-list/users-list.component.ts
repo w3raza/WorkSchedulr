@@ -62,6 +62,7 @@ export class UsersListComponent extends PaginatorHelper {
     dialogRef.afterClosed().subscribe((createdUser) => {
       if (createdUser) {
         this.users.push(createdUser);
+        this.users = [...this.users];
       } else {
         this.fetchUsers();
       }
