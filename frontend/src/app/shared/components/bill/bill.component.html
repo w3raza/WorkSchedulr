@@ -20,6 +20,7 @@
       appearance="fill"
       color="primary"
       [hideRequiredMarker]="true"
+      *forRoles="role.ADMIN"
     >
       <mat-label>Bill type:</mat-label>
       <mat-select
@@ -44,8 +45,8 @@
         formControlName="user"
         (selectionChange)="onSubmitSelect()"
       >
-        <mat-option *ngFor="let user of usersSelect" [value]="user">
-          {{ user.fullName }}
+        <mat-option *ngFor="let user of userIdNameDTOs" [value]="user">
+          {{ user.name }}
         </mat-option>
       </mat-select>
     </mat-form-field>

@@ -29,7 +29,6 @@ import { Observable } from "rxjs";
 import { User } from "../../models/user.model";
 import { UserRole } from "../../enums/user-role.enum";
 import { IdNameDTO } from "../../models/IdNameDTO.modal";
-import { UserHelper } from "../../helper/user.helper";
 import { UserService } from "../../services/user.service";
 import { MatTabChangeEvent } from "@angular/material/tabs";
 
@@ -127,14 +126,7 @@ export class CalendarComponent {
   }
 
   loadUsers(): void {
-    this.userService.getAllUser().subscribe({
-      next: (users: User[]) => this.handleUsers(users),
-    });
-  }
-
-  private handleUsers(users: User[]): void {
-    this.users = users;
-    this.userIdNameDTOs = UserHelper.transformUsersToAssignments(users);
+    this.userIdNameDTOs = this.userService.getUserIdNameDTOs();
   }
 
   onTabChanged(event: MatTabChangeEvent): void {

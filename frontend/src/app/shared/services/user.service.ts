@@ -7,6 +7,8 @@ import { UserUpdateDTO } from "../models/userUpdateDTO.model";
 import { UserResponse } from "../models/userResponse.model";
 
 import { environment } from "src/environments/environment";
+import { UserHelper } from "../helper/user.helper";
+import { IdNameDTO } from "../models/IdNameDTO.modal";
 
 @Injectable({
   providedIn: "root",
@@ -62,6 +64,13 @@ export class UserService {
 
   getAllUser(): Observable<User[]> {
     return this.http.get<User[]>(`${this.API_ENDPOINTS.USER}/all`);
+  }
+
+  getUserIdNameDTOs(): IdNameDTO[] {
+    this.getAllUser().subscribe((users) => {
+      return UserHelper.transformUsersToAssignments(users);
+    });
+    return [];
   }
 
   fetchUsers(

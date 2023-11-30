@@ -2,6 +2,12 @@ import { Component } from "@angular/core";
 import { PaginatorHelper } from "../../services/paginator.service.ts";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { UserRole } from "../../enums/user-role.enum";
+import { Bill } from "../../models/bill.modal.js";
+import { IdNameDTO } from "../../models/IdNameDTO.modal.js";
+import { BillService } from "../../services/bill.service.js";
+import { UserService } from "../../services/user.service.js";
+import { AuthHelper } from "../../helper/auth.helper.js";
+import { DatePipe } from "@angular/common";
 
 @Component({
   selector: "app-bill",
@@ -10,16 +16,25 @@ import { UserRole } from "../../enums/user-role.enum";
 })
 export class BillComponent extends PaginatorHelper {
   billForm!: FormGroup;
-  minStartDate!: Date; // Minimalna data początkowa
-  maxStartDate!: Date; // Maksymalna data początkowa
-  bills: any[] = []; // Lista rachunków
+  minStartDate!: Date;
+  maxStartDate!: Date;
+  userId: string | null = null;
+  bills: Bill[] = [];
   billTypes: string[] = [];
   role: typeof UserRole = UserRole;
-  usersSelect: Array<{ id?: string; fullName?: string }> = [];
-  isLoading = false; // Status ładowania danych
+  userIdNameDTOs: IdNameDTO[] = [];
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private billService: BillService,
+    private userService: UserService,
+    private authHelper: AuthHelper,
+    private datePipe: DatePipe
+  ) {
     super();
+    if (this.authHelper.checkIsNotUser()) {
+      this.loadUsers();
+    }
   }
 
   override fetchData() {}
@@ -30,6 +45,10 @@ export class BillComponent extends PaginatorHelper {
     });
   }
 
+  loadUsers(): void {
+    this.userIdNameDTOs = this.userService.getUserIdNameDTOs();
+  }
+
   onSubmitSelect(): void {
     if (this.billForm.valid) {
       this.fetchBills();
@@ -37,15 +56,51 @@ export class BillComponent extends PaginatorHelper {
   }
 
   fetchBills(): void {
-    this.isLoading = true;
     const startDate = this.billForm.value.start;
     const endDate = this.billForm.value.end;
-
-    // Tutaj umieść logikę do pobierania danych rachunków na podstawie zakresu dat
-    // Na przykład: this.billService.getBills(startDate, endDate).subscribe(...)
-
-    this.isLoading = false;
+    this.billService
+      .getBills(this.userId, startDate, endDate)
+      .subscribe((data) => {
+        this.bills = [...data];
+      });
   }
 
+  public getBillFile(bill: Bill): void {
+    this.billService.downloadBillFile(bill.id).subscribe((blob) => {
+      const newBlob = new Blob([blob], { type: "m" });
+
+      const nav = window.navigator as any;
+      if (nav && nav.msSaveOrOpenBlob) {
+        nav.msSaveOrOpenBlob(newBlob);
+        return;
+      }
+
+      const url = window.URL.createObjectURL(newBlob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = this.getBillShortFileName(bill);
+
+      link.dispatchEvent(
+        new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+        })
+      );
+
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        link.remove();
+      }, 100);
+    });
+  }
+
+  getBillShortFileName(bill: Bill): string {
+    const date = this.datePipe.transform(new Date(bill.endDate), "MM");
+    const userNameWithSeparate = bill.filename.replace(/ /g, "_");
+
+    return `bill_${userNameWithSeparate}_${date}.pdf`;
+  }
   // Inne metody, jeśli są potrzebne
 }
