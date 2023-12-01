@@ -4,10 +4,10 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { UserRole } from "../../enums/user-role.enum";
 import { Bill } from "../../models/bill.modal.js";
 import { IdNameDTO } from "../../models/IdNameDTO.modal.js";
-import { BillService } from "../../services/bill.service.js";
-import { UserService } from "../../services/user.service.js";
-import { AuthHelper } from "../../helper/auth.helper.js";
 import { DatePipe } from "@angular/common";
+import { UserService } from "../../services/user.service";
+import { BillService } from "../../services/bill.service";
+import { AuthHelper } from "../../helper/auth.helper";
 
 @Component({
   selector: "app-bill",
@@ -68,19 +68,15 @@ export class BillComponent extends PaginatorHelper {
   public getBillFile(bill: Bill): void {
     this.billService.downloadBillFile(bill.id).subscribe((blob) => {
       const newBlob = new Blob([blob], { type: "m" });
-
       const nav = window.navigator as any;
       if (nav && nav.msSaveOrOpenBlob) {
         nav.msSaveOrOpenBlob(newBlob);
         return;
       }
-
       const url = window.URL.createObjectURL(newBlob);
-
       const link = document.createElement("a");
       link.href = url;
       link.download = this.getBillShortFileName(bill);
-
       link.dispatchEvent(
         new MouseEvent("click", {
           bubbles: true,
@@ -88,7 +84,6 @@ export class BillComponent extends PaginatorHelper {
           view: window,
         })
       );
-
       setTimeout(() => {
         window.URL.revokeObjectURL(url);
         link.remove();
