@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Observable, of, tap } from "rxjs";
+import { Observable, map, of, tap } from "rxjs";
 
 import { User } from "../models/user.model";
 import { UserUpdateDTO } from "../models/userUpdateDTO.model";
@@ -66,11 +66,10 @@ export class UserService {
     return this.http.get<User[]>(`${this.API_ENDPOINTS.USER}/all`);
   }
 
-  getUserIdNameDTOs(): IdNameDTO[] {
-    this.getAllUser().subscribe((users) => {
-      return UserHelper.transformUsersToAssignments(users);
-    });
-    return [];
+  getUserIdNameDTOs(): Observable<IdNameDTO[]> {
+    return this.getAllUser().pipe(
+      map((users) => UserHelper.transformUsersToAssignments(users))
+    );
   }
 
   fetchUsers(

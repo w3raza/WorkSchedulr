@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { UserRole } from "../../enums/user-role.enum";
 import { Bill } from "../../models/bill.modal.js";
 import { IdNameDTO } from "../../models/IdNameDTO.modal.js";
-import { DatePipe } from "@angular/common";
 import { UserService } from "../../services/user.service";
 import { BillService } from "../../services/bill.service";
 import { AuthHelper } from "../../helper/auth.helper";
@@ -28,31 +27,37 @@ export class BillComponent extends PaginatorHelper {
     private fb: FormBuilder,
     private billService: BillService,
     private userService: UserService,
-    private authHelper: AuthHelper,
-    private datePipe: DatePipe
+    private authHelper: AuthHelper
   ) {
     super();
     if (this.authHelper.checkIsNotUser()) {
       this.loadUsers();
     }
+    this.initialize();
   }
 
-  override fetchData() {}
-  initForm(): void {
-    this.billForm = this.fb.group({
-      start: ["", Validators.required],
-      end: ["", Validators.required],
-    });
+  override fetchData() {
+    this.fetchBills();
   }
 
   loadUsers(): void {
-    this.userIdNameDTOs = this.userService.getUserIdNameDTOs();
+    this.userService.getUserIdNameDTOs().subscribe((users) => {
+      this.userIdNameDTOs = users;
+    });
+  }
+
+  initialize() {
+    this.billForm = this.fb.group({
+      start: ["", Validators.required],
+      end: ["", Validators.required],
+      billType: [""],
+      user: [""],
+    });
   }
 
   onSubmitSelect(): void {
-    if (this.billForm.valid) {
-      this.fetchBills();
-    }
+    const start = this.billForm.value.start;
+    const end = this.billForm.value.end;
   }
 
   fetchBills(): void {
@@ -92,10 +97,12 @@ export class BillComponent extends PaginatorHelper {
   }
 
   getBillShortFileName(bill: Bill): string {
-    const date = this.datePipe.transform(new Date(bill.endDate), "MM");
+    const date = new Date(bill.endDate);
+    const formattedMonth = ("0" + (date.getMonth() + 1)).slice(-2); // Dodaje '0' przed miesiącem i wybiera dwa ostatnie znaki
     const userNameWithSeparate = bill.filename.replace(/ /g, "_");
 
-    return `bill_${userNameWithSeparate}_${date}.pdf`;
+    return `bill_${userNameWithSeparate}_${formattedMonth}.pdf`;
   }
+
   // Inne metody, jeśli są potrzebne
 }

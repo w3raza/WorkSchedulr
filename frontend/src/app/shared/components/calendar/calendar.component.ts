@@ -126,7 +126,9 @@ export class CalendarComponent {
   }
 
   loadUsers(): void {
-    this.userIdNameDTOs = this.userService.getUserIdNameDTOs();
+    this.userService.getUserIdNameDTOs().subscribe((users) => {
+      this.userIdNameDTOs = users;
+    });
   }
 
   onTabChanged(event: MatTabChangeEvent): void {
