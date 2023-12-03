@@ -3,7 +3,7 @@ import { Project } from "../models/project.modal";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
-import { PageProperties } from "../models/page.modal";
+import { PageProperties, Response } from "../models/page.modal";
 
 @Injectable({
   providedIn: "root",
@@ -20,10 +20,7 @@ export class ProjectService {
     status: boolean | null,
     title: string | null,
     page: number
-  ): Observable<{
-    content: Project[];
-    properties: PageProperties;
-  }> {
+  ): Observable<Response<Project>> {
     let url = `${this.API_ENDPOINTS.PROJECT}?page=${page}`;
 
     if (userId !== null) {
@@ -38,9 +35,7 @@ export class ProjectService {
       url += `&title=${title}`;
     }
 
-    return this.http.get<{ content: Project[]; properties: PageProperties }>(
-      url
-    );
+    return this.http.get<Response<Project>>(url);
   }
 
   createProject(project: Project): Observable<Project> {

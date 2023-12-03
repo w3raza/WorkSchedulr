@@ -15,6 +15,8 @@ import com.workSchedulr.model.User;
 import com.workSchedulr.repository.BillRepository;
 import com.workSchedulr.repository.CalendarEventRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -38,15 +40,14 @@ public class BillService {
         return billRepository.findById(id).orElseThrow(BillNotFoundException::new);
     }
 
-    public List<BillDTO> getBillsByDateAndUser(UUID userId, LocalDate startDate, LocalDate endDate) {
-        List<Bill> bills;
+    public Page<BillDTO> getBillsByDateAndUser(UUID userId, LocalDate startDate, LocalDate endDate, Pageable pageable) {
+        Page<Bill> bills;
         if(userId != null){
-            bills = billRepository.findBillsByUserIdAndDateRange(userId, startDate, endDate);
+            bills = billRepository.findBillsByUserIdAndDateRange(userId, startDate, endDate, pageable);
         }else {
-            bills = billRepository.findBillsByDateRange(startDate, endDate);
+            bills = billRepository.findBillsByDateRange(startDate, endDate, pageable);
         }
-
-        return bills.stream().map(this::mapToFileResponse).collect(Collectors.toList());
+        return bills.map(this::mapToFileResponse);
     }
 
     public void generateBills(){

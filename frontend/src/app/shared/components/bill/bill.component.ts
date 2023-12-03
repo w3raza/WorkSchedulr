@@ -69,15 +69,22 @@ export class BillComponent extends PaginatorHelper {
 
       this.userId = this.billForm.value.user.id;
       this.billService
-        .getBills(this.userId, startDate, endDate)
+        .getBills(
+          this.userId,
+          startDate,
+          endDate,
+          this.currentPage - 1,
+          this.pageSize
+        )
         .subscribe((data) => {
-          this.bills = data.map((bill) => ({
+          this.bills = data.content.map((bill) => ({
             ...bill,
             userName: UserHelper.findUserNameById(
               this.userIdNameDTOs,
               bill.userId
             ),
           }));
+          this.updatePaginationData(data.totalElements);
         });
     }
   }

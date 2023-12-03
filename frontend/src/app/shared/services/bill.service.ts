@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
 import { Bill } from "../models/bill.modal";
+import { PageProperties, Response } from "../models/page.modal";
 
 @Injectable({
   providedIn: "root",
@@ -18,15 +19,17 @@ export class BillService {
   getBills(
     userId: string | null,
     start: string,
-    end: string
-  ): Observable<Bill[]> {
-    let url = `${this.API_ENDPOINTS.BILL}?start=${start}&end=${end}`;
+    end: string,
+    page: number,
+    size: number
+  ): Observable<Response<Bill>> {
+    let url = `${this.API_ENDPOINTS.BILL}?page=${page}&size=${size}&start=${start}&end=${end}`;
 
     if (userId) {
       url += `&userId=${userId}`;
     }
 
-    return this.http.get<Bill[]>(url);
+    return this.http.get<Response<Bill>>(url);
   }
 
   downloadBillFile(id: string): Observable<Blob> {

@@ -82,6 +82,7 @@ export class ProjectComponent extends PaginatorHelper {
       )
       .subscribe((data) => {
         this.projects = [...data.content];
+        this.updatePaginationData(data.totalElements);
       });
   }
 

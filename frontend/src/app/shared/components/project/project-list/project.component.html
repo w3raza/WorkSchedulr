@@ -65,7 +65,9 @@
         </app-project-card>
       </div>
       <div class="w-100" *ngIf="!projects.length">
-        <h6 message="You don't have any active projects"></h6>
+        <app-no-data-message
+          message="You don't have any active projects"
+        ></app-no-data-message>
       </div>
     </div>
   </div>

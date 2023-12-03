@@ -7,6 +7,10 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,10 +34,14 @@ public class BillController {
     @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')" +
             " or hasRole('ROLE_PROJECT_MANAGER')" +
             " or hasRole('ROLE_DEVELOPER')")
-    public ResponseEntity<List<BillDTO>> getBillsByDateAndUser(@Nullable @RequestParam("userId") UUID userId,
-                                                            @NotNull @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                                            @NotNull @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        List<BillDTO> bills = billService.getBillsByDateAndUser(userId, startDate, endDate);
+    public ResponseEntity<Page<BillDTO>> getBillsByDateAndUser(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                               @RequestParam(value = "size", defaultValue = "10") int size,
+                                                               @RequestParam(value = "sort", defaultValue = "filename") String sort,
+                                                               @Nullable @RequestParam("userId") UUID userId,
+                                                               @NotNull @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                                               @NotNull @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+        Page<BillDTO> bills = billService.getBillsByDateAndUser(userId, startDate, endDate, pageable);
         if (bills.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(bills);
         }
