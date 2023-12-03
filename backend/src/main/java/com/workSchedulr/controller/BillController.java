@@ -60,9 +60,9 @@ public class BillController {
         return ResponseEntity.ok("Bill regenerate successfully!");
     }
 
-    @PostMapping("/regenerate")
+    @GetMapping("/regenerate/{id}")
     @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
-    public ResponseEntity<?> regenerateBill(@NotNull @RequestParam("id") UUID id) {
+    public ResponseEntity<?> regenerateBill(@NotNull @PathVariable UUID id) {
         billService.regenerateBillForUser(id);
         return ResponseEntity.ok("Bill regenerate successfully!");
     }

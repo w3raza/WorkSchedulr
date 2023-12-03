@@ -20,4 +20,9 @@ export class UserHelper {
   static getFullNameForm(name: string, surname: string): string {
     return `${name} ${surname}`;
   }
+
+  static findUserNameById(userIdNameDTOs: IdNameDTO[], id: string): string {
+    const user = userIdNameDTOs.find((userDto) => userDto.id === id);
+    return user ? user.name : "";
+  }
 }

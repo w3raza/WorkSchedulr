@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
 import { Bill } from "../models/bill.modal";
@@ -30,16 +30,14 @@ export class BillService {
   }
 
   downloadBillFile(id: string): Observable<Blob> {
-    return this.http.get<Blob>(`${this.API_ENDPOINTS.BILL}/${id}`);
+    return this.http.get<Blob>(`${this.API_ENDPOINTS.BILL}/${id}`, {
+      responseType: "blob" as "json",
+    });
   }
 
-  regenerateBill(
-    userId: string,
-    startDate: Date,
-    endDate: Date
-  ): Observable<string> {
-    return this.http.post<string>(
-      `${this.API_ENDPOINTS.BILL}/regenerate?userId=${userId}&start=${startDate}&end=${endDate}`,
+  regenerateBill(id: string): Observable<string> {
+    return this.http.get<string>(
+      `${this.API_ENDPOINTS.BILL}/regenerate/${id}`,
       {
         responseType: "text" as "json",
       }

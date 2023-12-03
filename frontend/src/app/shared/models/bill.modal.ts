@@ -6,4 +6,5 @@ export interface Bill {
   startDate: Date;
   endDate: Date;
   userId: string;
+  userName: string;
 }

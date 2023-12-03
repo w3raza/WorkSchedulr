@@ -2,15 +2,14 @@ package com.workSchedulr.dto;
 
 import lombok.Data;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
 public class BillDTO {
     private UUID id;
     private String filename;
-    private ZonedDateTime startDate;
-    private ZonedDateTime endDate;
-    private String url;
+    private String startDate;
+    private String endDate;
     private UUID userId;
 }

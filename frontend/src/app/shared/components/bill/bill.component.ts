@@ -7,6 +7,8 @@ import { IdNameDTO } from "../../models/IdNameDTO.modal";
 import { UserService } from "../../services/user.service";
 import { BillService } from "../../services/bill.service";
 import { AuthHelper } from "../../helper/auth.helper";
+import { NotificationService } from "../../services/notification.service";
+import { UserHelper } from "../../helper/user.helper";
 
 @Component({
   selector: "app-bill",
@@ -23,13 +25,12 @@ export class BillComponent extends PaginatorHelper {
   role: typeof UserRole = UserRole;
   userIdNameDTOs: IdNameDTO[] = [];
 
-  displayedColumns: string[] = ["no", "From", "To"];
-
   constructor(
     private fb: FormBuilder,
     private billService: BillService,
     private userService: UserService,
-    private authHelper: AuthHelper
+    private authHelper: AuthHelper,
+    private notification: NotificationService
   ) {
     super();
     if (this.authHelper.checkIsNotUser()) {
@@ -67,11 +68,16 @@ export class BillComponent extends PaginatorHelper {
         .split("T")[0];
 
       this.userId = this.billForm.value.user.id;
-      console.log(this.userId);
       this.billService
         .getBills(this.userId, startDate, endDate)
         .subscribe((data) => {
-          this.bills = [...data];
+          this.bills = data.map((bill) => ({
+            ...bill,
+            userName: UserHelper.findUserNameById(
+              this.userIdNameDTOs,
+              bill.userId
+            ),
+          }));
         });
     }
   }
@@ -110,5 +116,12 @@ export class BillComponent extends PaginatorHelper {
     return `bill_${userNameWithSeparate}_${formattedMonth}.pdf`;
   }
 
-  public regenerateBill(bill: Bill): void {}
+  public regenerateBill(bill: Bill): void {
+    this.billService.regenerateBill(bill.id).subscribe((note) => {
+      if (note) {
+        console.log(note);
+        this.notification.showSuccess(note);
+      }
+    });
+  }
 }

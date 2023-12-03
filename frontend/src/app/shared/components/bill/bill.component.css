@@ -13,3 +13,16 @@ mat-form-field {
   width: 33%;
   margin-top: 20px;
 }
+
+.bill-table {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.download-column,
+.regenerate-column {
+  flex: 0 0 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
