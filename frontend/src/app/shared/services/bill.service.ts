@@ -17,14 +17,15 @@ export class BillService {
 
   getBills(
     userId: string | null,
-    page: number,
-    size: number
+    start: string,
+    end: string
   ): Observable<Bill[]> {
-    let url = `${this.API_ENDPOINTS.BILL}?page=${page}&size=${size}`;
+    let url = `${this.API_ENDPOINTS.BILL}?start=${start}&end=${end}`;
 
     if (userId) {
-      url += `?userId=${userId}`;
+      url += `&userId=${userId}`;
     }
+
     return this.http.get<Bill[]>(url);
   }
 

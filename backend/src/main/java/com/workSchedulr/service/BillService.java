@@ -6,6 +6,7 @@ import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
+import com.workSchedulr.dto.BillDTO;
 import com.workSchedulr.exception.BillNotFoundException;
 import com.workSchedulr.helper.DateTimeHelper;
 import com.workSchedulr.model.Bill;
@@ -14,14 +15,17 @@ import com.workSchedulr.model.User;
 import com.workSchedulr.repository.BillRepository;
 import com.workSchedulr.repository.CalendarEventRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -34,40 +38,88 @@ public class BillService {
         return billRepository.findById(id).orElseThrow(BillNotFoundException::new);
     }
 
-    public List<Bill> getBillsByDateAndUser(UUID userId, LocalDate startDate, LocalDate endDate) {
+    public List<BillDTO> getBillsByDateAndUser(UUID userId, LocalDate startDate, LocalDate endDate) {
+        List<Bill> bills;
         if(userId != null){
-            return billRepository.findBillsByUserIdAndDateRange(userId, startDate, endDate);
+            bills = billRepository.findBillsByUserIdAndDateRange(userId, startDate, endDate);
         }else {
-            return billRepository.findBillsByDateRange(startDate, endDate);
+            bills = billRepository.findBillsByDateRange(startDate, endDate);
         }
+
+        return bills.stream().map(this::mapToFileResponse).collect(Collectors.toList());
     }
 
-    public void regenerateBillForUser(UUID userId, LocalDate startDate, LocalDate endDate){
-        User user = userService.getUserById(userId);
+    public void generateBills(){
+        LocalDate end = LocalDate.now().withDayOfMonth(1);
+        LocalDate start = end.minusMonths(1);
 
-        List<CalendarEvent> events = calendarEventRepository.findEventsByUserAndDateRange(
-                user.getId(),
-                DateTimeHelper.convertLocalDateToZonedDateTime(startDate) ,
-                DateTimeHelper.convertLocalDateToZonedDateTime(endDate)
-        );
-        double hours = events.stream()
-                .mapToDouble(event -> Duration.between(event.getStart(), event.getEnd()).toHours())
-                .sum();
+        List<User> users = userService.getAllUsers();
+        users.forEach(user -> generateBillForUser(user, start, end));
+    }
+
+    public void generateBillForUser(UUID userId, LocalDate startDate, LocalDate endDate){
+        User user = userService.getUserById(userId);
+        generateBillForUser(user, startDate, endDate);
+    }
+
+    private void generateBillForUser(User user, LocalDate startDate, LocalDate endDate){
+        double hours = getHours(startDate, endDate, user.getId());
 
         Bill bill = new Bill();
-        bill.setStartDate(ZonedDateTime.now().withDayOfMonth(1));
-        bill.setEndDate(ZonedDateTime.now().withDayOfMonth(ZonedDateTime.now().toLocalDate().lengthOfMonth()));
         bill.setFilename(user.getLastName() + "_Bill_" + LocalDate.now() + ".pdf");
         bill.setFileData(generatePdf(user, hours));
+        bill.setStartDate(startDate);
+        bill.setEndDate(endDate);
+        bill.setUserId(user.getId());
 
         billRepository.save(bill);
     }
 
-    public void generateBills(){
-        //implement generating bills for all user that have status enable once in month
+    public void regenerateBillForUser(UUID id){
+        Bill bill = getBillById(id);
+        if(bill.getUserId() == null){
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Missing user in bill");
+        }
+        User user = userService.getUserById(bill.getUserId());
+        LocalDate startDate = bill.getStartDate();
+        LocalDate endDate = bill.getEndDate();
+
+        double hours = getHours(startDate, endDate, user.getId());
+
+        bill.setFilename(user.getLastName() + "_Bill_" + LocalDate.now() + ".pdf");
+        bill.setFileData(generatePdf(user, hours));
+        bill.setStartDate(startDate);
+        bill.setEndDate(endDate);
+        bill.setUserId(user.getId());
+
+        billRepository.save(bill);
     }
 
-    public byte[] generatePdf(User user, double hours) {
+    private BillDTO mapToFileResponse(Bill bill) {
+        String downloadURL = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/files/")
+                .path(bill.getFilename())
+                .toUriString();
+        BillDTO billDTO = new BillDTO();
+        billDTO.setId(bill.getId());
+        billDTO.setFilename(bill.getFilename());
+        billDTO.setUrl(downloadURL);
+
+        return billDTO;
+    }
+
+    private double getHours(LocalDate startDate, LocalDate endDate, UUID userId) {
+        List<CalendarEvent> events = calendarEventRepository.findEventsByUserAndDateRange(
+                userId,
+                DateTimeHelper.convertLocalDateToZonedDateTime(startDate) ,
+                DateTimeHelper.convertLocalDateToZonedDateTime(endDate)
+        );
+        return events.stream()
+                .mapToDouble(event -> Duration.between(event.getStart(), event.getEnd()).toHours())
+                .sum();
+    }
+
+    private byte[] generatePdf(User user, double hours) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         try {

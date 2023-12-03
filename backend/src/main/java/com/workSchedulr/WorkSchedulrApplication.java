@@ -8,5 +8,4 @@ public class WorkSchedulrApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(WorkSchedulrApplication.class, args);
 	}
-
 }

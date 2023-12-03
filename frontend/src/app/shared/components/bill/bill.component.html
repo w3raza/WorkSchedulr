@@ -18,7 +18,7 @@
             matEndDate
             formControlName="end"
             placeholder="End date"
-            (dateChange)="onSubmitSelect()"
+            (dateChange)="fetchBills()"
           />
         </mat-date-range-input>
         <mat-datepicker-toggle matSuffix [for]="picker">
@@ -31,7 +31,7 @@
         <mat-select
           id="billType"
           formControlName="billType"
-          (selectionChange)="onSubmitSelect()"
+          (selectionChange)="fetchBills()"
         >
           <mat-option *ngFor="let billType of billTypes" [value]="billType">
             {{ billType }}
@@ -43,7 +43,7 @@
         <mat-select
           id="user"
           formControlName="user"
-          (selectionChange)="onSubmitSelect()"
+          (selectionChange)="fetchBills()"
         >
           <mat-option *ngFor="let user of userIdNameDTOs" [value]="user">
             {{ user.name }}
@@ -54,7 +54,19 @@
   </mat-toolbar>
   <div class="content">
     <div class="overflow-auto gap">
-      <div *ngFor="let bill of bills"></div>
+      <div *ngFor="let bill of bills">
+        <div class="bill-details">
+          <span class="bill-name">{{ bill.filename }}</span>
+          <span class="date-range"
+            >{{ bill.startDate | date }} - {{ bill.endDate | date }}</span
+          >
+          <span *forRoles="role.ADMIN">User: {{ bill.userId }}</span>
+        </div>
+        <div class="bill-actions">
+          <button mat-button (click)="downloadBill(bill)">Download</button>
+          <button mat-button (click)="regenerateBill(bill)">Regenerate</button>
+        </div>
+      </div>
       <div class="w-100" *ngIf="!bills.length">
         <app-no-data-message
           message="You don't have any bills"
@@ -62,11 +74,4 @@
       </div>
     </div>
   </div>
-  <mat-paginator
-    *ngIf="totalElements > 0"
-    [length]="totalElements"
-    [pageSize]="pageSize"
-    [pageIndex]="currentPage - 1"
-    (page)="pageChanged($event)"
-  ></mat-paginator>
 </div>

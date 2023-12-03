@@ -3,7 +3,7 @@ import { PaginatorHelper } from "../../services/paginator.service.ts";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { UserRole } from "../../enums/user-role.enum";
 import { Bill } from "../../models/bill.modal.js";
-import { IdNameDTO } from "../../models/IdNameDTO.modal.js";
+import { IdNameDTO } from "../../models/IdNameDTO.modal";
 import { UserService } from "../../services/user.service";
 import { BillService } from "../../services/bill.service";
 import { AuthHelper } from "../../helper/auth.helper";
@@ -22,6 +22,8 @@ export class BillComponent extends PaginatorHelper {
   billTypes: string[] = [];
   role: typeof UserRole = UserRole;
   userIdNameDTOs: IdNameDTO[] = [];
+
+  displayedColumns: string[] = ["no", "From", "To"];
 
   constructor(
     private fb: FormBuilder,
@@ -48,29 +50,33 @@ export class BillComponent extends PaginatorHelper {
 
   initialize() {
     this.billForm = this.fb.group({
-      start: ["", Validators.required],
-      end: ["", Validators.required],
+      start: [Date, Validators.required],
+      end: [Date, Validators.required],
       billType: [""],
-      user: [""],
+      user: [IdNameDTO],
     });
   }
 
-  onSubmitSelect(): void {
-    const start = this.billForm.value.start;
-    const end = this.billForm.value.end;
-  }
-
   fetchBills(): void {
-    const startDate = this.billForm.value.start;
-    const endDate = this.billForm.value.end;
-    this.billService
-      .getBills(this.userId, startDate, endDate)
-      .subscribe((data) => {
-        this.bills = [...data];
-      });
+    if (this.billForm.valid) {
+      const startDate = new Date(this.billForm.value.start)
+        .toISOString()
+        .split("T")[0];
+      const endDate = new Date(this.billForm.value.end)
+        .toISOString()
+        .split("T")[0];
+
+      this.userId = this.billForm.value.user.id;
+      console.log(this.userId);
+      this.billService
+        .getBills(this.userId, startDate, endDate)
+        .subscribe((data) => {
+          this.bills = [...data];
+        });
+    }
   }
 
-  public getBillFile(bill: Bill): void {
+  public downloadBill(bill: Bill): void {
     this.billService.downloadBillFile(bill.id).subscribe((blob) => {
       const newBlob = new Blob([blob], { type: "m" });
       const nav = window.navigator as any;
@@ -98,11 +104,11 @@ export class BillComponent extends PaginatorHelper {
 
   getBillShortFileName(bill: Bill): string {
     const date = new Date(bill.endDate);
-    const formattedMonth = ("0" + (date.getMonth() + 1)).slice(-2); // Dodaje '0' przed miesiącem i wybiera dwa ostatnie znaki
+    const formattedMonth = ("0" + (date.getMonth() + 1)).slice(-2);
     const userNameWithSeparate = bill.filename.replace(/ /g, "_");
 
     return `bill_${userNameWithSeparate}_${formattedMonth}.pdf`;
   }
 
-  // Inne metody, jeśli są potrzebne
+  public regenerateBill(bill: Bill): void {}
 }

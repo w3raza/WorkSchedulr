@@ -3,7 +3,7 @@ package com.workSchedulr.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -15,15 +15,15 @@ public class Bill {
 
     private String filename;
 
-    @Lob
+    //@Lob
     @Column(name = "file_data")
     private byte[] fileData;
 
     @Column(name = "start_date", nullable = false)
-    private ZonedDateTime startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date", nullable = false)
-    private ZonedDateTime endDate;
+    private LocalDate endDate;
 
     @Column(name = "user_id", nullable = false)
     private UUID userId;

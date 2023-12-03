@@ -1,5 +1,6 @@
 package com.workSchedulr.controller;
 
+import com.workSchedulr.dto.BillDTO;
 import com.workSchedulr.model.Bill;
 import com.workSchedulr.service.BillService;
 import jakarta.annotation.Nullable;
@@ -29,10 +30,10 @@ public class BillController {
     @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')" +
             " or hasRole('ROLE_PROJECT_MANAGER')" +
             " or hasRole('ROLE_DEVELOPER')")
-    public ResponseEntity<List<Bill>> getBillsByDateAndUser(@Nullable @RequestParam("userId") UUID userId,
+    public ResponseEntity<List<BillDTO>> getBillsByDateAndUser(@Nullable @RequestParam("userId") UUID userId,
                                                             @NotNull @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                                             @NotNull @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        List<Bill> bills = billService.getBillsByDateAndUser(userId, startDate, endDate);
+        List<BillDTO> bills = billService.getBillsByDateAndUser(userId, startDate, endDate);
         if (bills.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(bills);
         }
@@ -50,17 +51,24 @@ public class BillController {
                 .body(bill.getFileData());
     }
 
+    @GetMapping("/generate")
+    @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
+    public ResponseEntity<?> generateBill(@NotNull @RequestParam("userId") UUID userId,
+                                            @NotNull @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                            @NotNull @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        billService.generateBillForUser(userId, startDate, endDate);
+        return ResponseEntity.ok("Bill regenerate successfully!");
+    }
+
     @PostMapping("/regenerate")
     @PreAuthorize("hasRole('ROLE_SUPER_ADMIN')")
-    public ResponseEntity<?> regenerateBill(@RequestParam("userId") UUID userId,
-                                          @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                          @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        billService.regenerateBillForUser(userId, startDate, endDate);
+    public ResponseEntity<?> regenerateBill(@NotNull @RequestParam("id") UUID id) {
+        billService.regenerateBillForUser(id);
         return ResponseEntity.ok("Bill regenerate successfully!");
     }
 
     @Scheduled(cron = "0 0 12 1 * *")
-    @PostMapping("/generate/bills")
+    @PostMapping("/generate/all")
     public void generateBills(){
         log.info("Starting Bill generation Task ");
         billService.generateBills();

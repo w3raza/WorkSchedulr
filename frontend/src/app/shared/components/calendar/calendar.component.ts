@@ -31,6 +31,7 @@ import { UserRole } from "../../enums/user-role.enum";
 import { IdNameDTO } from "../../models/IdNameDTO.modal";
 import { UserService } from "../../services/user.service";
 import { MatTabChangeEvent } from "@angular/material/tabs";
+import { UserHelper } from "../../helper/user.helper";
 
 @Component({
   selector: "app-calendar",
@@ -126,14 +127,16 @@ export class CalendarComponent {
   }
 
   loadUsers(): void {
-    this.userService.getUserIdNameDTOs().subscribe((users) => {
-      this.userIdNameDTOs = users;
+    this.userService.getAllUser().subscribe((users) => {
+      this.users = users;
+      this.userIdNameDTOs = UserHelper.transformUsersToAssignments(users);
     });
   }
 
   onTabChanged(event: MatTabChangeEvent): void {
     const selectedUserId = this.userIdNameDTOs[event.index]?.id;
     this.user = this.users.find((u) => u.id === selectedUserId) || null;
+    console.log(this.user);
     this.fetchEvents();
     this.getAllProjectsForUser();
   }
