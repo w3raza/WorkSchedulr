@@ -18,6 +18,7 @@ export class BillService {
 
   getBills(
     userId: string | null,
+    type: string | null,
     start: string,
     end: string,
     page: number,
@@ -27,6 +28,10 @@ export class BillService {
 
     if (userId) {
       url += `&userId=${userId}`;
+    }
+
+    if (type) {
+      url += `&type=${type}`;
     }
 
     return this.http.get<Response<Bill>>(url);

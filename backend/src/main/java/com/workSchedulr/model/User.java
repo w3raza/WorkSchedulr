@@ -47,6 +47,10 @@ public class User implements UserDetails {
 
   private boolean status;
 
+  private BillType type;
+
+  private Double hourlyRate;
+
   @Enumerated(EnumType.STRING)
   @CollectionTable(name="user_role")
   @ElementCollection(fetch = FetchType.EAGER)

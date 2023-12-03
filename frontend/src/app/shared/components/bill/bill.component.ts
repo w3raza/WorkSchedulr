@@ -9,6 +9,7 @@ import { BillService } from "../../services/bill.service";
 import { AuthHelper } from "../../helper/auth.helper";
 import { NotificationService } from "../../services/notification.service";
 import { UserHelper } from "../../helper/user.helper";
+import { BillType } from "../../enums/bill-type.enum";
 
 @Component({
   selector: "app-bill",
@@ -17,11 +18,12 @@ import { UserHelper } from "../../helper/user.helper";
 })
 export class BillComponent extends PaginatorHelper {
   billForm!: FormGroup;
+  billTypes: string[] = Object.values(BillType);
+  formOfContract: typeof BillType = BillType;
   minStartDate!: Date;
   maxStartDate!: Date;
   userId: string | null = null;
   bills: Bill[] = [];
-  billTypes: string[] = [];
   role: typeof UserRole = UserRole;
   userIdNameDTOs: IdNameDTO[] = [];
 
@@ -53,9 +55,10 @@ export class BillComponent extends PaginatorHelper {
     this.billForm = this.fb.group({
       start: [Date, Validators.required],
       end: [Date, Validators.required],
-      billType: [""],
+      billType: [BillType],
       user: [IdNameDTO],
     });
+    this.billTypes.push("Default");
   }
 
   fetchBills(): void {
@@ -66,11 +69,16 @@ export class BillComponent extends PaginatorHelper {
       const endDate = new Date(this.billForm.value.end)
         .toISOString()
         .split("T")[0];
+      let type = null;
+      if (this.billForm.value.billType !== "All types") {
+        type = this.getBillTypeValue();
+      }
 
       this.userId = this.billForm.value.user.id;
       this.billService
         .getBills(
           this.userId,
+          type,
           startDate,
           endDate,
           this.currentPage - 1,
@@ -130,5 +138,11 @@ export class BillComponent extends PaginatorHelper {
         this.notification.showSuccess(note);
       }
     });
+  }
+
+  getBillTypeValue(): string {
+    return Object.keys(this.formOfContract)[
+      Object.values(this.formOfContract).indexOf(this.billForm.value.billType)
+    ];
   }
 }

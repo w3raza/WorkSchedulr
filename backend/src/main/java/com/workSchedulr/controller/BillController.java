@@ -2,6 +2,7 @@ package com.workSchedulr.controller;
 
 import com.workSchedulr.dto.BillDTO;
 import com.workSchedulr.model.Bill;
+import com.workSchedulr.model.BillType;
 import com.workSchedulr.service.BillService;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
@@ -20,7 +21,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @Log
@@ -38,13 +38,11 @@ public class BillController {
                                                                @RequestParam(value = "size", defaultValue = "10") int size,
                                                                @RequestParam(value = "sort", defaultValue = "filename") String sort,
                                                                @Nullable @RequestParam("userId") UUID userId,
+                                                               @Nullable @RequestParam("type") BillType type,
                                                                @NotNull @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                                                @NotNull @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
-        Page<BillDTO> bills = billService.getBillsByDateAndUser(userId, startDate, endDate, pageable);
-        if (bills.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(bills);
-        }
+        Page<BillDTO> bills = billService.getBillsByDateAndUser(userId, type, startDate, endDate, pageable);
         return ResponseEntity.ok(bills);
     }
 
