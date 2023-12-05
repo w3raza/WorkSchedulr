@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { Project } from "../../../models/project.modal";
 import { ProjectService } from "../../../services/project.service";
 import { MatDialog } from "@angular/material/dialog";
-import { UserRole } from "../../../enums/user-role.enum";
+import { UserRole } from "../../../enums/userRole.enum";
 import { ProjectCreateComponent } from "../project-create/project-create.component";
 import { PaginatorHelper } from "../../../services/paginator.service.ts";
 import { AuthHelper } from "../../../helper/auth.helper";

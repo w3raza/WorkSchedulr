@@ -1,4 +1,4 @@
-import { UserRole } from "../enums/user-role.enum";
+import { UserRole } from "../enums/userRole.enum";
 
 export class LoginResponse {
   constructor(

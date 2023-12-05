@@ -1,6 +1,6 @@
 package com.workSchedulr.dto;
 
-import com.workSchedulr.model.BillType;
+import com.workSchedulr.model.FormOfContract;
 import lombok.Data;
 
 import java.util.UUID;
@@ -12,5 +12,5 @@ public class BillDTO {
     private String startDate;
     private String endDate;
     private UUID userId;
-    private BillType type;
+    private FormOfContract formOfContract;
 }

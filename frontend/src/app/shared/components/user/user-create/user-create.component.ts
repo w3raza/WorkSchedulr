@@ -1,10 +1,11 @@
 import { Component } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { UserRole } from "src/app/shared/enums/user-role.enum";
+import { UserRole } from "src/app/shared/enums/userRole.enum";
 import { ValidatorsService } from "src/app/shared/services/validators.service";
 import { UserService } from "../../../services/user.service";
 import { User } from "src/app/shared/models/user.model";
 import { MatDialogRef } from "@angular/material/dialog";
+import { FormOfContract } from "src/app/shared/enums/formOfContract.enum";
 
 @Component({
   selector: "app-user-create",
@@ -42,6 +43,8 @@ export class UserCreateComponent {
     birth: ["", Validators.required],
     student: [false],
     role: [UserRole.USER],
+    formOfContract: [FormOfContract],
+    hourlyRate: [0],
   });
 
   constructor(
@@ -69,6 +72,8 @@ export class UserCreateComponent {
       birth,
       student,
       role,
+      formOfContract,
+      hourlyRate,
     } = this.createForm.value;
     const user = new User(
       "",
@@ -82,7 +87,9 @@ export class UserCreateComponent {
       false,
       [UserRole[role as keyof typeof UserRole]],
       [],
-      []
+      [],
+      formOfContract,
+      hourlyRate
     );
     this.userService.createUser(user).subscribe((createdUser) => {
       this.dialogRef.close(createdUser);

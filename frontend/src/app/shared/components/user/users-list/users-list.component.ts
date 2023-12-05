@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { UserService } from "../../../services/user.service";
 import { User } from "src/app/shared/models/user.model";
-import { UserRole } from "src/app/shared/enums/user-role.enum";
+import { UserRole } from "src/app/shared/enums/userRole.enum";
 import { MatDialog } from "@angular/material/dialog";
 import { UserCreateComponent } from "../user-create/user-create.component";
 import { PaginatorHelper } from "src/app/shared/services/paginator.service.ts";

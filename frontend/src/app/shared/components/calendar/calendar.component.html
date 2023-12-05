@@ -18,7 +18,7 @@
           (selectedTabChange)="onTabChanged($event)"
           [color]="'accent'"
         >
-          <mat-tab *ngFor="let user of userIdNameDTOs" label="{{ user.name }}">
+          <mat-tab *ngFor="let user of userIdNames" label="{{ user.name }}">
           </mat-tab>
         </mat-tab-group>
       </div>

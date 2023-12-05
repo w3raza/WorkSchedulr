@@ -1,7 +1,7 @@
 package com.workSchedulr.repository;
 
 import com.workSchedulr.model.Bill;
-import com.workSchedulr.model.BillType;
+import com.workSchedulr.model.FormOfContract;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,11 +13,11 @@ import java.util.UUID;
 
 @Repository
 public interface BillRepository extends JpaRepository<Bill, UUID> {
-    @Query("SELECT b FROM Bill b WHERE b.userId = :userId AND b.type = :type AND b.startDate >= :startDate AND b.endDate <= :endDate")
-    Page<Bill> findBillsByUserIdAndTypeAndDateRange(UUID userId, BillType type, LocalDate startDate, LocalDate endDate, Pageable pageable);
+    @Query("SELECT b FROM Bill b WHERE b.userId = :userId AND b.formOfContract = :formOfContract AND b.startDate >= :startDate AND b.endDate <= :endDate")
+    Page<Bill> findBillsByUserIdAndFormOfContractAndDateRange(UUID userId, FormOfContract formOfContract, LocalDate startDate, LocalDate endDate, Pageable pageable);
 
-    @Query("SELECT b FROM Bill b WHERE b.type = :type AND b.startDate >= :startDate AND b.endDate <= :endDate")
-    Page<Bill> findBillsByTypeAndDateRange(BillType type, LocalDate startDate, LocalDate endDate, Pageable pageable);
+    @Query("SELECT b FROM Bill b WHERE b.formOfContract = :formOfContract AND b.startDate >= :startDate AND b.endDate <= :endDate")
+    Page<Bill> findBillsByFormOfContractAndDateRange(FormOfContract formOfContract, LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     @Query("SELECT b FROM Bill b WHERE b.startDate >= :startDate AND b.endDate <= :endDate")
     Page<Bill> findBillsByDateRange(LocalDate startDate, LocalDate endDate, Pageable pageable);

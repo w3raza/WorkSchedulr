@@ -1,4 +1,4 @@
-import { IdNameDTO } from "../models/IdNameDTO.modal";
+import { IdName } from "../models/idName.modal";
 import { User } from "../models/user.model";
 
 export class UserHelper {
@@ -10,7 +10,7 @@ export class UserHelper {
     return foundKey ?? null;
   }
 
-  static transformUsersToAssignments(users: User[]): IdNameDTO[] {
+  static transformUsersToAssignments(users: User[]): IdName[] {
     return users.map((user) => ({
       ...user,
       name: this.getFullNameForm(user.firstName, user.lastName),
@@ -21,8 +21,8 @@ export class UserHelper {
     return `${name} ${surname}`;
   }
 
-  static findUserNameById(userIdNameDTOs: IdNameDTO[], id: string): string {
-    const user = userIdNameDTOs.find((userDto) => userDto.id === id);
+  static findUserNameById(userIdNames: IdName[], id: string): string {
+    const user = userIdNames.find((userDto) => userDto.id === id);
     return user ? user.name : "";
   }
 }

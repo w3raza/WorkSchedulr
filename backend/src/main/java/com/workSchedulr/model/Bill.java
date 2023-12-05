@@ -28,5 +28,5 @@ public class Bill {
     @Column(name = "user_id", nullable = false)
     private UUID userId;
 
-    private BillType type;
+    private FormOfContract formOfContract;
 }

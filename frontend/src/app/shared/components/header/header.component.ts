@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { AuthService } from "../../services/auth.service";
-import { UserRole } from "../../enums/user-role.enum";
+import { UserRole } from "../../enums/userRole.enum";
 import { UserService } from "../../services/user.service";
 
 @Component({

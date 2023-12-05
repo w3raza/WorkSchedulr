@@ -10,7 +10,7 @@ import com.workSchedulr.dto.BillDTO;
 import com.workSchedulr.exception.BillNotFoundException;
 import com.workSchedulr.helper.DateTimeHelper;
 import com.workSchedulr.model.Bill;
-import com.workSchedulr.model.BillType;
+import com.workSchedulr.model.FormOfContract;
 import com.workSchedulr.model.CalendarEvent;
 import com.workSchedulr.model.User;
 import com.workSchedulr.repository.BillRepository;
@@ -40,13 +40,13 @@ public class BillService {
         return billRepository.findById(id).orElseThrow(BillNotFoundException::new);
     }
 
-    public Page<BillDTO> getBillsByDateAndUser(UUID userId, BillType type, LocalDate startDate, LocalDate endDate, Pageable pageable) {
+    public Page<BillDTO> getBillsByDateAndUser(UUID userId, FormOfContract formOfContract, LocalDate startDate, LocalDate endDate, Pageable pageable) {
         Page<Bill> bills;
-        if (type != null) {
+        if (formOfContract != null) {
             if (userId != null) {
-                bills = billRepository.findBillsByUserIdAndTypeAndDateRange(userId, type, startDate, endDate, pageable);
+                bills = billRepository.findBillsByUserIdAndFormOfContractAndDateRange(userId, formOfContract, startDate, endDate, pageable);
             } else {
-                bills = billRepository.findBillsByTypeAndDateRange(type, startDate, endDate, pageable);
+                bills = billRepository.findBillsByFormOfContractAndDateRange(formOfContract, startDate, endDate, pageable);
             }
         } else {
             if (userId != null) {
@@ -80,7 +80,7 @@ public class BillService {
         bill.setStartDate(startDate);
         bill.setEndDate(endDate);
         bill.setUserId(user.getId());
-        bill.setType(user.getType());
+        bill.setFormOfContract(user.getFormOfContract());
 
         billRepository.save(bill);
     }
@@ -101,7 +101,7 @@ public class BillService {
         bill.setStartDate(startDate);
         bill.setEndDate(endDate);
         bill.setUserId(user.getId());
-        bill.setType(user.getType());
+        bill.setFormOfContract(user.getFormOfContract());
 
         billRepository.save(bill);
     }
@@ -113,7 +113,7 @@ public class BillService {
         billDTO.setStartDate(bill.getStartDate().format(DateTimeFormatter.ISO_LOCAL_DATE));
         billDTO.setEndDate(bill.getEndDate().format(DateTimeFormatter.ISO_LOCAL_DATE));
         billDTO.setUserId(bill.getUserId());
-        billDTO.setType(bill.getType());
+        billDTO.setFormOfContract(bill.getFormOfContract());
 
         return billDTO;
     }

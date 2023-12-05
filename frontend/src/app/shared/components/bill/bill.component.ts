@@ -1,15 +1,15 @@
 import { Component } from "@angular/core";
 import { PaginatorHelper } from "../../services/paginator.service.ts";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { UserRole } from "../../enums/user-role.enum";
-import { Bill } from "../../models/bill.modal.js";
-import { IdNameDTO } from "../../models/IdNameDTO.modal";
+import { UserRole } from "../../enums/userRole.enum";
+import { Bill } from "../../models/bill.modal";
+import { IdName } from "../../models/idName.modal";
 import { UserService } from "../../services/user.service";
 import { BillService } from "../../services/bill.service";
 import { AuthHelper } from "../../helper/auth.helper";
 import { NotificationService } from "../../services/notification.service";
 import { UserHelper } from "../../helper/user.helper";
-import { BillType } from "../../enums/bill-type.enum";
+import { FormOfContract } from "../../enums/formOfContract.enum";
 
 @Component({
   selector: "app-bill",
@@ -18,14 +18,14 @@ import { BillType } from "../../enums/bill-type.enum";
 })
 export class BillComponent extends PaginatorHelper {
   billForm!: FormGroup;
-  billTypes: string[] = Object.values(BillType);
-  formOfContract: typeof BillType = BillType;
+  formOfContracts: string[] = Object.values(FormOfContract);
+  formOfContract: typeof FormOfContract = FormOfContract;
   minStartDate!: Date;
   maxStartDate!: Date;
   userId: string | null = null;
   bills: Bill[] = [];
   role: typeof UserRole = UserRole;
-  userIdNameDTOs: IdNameDTO[] = [];
+  userIdNames: IdName[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -46,8 +46,8 @@ export class BillComponent extends PaginatorHelper {
   }
 
   loadUsers(): void {
-    this.userService.getUserIdNameDTOs().subscribe((users) => {
-      this.userIdNameDTOs = users;
+    this.userService.getUserIdNames().subscribe((users) => {
+      this.userIdNames = users;
     });
   }
 
@@ -55,10 +55,15 @@ export class BillComponent extends PaginatorHelper {
     this.billForm = this.fb.group({
       start: [Date, Validators.required],
       end: [Date, Validators.required],
-      billType: [BillType],
-      user: [IdNameDTO],
+      FormOfContract: [FormOfContract],
+      user: [IdName],
     });
-    this.billTypes.push("Default");
+    this.formOfContracts.push("Default");
+    const defaultIdName = new IdName(
+      (this.userIdNames.length + 1).toString(),
+      "Default"
+    );
+    this.userIdNames.push(defaultIdName);
   }
 
   fetchBills(): void {
@@ -69,16 +74,16 @@ export class BillComponent extends PaginatorHelper {
       const endDate = new Date(this.billForm.value.end)
         .toISOString()
         .split("T")[0];
-      let type = null;
-      if (this.billForm.value.billType !== "All types") {
-        type = this.getBillTypeValue();
+      let formOfContract = null;
+      if (this.billForm.value.FormOfContract !== "All types") {
+        formOfContract = this.getFormOfContractValue();
       }
 
       this.userId = this.billForm.value.user.id;
       this.billService
         .getBills(
           this.userId,
-          type,
+          formOfContract,
           startDate,
           endDate,
           this.currentPage - 1,
@@ -88,7 +93,7 @@ export class BillComponent extends PaginatorHelper {
           this.bills = data.content.map((bill) => ({
             ...bill,
             userName: UserHelper.findUserNameById(
-              this.userIdNameDTOs,
+              this.userIdNames,
               bill.userId
             ),
           }));
@@ -134,15 +139,16 @@ export class BillComponent extends PaginatorHelper {
   public regenerateBill(bill: Bill): void {
     this.billService.regenerateBill(bill.id).subscribe((note) => {
       if (note) {
-        console.log(note);
         this.notification.showSuccess(note);
       }
     });
   }
 
-  getBillTypeValue(): string {
+  getFormOfContractValue(): string {
     return Object.keys(this.formOfContract)[
-      Object.values(this.formOfContract).indexOf(this.billForm.value.billType)
+      Object.values(this.formOfContract).indexOf(
+        this.billForm.value.FormOfContract
+      )
     ];
   }
 }

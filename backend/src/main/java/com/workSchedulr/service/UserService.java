@@ -105,6 +105,8 @@ public class UserService {
     Optional.ofNullable(dto.getPhone()).ifPresent(user::setPhone);
     Optional.ofNullable(dto.getBirth()).ifPresent(user::setBirth);
     user.setStudent(dto.isStudent());
+    Optional.ofNullable(dto.getFormOfContract()).ifPresent(user::setFormOfContract);
+    Optional.ofNullable(dto.getHourlyRate()).ifPresent(user::setHourlyRate);
 
     return userRepository.save(user);
   }

@@ -1,3 +1,3 @@
-export class IdNameDTO {
+export class IdName {
   constructor(public id: string, public name: string) {}
 }

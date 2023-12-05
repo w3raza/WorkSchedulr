@@ -1,6 +1,6 @@
 package com.workSchedulr.model;
 
-public enum BillType {
+public enum FormOfContract {
     MANDATE_CONTRACT,
     BUSINESS_ACTIVITY
 }

@@ -27,14 +27,17 @@
         <mat-date-range-picker #picker></mat-date-range-picker>
       </mat-form-field>
       <mat-form-field [hideRequiredMarker]="true" *forRoles="role.ADMIN">
-        <mat-label>Bill type:</mat-label>
+        <mat-label>Form of contract:</mat-label>
         <mat-select
-          id="billType"
-          formControlName="billType"
+          id="formOfContract"
+          formControlName="formOfContract"
           (selectionChange)="fetchBills()"
         >
-          <mat-option *ngFor="let billType of billTypes" [value]="billType">
-            {{ billType }}
+          <mat-option
+            *ngFor="let formOfContract of formOfContracts"
+            [value]="formOfContract"
+          >
+            {{ formOfContract }}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -45,7 +48,7 @@
           formControlName="user"
           (selectionChange)="fetchBills()"
         >
-          <mat-option *ngFor="let user of userIdNameDTOs" [value]="user">
+          <mat-option *ngFor="let user of userIdNames" [value]="user.id">
             {{ user.name }}
           </mat-option>
         </mat-select>
@@ -69,6 +72,11 @@
         <mat-cell *matCellDef="let bill"
           >{{ bill.startDate | date }} - {{ bill.endDate | date }}
         </mat-cell>
+      </ng-container>
+
+      <ng-container *forRoles="role.ADMIN" matColumnDef="form of contract">
+        <mat-header-cell *matHeaderCellDef> Form of contract </mat-header-cell>
+        <mat-cell *matCellDef="let bill">{{ bill.formOfContract }} </mat-cell>
       </ng-container>
 
       <ng-container *forRoles="role.ADMIN" matColumnDef="user">
@@ -108,6 +116,7 @@
         *matHeaderRowDef="[
           'name',
           'date range',
+          'form of contract',
           'user',
           'download',
           'regenerate'
@@ -116,7 +125,14 @@
       <mat-row
         *matRowDef="
           let row;
-          columns: ['name', 'date range', 'user', 'download', 'regenerate']
+          columns: [
+            'name',
+            'date range',
+            'form of contract',
+            'user',
+            'download',
+            'regenerate'
+          ]
         "
       ></mat-row>
     </mat-table>

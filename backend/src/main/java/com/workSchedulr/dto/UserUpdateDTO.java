@@ -1,5 +1,6 @@
 package com.workSchedulr.dto;
 
+import com.workSchedulr.model.FormOfContract;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,4 +28,8 @@ public class UserUpdateDTO {
     private LocalDate birth;
 
     private boolean isStudent;
+
+    private FormOfContract formOfContract;
+
+    private Double hourlyRate;
 }

@@ -47,7 +47,7 @@ public class User implements UserDetails {
 
   private boolean status;
 
-  private BillType type;
+  private FormOfContract formOfContract;
 
   private Double hourlyRate;
 

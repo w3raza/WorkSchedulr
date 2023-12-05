@@ -10,7 +10,7 @@
     </button>
   </ng-container>
 
-  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+  <form *ngIf="user" [formGroup]="userForm" (ngSubmit)="onSubmit()">
     <div class="user-field">
       <label for>First Name:</label>
       <div *ngIf="!isEditing">{{ user.firstName }}</div>
@@ -53,6 +53,33 @@
     <div class="user-field">
       <label>Roles:</label>
       <div>{{ user.userRoles.join(", ") }}</div>
+    </div>
+    <div class="user-field">
+      <label>Type of contract:</label>
+      <div *ngIf="!isEditing">{{ user.formOfContract }}</div>
+      <select
+        *ngIf="isEditing"
+        formControlName="formOfContract"
+        id="formOfContract"
+      >
+        <option
+          *ngFor="let formOfContract of formOfContracts"
+          [value]="formOfContract"
+        >
+          {{ formOfContract }}
+        </option>
+      </select>
+    </div>
+    <div class="user-field">
+      <label>Hourly rate:</label>
+      <div *ngIf="!isEditing">{{ user.hourlyRate }}</div>
+      <input
+        type="number"
+        *ngIf="isEditing"
+        formControlName="hourlyRate"
+        id="hourlyRate"
+        placeholder="hourlyRate"
+      />
     </div>
   </form>
   <ng-container *ngIf="isEditing">

@@ -2,7 +2,7 @@ package com.workSchedulr.controller;
 
 import com.workSchedulr.dto.BillDTO;
 import com.workSchedulr.model.Bill;
-import com.workSchedulr.model.BillType;
+import com.workSchedulr.model.FormOfContract;
 import com.workSchedulr.service.BillService;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,11 +37,11 @@ public class BillController {
                                                                @RequestParam(value = "size", defaultValue = "10") int size,
                                                                @RequestParam(value = "sort", defaultValue = "filename") String sort,
                                                                @Nullable @RequestParam("userId") UUID userId,
-                                                               @Nullable @RequestParam("type") BillType type,
+                                                               @Nullable @RequestParam("type") FormOfContract formOfContract,
                                                                @NotNull @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                                                @NotNull @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
-        Page<BillDTO> bills = billService.getBillsByDateAndUser(userId, type, startDate, endDate, pageable);
+        Page<BillDTO> bills = billService.getBillsByDateAndUser(userId, formOfContract, startDate, endDate, pageable);
         return ResponseEntity.ok(bills);
     }
 

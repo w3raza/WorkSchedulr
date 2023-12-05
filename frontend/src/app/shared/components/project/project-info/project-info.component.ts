@@ -2,14 +2,14 @@ import { Component, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialog } from "@angular/material/dialog";
 import { Router } from "@angular/router";
-import { UserRole } from "src/app/shared/enums/user-role.enum";
+import { UserRole } from "src/app/shared/enums/userRole.enum";
 import { Project } from "src/app/shared/models/project.modal";
 import { ProjectDataService } from "src/app/shared/services/projec.data.service";
 import { ConfirmDialogComponent } from "../../confirm-dialog/confirm-dialog.component";
 import { ProjectService } from "src/app/shared/services/project.service";
 import { NotificationService } from "src/app/shared/services/notification.service";
 import { MatDatepicker } from "@angular/material/datepicker";
-import { IdNameDTO } from "src/app/shared/models/IdNameDTO.modal";
+import { IdName } from "src/app/shared/models/idName.modal";
 import { UserService } from "src/app/shared/services/user.service";
 import { User } from "src/app/shared/models/user.model";
 import { UserHelper } from "src/app/shared/helper/user.helper";
@@ -28,7 +28,7 @@ export class ProjectInfoComponent {
 
   projectForm: FormGroup;
 
-  users: Array<IdNameDTO> = [];
+  users: Array<IdName> = [];
 
   @ViewChild("picker")
   picker!: MatDatepicker<Date>;

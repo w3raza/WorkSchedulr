@@ -9,7 +9,7 @@ import { UserComponent } from "./shared/components/user/user-profile/user.compon
 import { CalendarComponent } from "./shared/components/calendar/calendar.component";
 
 import { AuthGuard } from "./shared/services/auth.guard";
-import { UserRole } from "./shared/enums/user-role.enum";
+import { UserRole } from "./shared/enums/userRole.enum";
 import { UsersListComponent } from "./shared/components/user/users-list/users-list.component";
 import { ProjectInfoComponent } from "./shared/components/project/project-info/project-info.component";
 

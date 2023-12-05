@@ -3,11 +3,11 @@ import { HttpClient } from "@angular/common/http";
 import { Observable, map, of, tap } from "rxjs";
 
 import { User } from "../models/user.model";
-import { UserUpdateDTO } from "../models/userUpdateDTO.model";
+import { UserUpdate } from "../models/userUpdate.model";
 
 import { environment } from "src/environments/environment";
 import { UserHelper } from "../helper/user.helper";
-import { IdNameDTO } from "../models/IdNameDTO.modal";
+import { IdName } from "../models/idName.modal";
 import { Response } from "../models/page.modal";
 
 @Injectable({
@@ -66,7 +66,7 @@ export class UserService {
     return this.http.get<User[]>(`${this.API_ENDPOINTS.USER}/all`);
   }
 
-  getUserIdNameDTOs(): Observable<IdNameDTO[]> {
+  getUserIdNames(): Observable<IdName[]> {
     return this.getAllUser().pipe(
       map((users) => UserHelper.transformUsersToAssignments(users))
     );
@@ -91,7 +91,7 @@ export class UserService {
     return this.http.get<Response<User>>(url);
   }
 
-  updateUser(userId: string, user: Partial<UserUpdateDTO>): Observable<User> {
+  updateUser(userId: string, user: Partial<UserUpdate>): Observable<User> {
     return this.http.patch<User>(`${this.API_ENDPOINTS.USER}/${userId}`, user);
   }
 
