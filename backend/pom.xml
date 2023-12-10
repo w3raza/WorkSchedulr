@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.workSchedulr</groupId>
-	<artifactId>authentication</artifactId>
+	<artifactId>WorkSchedulr</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>authentication</name>
 	<description>authentication</description>

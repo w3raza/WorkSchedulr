@@ -7,6 +7,7 @@ import { ValidatorsService } from "../../../services/validators.service";
 import { ActivatedRoute } from "@angular/router";
 import { switchMap } from "rxjs";
 import { FormOfContract } from "src/app/shared/enums/formOfContract.enum";
+import { UserRole } from "src/app/shared/enums/userRole.enum";
 
 @Component({
   selector: "app-user",
@@ -22,6 +23,8 @@ export class UserComponent {
   isEditing = false;
   control: keyof User | null = null;
   userId: string | null = null;
+  role: typeof UserRole = UserRole;
+  roles: UserRole[] = Object.values(UserRole);
 
   constructor(
     private route: ActivatedRoute,
@@ -34,6 +37,7 @@ export class UserComponent {
       .pipe(
         switchMap((params) => {
           this.userId = params.get("id");
+          console.log(this.userId);
           if (this.userId && this.userId != "null") {
             return this.userService.getUser(this.userId);
           } else {
