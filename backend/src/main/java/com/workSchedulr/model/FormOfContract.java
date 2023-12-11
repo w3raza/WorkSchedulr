@@ -1,8 +1,9 @@
 package com.workSchedulr.model;
 
 public enum FormOfContract {
-    MANDATE_CONTRACT("Umowa zlecenie"),
-    BUSINESS_ACTIVITY("Działalność gospodarcza");
+    MANDATE_CONTRACT("mandate contract"),
+    BUSINESS_ACTIVITY("business activity"),
+    EMPLOYMENT_CONTRACT("employment contract");
 
     private final String formOfContract;
 
