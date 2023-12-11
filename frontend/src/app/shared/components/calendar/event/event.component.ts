@@ -1,7 +1,7 @@
 import { Component, Inject } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { AuthHelper } from "src/app/shared/helper/auth.helper";
-import { CalendarEvent } from "src/app/shared/models/calendar-event.model";
+import { CalendarEvent } from "src/app/shared/models/calendarEvent.model";
 import { Project } from "src/app/shared/models/project.modal";
 import { ProjectService } from "src/app/shared/services/project.service";
 

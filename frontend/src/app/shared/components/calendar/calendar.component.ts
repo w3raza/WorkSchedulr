@@ -19,7 +19,7 @@ import { CalendarEventService } from "../../services/calendarEvent.service";
 import { AuthHelper } from "../../helper/auth.helper";
 import { EventComponent } from "./event/event.component";
 import { MatDialog } from "@angular/material/dialog";
-import { CalendarEvent } from "../../models/calendar-event.model";
+import { CalendarEvent } from "../../models/calendarEvent.model";
 import { CalendarHelper } from "../../helper/calendar.helper";
 import { Project } from "../../models/project.modal";
 import { ProjectService } from "../../services/project.service";
@@ -27,11 +27,11 @@ import { EventImpl } from "@fullcalendar/core/internal";
 import { NotificationService } from "../../services/notification.service";
 import { Observable } from "rxjs";
 import { User } from "../../models/user.model";
-import { UserRole } from "../../enums/user-role.enum";
-import { IdNameDTO } from "../../models/IdNameDTO.modal";
-import { UserHelper } from "../../helper/user.helper";
+import { UserRole } from "../../enums/userRole.enum";
+import { IdName } from "../../models/idName.modal";
 import { UserService } from "../../services/user.service";
 import { MatTabChangeEvent } from "@angular/material/tabs";
+import { UserHelper } from "../../helper/user.helper";
 
 @Component({
   selector: "app-calendar",
@@ -69,7 +69,7 @@ export class CalendarComponent {
   projectNameInfo: string = ", ProjectName: ";
 
   role: typeof UserRole = UserRole;
-  userIdNameDTOs: IdNameDTO[] = [];
+  userIdNames: IdName[] = [];
   users: User[] = [];
   user: User | null = null;
 
@@ -127,18 +127,14 @@ export class CalendarComponent {
   }
 
   loadUsers(): void {
-    this.userService.getAllUser().subscribe({
-      next: (users: User[]) => this.handleUsers(users),
+    this.userService.getAllUser().subscribe((users) => {
+      this.users = users;
+      this.userIdNames = UserHelper.transformUsersToAssignments(users);
     });
   }
 
-  private handleUsers(users: User[]): void {
-    this.users = users;
-    this.userIdNameDTOs = UserHelper.transformUsersToAssignments(users);
-  }
-
   onTabChanged(event: MatTabChangeEvent): void {
-    const selectedUserId = this.userIdNameDTOs[event.index]?.id;
+    const selectedUserId = this.userIdNames[event.index]?.id;
     this.user = this.users.find((u) => u.id === selectedUserId) || null;
     this.fetchEvents();
     this.getAllProjectsForUser();

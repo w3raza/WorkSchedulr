@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.workSchedulr</groupId>
-	<artifactId>authentication</artifactId>
+	<artifactId>WorkSchedulr</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>authentication</name>
 	<description>authentication</description>
@@ -82,6 +82,13 @@
 			<artifactId>mapstruct-processor</artifactId>
 			<version>1.5.5.Final</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<!--PDF-->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itext7-core</artifactId>
+			<version>7.2.2</version>
 		</dependency>
 
 		<!-- Test -->

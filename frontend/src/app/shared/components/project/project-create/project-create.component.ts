@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MatDialogRef } from "@angular/material/dialog";
 import { UserHelper } from "src/app/shared/helper/user.helper";
-import { IdNameDTO } from "src/app/shared/models/IdNameDTO.modal";
+import { IdName } from "src/app/shared/models/idName.modal";
 import { Project } from "src/app/shared/models/project.modal";
 import { User } from "src/app/shared/models/user.model";
 import { ProjectService } from "src/app/shared/services/project.service";
@@ -14,7 +14,7 @@ import { UserService } from "src/app/shared/services/user.service";
   styleUrls: ["./project-create.component.css"],
 })
 export class ProjectCreateComponent {
-  users: Array<IdNameDTO> = [];
+  users: Array<IdName> = [];
 
   createForm: FormGroup = this.fb.group({
     title: [null, [Validators.required, Validators.minLength(2)]],

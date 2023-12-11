@@ -19,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.CharBuffer;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -49,8 +46,12 @@ public class UserService {
     }
   }
 
+  public List<User> getAllUsers(){
+    return userRepository.findAll();
+  }
+
   private Set<User> getAllUserForAdmin(){
-    return new HashSet<>(userRepository.findAll());
+    return new HashSet<>(getAllUsers());
   }
 
   private Set<User> getAllUserForManager(User user){
@@ -104,6 +105,8 @@ public class UserService {
     Optional.ofNullable(dto.getPhone()).ifPresent(user::setPhone);
     Optional.ofNullable(dto.getBirth()).ifPresent(user::setBirth);
     user.setStudent(dto.isStudent());
+    Optional.ofNullable(dto.getFormOfContract()).ifPresent(user::setFormOfContract);
+    Optional.ofNullable(dto.getHourlyRate()).ifPresent(user::setHourlyRate);
 
     return userRepository.save(user);
   }

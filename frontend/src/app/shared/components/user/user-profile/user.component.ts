@@ -6,6 +6,8 @@ import { UserService } from "../../../services/user.service";
 import { ValidatorsService } from "../../../services/validators.service";
 import { ActivatedRoute } from "@angular/router";
 import { switchMap } from "rxjs";
+import { FormOfContract } from "src/app/shared/enums/formOfContract.enum";
+import { UserRole } from "src/app/shared/enums/userRole.enum";
 
 @Component({
   selector: "app-user",
@@ -13,11 +15,16 @@ import { switchMap } from "rxjs";
   styleUrls: ["./user.component.css"],
 })
 export class UserComponent {
+  formOfContracts: string[] = Object.values(FormOfContract);
+  formOfContract: typeof FormOfContract = FormOfContract;
+
   userForm!: FormGroup;
-  user: User = new User("", "", "", "", "", "", "", false, false, [], [], []);
+  user!: User;
   isEditing = false;
   control: keyof User | null = null;
   userId: string | null = null;
+  role: typeof UserRole = UserRole;
+  roles: UserRole[] = Object.values(UserRole);
 
   constructor(
     private route: ActivatedRoute,
@@ -30,6 +37,7 @@ export class UserComponent {
       .pipe(
         switchMap((params) => {
           this.userId = params.get("id");
+          console.log(this.userId);
           if (this.userId && this.userId != "null") {
             return this.userService.getUser(this.userId);
           } else {
@@ -54,6 +62,8 @@ export class UserComponent {
       birth: user.birth,
       student: user.student,
       userRoles: user.userRoles[0],
+      formOfContract: user.formOfContract,
+      hourlyRate: user.hourlyRate,
     });
   }
 
@@ -76,6 +86,8 @@ export class UserComponent {
       birth: [null, Validators.required],
       student: [null, Validators.required],
       userRoles: [{ value: null, disabled: true }],
+      formOfContract: [null],
+      hourlyRate: [0],
     });
   }
 
@@ -85,8 +97,12 @@ export class UserComponent {
 
   onSubmit(): void {
     this.normalizeStudentValue();
+    const formValue = {
+      ...this.userForm.value,
+      formOfContract: this.getFormOfContractValue(),
+    };
     this.userService
-      .updateUser(this.user.id, this.userForm.value)
+      .updateUser(this.user.id, formValue)
       .subscribe((updatedUser) => {
         this.user = updatedUser;
         this.toggleEditing();
@@ -95,5 +111,13 @@ export class UserComponent {
 
   private normalizeStudentValue(): void {
     this.userForm.value.student = !!this.userForm.value.student;
+  }
+
+  getFormOfContractValue(): string {
+    return Object.keys(this.formOfContract)[
+      Object.values(this.formOfContract).indexOf(
+        this.userForm.value.formOfContract
+      )
+    ];
   }
 }

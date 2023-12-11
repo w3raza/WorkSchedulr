@@ -27,12 +27,12 @@ public class CalendarEvent {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     @NotNull(message = "Time of start, can't be null")
-    @Column(name = "startTime") // This maps the 'start' field to the 'startTime' column in the database
+    @Column(name = "start_time") // This maps the 'start' field to the 'startTime' column in the database
     private ZonedDateTime start;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     @NotNull(message = "Time of end, can't be null")
-    @Column(name = "endTime") // This maps the 'end' field to the 'endTime' column in the database
+    @Column(name = "end_time") // This maps the 'end' field to the 'endTime' column in the database
     private ZonedDateTime end;
 
     @ManyToOne

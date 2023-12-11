@@ -1,5 +1,6 @@
-import { UserRole } from "../enums/user-role.enum";
-import { CalendarEvent } from "./calendar-event.model";
+import { FormOfContract } from "../enums/formOfContract.enum";
+import { UserRole } from "../enums/userRole.enum";
+import { CalendarEvent } from "./calendarEvent.model";
 import { Project } from "./project.modal";
 
 export class User {
@@ -15,6 +16,8 @@ export class User {
     public status: boolean,
     public userRoles: UserRole[],
     public projects: Project[],
-    public calendarEvents: CalendarEvent[]
+    public calendarEvents: CalendarEvent[],
+    public formOfContract: FormOfContract,
+    public hourlyRate: number
   ) {}
 }

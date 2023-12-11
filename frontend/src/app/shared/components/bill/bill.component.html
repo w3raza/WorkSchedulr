@@ -1,1 +1,149 @@
-<p>Bills page is under construction!</p>
+<div class="bill-container">
+  <mat-toolbar>
+    <form [formGroup]="billForm">
+      <mat-form-field>
+        <mat-label>Date range:</mat-label>
+        <mat-date-range-input
+          id="dateRange"
+          [min]="minStartDate"
+          [max]="maxStartDate"
+          [rangePicker]="picker"
+        >
+          <input
+            matStartDate
+            formControlName="start"
+            placeholder="Start date"
+          />
+          <input
+            matEndDate
+            formControlName="end"
+            placeholder="End date"
+            (dateChange)="fetchBills()"
+          />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker">
+          <mat-icon matDatepickerToggleIcon>arrow_drop_down</mat-icon>
+        </mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+      <mat-form-field [hideRequiredMarker]="true" *forRoles="role.ADMIN">
+        <mat-label>Form of contract:</mat-label>
+        <mat-select
+          id="formOfContract"
+          formControlName="formOfContract"
+          (selectionChange)="fetchBills()"
+        >
+          <mat-option
+            *ngFor="let formOfContract of formOfContracts"
+            [value]="formOfContract"
+          >
+            {{ formOfContract }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field [hideRequiredMarker]="true" *forRoles="role.ADMIN">
+        <mat-label>User:</mat-label>
+        <mat-select
+          id="user"
+          formControlName="user"
+          (selectionChange)="fetchBills()"
+        >
+          <mat-option *ngFor="let user of userIdNames" [value]="user.id">
+            {{ user.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </mat-toolbar>
+  <div class="w-100" *ngIf="!bills.length">
+    <app-no-data-message
+      message="You don't have any bills"
+    ></app-no-data-message>
+  </div>
+  <div *ngIf="bills.length" class="bill-table">
+    <mat-table [dataSource]="bills">
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+        <mat-cell *matCellDef="let bill">{{ bill.filename }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="date range">
+        <mat-header-cell *matHeaderCellDef> Date range </mat-header-cell>
+        <mat-cell *matCellDef="let bill"
+          >{{ bill.startDate | date }} - {{ bill.endDate | date }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container *forRoles="role.ADMIN" matColumnDef="form of contract">
+        <mat-header-cell *matHeaderCellDef> Form of contract </mat-header-cell>
+        <mat-cell *matCellDef="let bill"
+          >{{ getContractDisplayValue(bill.formOfContract) }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container *forRoles="role.ADMIN" matColumnDef="user">
+        <mat-header-cell *matHeaderCellDef> User </mat-header-cell>
+        <mat-cell *matCellDef="let bill">{{ bill.userName }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="download">
+        <mat-header-cell *matHeaderCellDef class="download-column">
+        </mat-header-cell>
+        <mat-cell *matCellDef="let bill" class="download-column">
+          <button
+            mat-icon-button
+            (click)="downloadBill(bill)"
+            matTooltip="Download"
+          >
+            <mat-icon>download</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="regenerate">
+        <mat-header-cell *matHeaderCellDef class="regenerate-column">
+        </mat-header-cell>
+        <mat-cell *matCellDef="let bill" class="regenerate-column">
+          <button
+            mat-icon-button
+            (click)="regenerateBill(bill)"
+            matTooltip="Regenerate"
+          >
+            <mat-icon>replay</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row
+        *matHeaderRowDef="[
+          'name',
+          'date range',
+          'form of contract',
+          'user',
+          'download',
+          'regenerate'
+        ]"
+      ></mat-header-row>
+      <mat-row
+        *matRowDef="
+          let row;
+          columns: [
+            'name',
+            'date range',
+            'form of contract',
+            'user',
+            'download',
+            'regenerate'
+          ]
+        "
+      ></mat-row>
+    </mat-table>
+
+    <mat-paginator
+      [length]="totalElements"
+      [pageSize]="pageSize"
+      [pageIndex]="currentPage - 1"
+      (page)="pageChanged($event)"
+    ></mat-paginator>
+  </div>
+</div>

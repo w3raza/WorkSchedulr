@@ -27,6 +27,8 @@ export class ErrorService {
       case 403:
         this.authService.handleLogout();
         return "You are signed out";
+      case 404:
+        return `${error.error}` ? `${error.error}` : "No found any value";
       case 0:
       case 503:
         return "Service Unavailable";

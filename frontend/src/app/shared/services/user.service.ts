@@ -1,12 +1,14 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Observable, of, tap } from "rxjs";
+import { Observable, map, of, tap } from "rxjs";
 
 import { User } from "../models/user.model";
-import { UserUpdateDTO } from "../models/userUpdateDTO.model";
-import { UserResponse } from "../models/userResponse.model";
+import { UserUpdate } from "../models/userUpdate.model";
 
 import { environment } from "src/environments/environment";
+import { UserHelper } from "../helper/user.helper";
+import { IdName } from "../models/idName.modal";
+import { Response } from "../models/page.modal";
 
 @Injectable({
   providedIn: "root",
@@ -64,12 +66,18 @@ export class UserService {
     return this.http.get<User[]>(`${this.API_ENDPOINTS.USER}/all`);
   }
 
+  getUserIdNames(): Observable<IdName[]> {
+    return this.getAllUser().pipe(
+      map((users) => UserHelper.transformUsersToAssignments(users))
+    );
+  }
+
   fetchUsers(
     status: boolean,
     page: number,
     size: number,
     role: string
-  ): Observable<UserResponse> {
+  ): Observable<Response<User>> {
     let url = `${this.API_ENDPOINTS.USER}?page=${page}&size=${size}`;
 
     if (role !== undefined) {
@@ -80,10 +88,10 @@ export class UserService {
       url += `&status=${status}`;
     }
 
-    return this.http.get<UserResponse>(url);
+    return this.http.get<Response<User>>(url);
   }
 
-  updateUser(userId: string, user: Partial<UserUpdateDTO>): Observable<User> {
+  updateUser(userId: string, user: Partial<UserUpdate>): Observable<User> {
     return this.http.patch<User>(`${this.API_ENDPOINTS.USER}/${userId}`, user);
   }
 

@@ -1,15 +1,20 @@
 export interface PageProperties {
-  last: boolean;
-  totalPages: number;
-  totalElements: number;
-  first: boolean;
-  size: number;
-  number: number;
-  sort: {
-    empty: boolean;
-    sorted: boolean;
-    unsorted: boolean;
-  };
-  numberOfElements: number;
   empty: boolean;
+  number: number;
+  totalElements: number;
+}
+
+export interface Response<T> {
+  content: T[];
+  empty: boolean;
+  first: boolean;
+  last: boolean;
+  number: number;
+  numberOfElements: number;
+  pageable: {};
+  size: number;
+  sort: {};
+  totalElements: number;
+  totalPages: number;
+  password: string;
 }

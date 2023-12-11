@@ -49,6 +49,7 @@ import { ProjectInfoComponent } from "./shared/components/project/project-info/p
 import { ConfirmDialogComponent } from "./shared/components/confirm-dialog/confirm-dialog.component";
 import { ProjectCreateComponent } from "./shared/components/project/project-create/project-create.component";
 import { EventComponent } from "./shared/components/calendar/event/event.component";
+import { NoDataMessageComponent } from "./shared/helper/app-no-data-message/app-no-data-message.component";
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { EventComponent } from "./shared/components/calendar/event/event.compone
     ConfirmDialogComponent,
     ProjectCreateComponent,
     EventComponent,
+    NoDataMessageComponent,
   ],
   imports: [
     BrowserModule,

@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
-import { CalendarEvent } from "../models/calendar-event.model";
+import { CalendarEvent } from "../models/calendarEvent.model";
 
 @Injectable({
   providedIn: "root",
