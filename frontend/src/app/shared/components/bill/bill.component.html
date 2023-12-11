@@ -76,7 +76,9 @@
 
       <ng-container *forRoles="role.ADMIN" matColumnDef="form of contract">
         <mat-header-cell *matHeaderCellDef> Form of contract </mat-header-cell>
-        <mat-cell *matCellDef="let bill">{{ bill.formOfContract }} </mat-cell>
+        <mat-cell *matCellDef="let bill"
+          >{{ getContractDisplayValue(bill.formOfContract) }}
+        </mat-cell>
       </ng-container>
 
       <ng-container *forRoles="role.ADMIN" matColumnDef="user">

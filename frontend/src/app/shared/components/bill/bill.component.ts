@@ -151,4 +151,10 @@ export class BillComponent extends PaginatorHelper {
       )
     ];
   }
+
+  getContractDisplayValue(contractKey: string): string {
+    return (
+      FormOfContract[contractKey as keyof typeof FormOfContract] || contractKey
+    );
+  }
 }
