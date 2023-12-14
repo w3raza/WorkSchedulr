@@ -26,7 +26,6 @@ export class BillService {
   ): Observable<Response<Bill>> {
     let url = `${this.API_ENDPOINTS.BILL}?page=${page}&size=${size}&start=${start}&end=${end}`;
 
-    console.log("servise " + userId);
     if (userId) {
       url += `&userId=${userId}`;
     }

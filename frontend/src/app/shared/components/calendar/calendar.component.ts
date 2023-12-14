@@ -91,8 +91,8 @@ export class CalendarComponent {
         this.user = currentUser;
       }
     });
-    this.fetchEvents();
     this.getAllProjectsForUser();
+    this.fetchEvents();
     if (this.authHelper.checkIsNotUser()) {
       this.loadUsers();
     }
@@ -136,8 +136,8 @@ export class CalendarComponent {
   onTabChanged(event: MatTabChangeEvent): void {
     const selectedUserId = this.userIdNames[event.index]?.id;
     this.user = this.users.find((u) => u.id === selectedUserId) || null;
-    this.fetchEvents();
     this.getAllProjectsForUser();
+    this.fetchEvents();
   }
 
   handleCalendarToggle() {
