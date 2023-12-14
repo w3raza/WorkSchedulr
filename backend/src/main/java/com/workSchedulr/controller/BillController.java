@@ -37,7 +37,7 @@ public class BillController {
                                                                @RequestParam(value = "size", defaultValue = "10") int size,
                                                                @RequestParam(value = "sort", defaultValue = "filename") String sort,
                                                                @Nullable @RequestParam("userId") UUID userId,
-                                                               @Nullable @RequestParam("type") FormOfContract formOfContract,
+                                                               @Nullable @RequestParam("formOfContract") FormOfContract formOfContract,
                                                                @NotNull @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                                                @NotNull @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort));

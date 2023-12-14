@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
 import { Bill } from "../models/bill.modal";
-import { PageProperties, Response } from "../models/page.modal";
+import { Response } from "../models/page.modal";
 
 @Injectable({
   providedIn: "root",
@@ -26,6 +26,7 @@ export class BillService {
   ): Observable<Response<Bill>> {
     let url = `${this.API_ENDPOINTS.BILL}?page=${page}&size=${size}&start=${start}&end=${end}`;
 
+    console.log("servise " + userId);
     if (userId) {
       url += `&userId=${userId}`;
     }

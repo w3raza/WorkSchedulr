@@ -17,6 +17,7 @@ import com.workSchedulr.model.*;
 import com.workSchedulr.repository.BillRepository;
 import com.workSchedulr.repository.CalendarEventRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
+@Log
 @Service
 @AllArgsConstructor
 public class BillService {
@@ -74,7 +76,7 @@ public class BillService {
             try {
                 generateBillForUser(user, start, end);
             }catch(Exception e){
-                e.printStackTrace();
+                log.warning(e.getMessage());
             }
         });
     }

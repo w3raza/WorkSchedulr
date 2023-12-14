@@ -55,8 +55,8 @@ export class BillComponent extends PaginatorHelper {
     this.billForm = this.fb.group({
       start: [Date, Validators.required],
       end: [Date, Validators.required],
-      FormOfContract: [FormOfContract],
-      user: [IdName],
+      formOfContract: [FormOfContract],
+      user: [""],
     });
     this.formOfContracts.push("Default");
     const defaultIdName = new IdName(
@@ -75,11 +75,11 @@ export class BillComponent extends PaginatorHelper {
         .toISOString()
         .split("T")[0];
       let formOfContract = null;
-      if (this.billForm.value.FormOfContract !== "All types") {
+      if (this.billForm.value.formOfContract !== "Default") {
         formOfContract = this.getFormOfContractValue();
       }
 
-      this.userId = this.billForm.value.user.id;
+      this.userId = this.billForm.value.user;
       this.billService
         .getBills(
           this.userId,
@@ -147,7 +147,7 @@ export class BillComponent extends PaginatorHelper {
   getFormOfContractValue(): string {
     return Object.keys(this.formOfContract)[
       Object.values(this.formOfContract).indexOf(
-        this.billForm.value.FormOfContract
+        this.billForm.value.formOfContract
       )
     ];
   }

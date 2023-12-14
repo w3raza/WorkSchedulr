@@ -1,24 +1,5 @@
 <div>
   <mat-toolbar>
-    <mat-form-field
-      *forRoles="[role.ADMIN, role.MANAGER]"
-      class="flex-fill"
-      appearance="fill"
-      [hideRequiredMarker]="true"
-    >
-      <mat-label>Status</mat-label>
-      <mat-select
-        [(value)]="selectedStatus"
-        (selectionChange)="fetchProjects()"
-      >
-        <mat-option
-          *ngFor="let status of filterProjectStatus"
-          [value]="status.value"
-        >
-          {{ status.viewValue }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
     <mat-form-field class="flex-fill" appearance="fill">
       <mat-label>Search Projects</mat-label>
       <input
@@ -37,6 +18,25 @@
           {{ project.title }}
         </mat-option>
       </mat-autocomplete>
+    </mat-form-field>
+    <mat-form-field
+      *forRoles="[role.ADMIN, role.MANAGER]"
+      class="flex-fill"
+      appearance="fill"
+      [hideRequiredMarker]="true"
+    >
+      <mat-label>Status</mat-label>
+      <mat-select
+        [(value)]="selectedStatus"
+        (selectionChange)="fetchProjects()"
+      >
+        <mat-option
+          *ngFor="let status of filterProjectStatus"
+          [value]="status.value"
+        >
+          {{ status.viewValue }}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
     <span class="spacer">
       <button
