@@ -54,7 +54,7 @@ public class UserService {
     return new HashSet<>(getAllUsers());
   }
 
-  private Set<User> getAllUserForManager(User user){
+  Set<User> getAllUserForManager(User user){
     Set<User> usersManagedBy = userRepository.findUsersByManagerId(user.getId());
     usersManagedBy.add(user);
     return usersManagedBy;

@@ -70,5 +70,6 @@ public class CalendarEventService {
                 .filter(e -> !e.getId().equals(eventIdToExclude))
                 .toList();
 
-        return overlappingEvents.isEmpty();    }
+        return overlappingEvents.isEmpty();
+    }
 }

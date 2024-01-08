@@ -8,7 +8,9 @@ import com.workSchedulr.model.UserRole;
 import com.workSchedulr.repository.ProjectRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,6 +28,8 @@ public class ProjectService {
     }
 
     public Page<Project> getProjectsByParams(UUID userId, Boolean status, String title, Pageable pageable) {
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("title"));
+
         User user = userService.getCurrentUser();
         if (user == null) {
             throw new UserUnAuthorizedException();
